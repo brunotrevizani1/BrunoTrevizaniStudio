@@ -50,13 +50,13 @@ export const skills = [
 export const fallbackProjects = [
   {
     id: "fallback-1",
-    title: "Plataforma de Gestão Financeira",
+    title: "PrimeGarage",
     description:
-      "Dashboard completo para controle de receitas e despesas, com gráficos em tempo real e relatórios exportáveis.",
-    image_url: null,
-    tech_stack: ["React", "Node.js", "PostgreSQL", "Tailwind CSS"],
-    live_url: "#",
-    repo_url: "#",
+      "Sistema de gestão para lava-jatos, que centraliza os atendimentos, serviços, equipe e fluxo de clientes em um só lugar.",
+    image_url: "/primeGarage.jpg",
+    tech_stack: ["React", "Node.js", "PostgreSQL", "Express 5"],
+    live_url: "https://youtu.be/3iCAtry303U?si=acA8PlMHtZuiaizK",
+    repo_url: "https://github.com/brunotrevizani1/primeGarage.git",
   },
   {
     id: "fallback-2",

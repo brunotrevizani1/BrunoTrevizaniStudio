@@ -72,7 +72,7 @@ export default function Projects() {
         <SectionHeading
           eyebrow="Projetos"
           title="Trabalhos recentes"
-          description="Uma seleção de projetos que desenvolvi. Os dados vêm do banco — enquanto ele não é configurado, você está vendo exemplos."
+          description="Uma seleção de projetos que desenvolvi."
         />
 
         {!loading && isCarousel && (
