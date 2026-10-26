@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { GithubIcon, LinkedinIcon, YoutubeIcon } from './icons/BrandIcons'
 import DeskLamp from './icons/DeskLamp'
+import CityScene from './CityScene'
+import { useLamp } from '../context/LampContext'
 import { profile } from '../data/placeholders'
 
 function getInitials(name) {
@@ -17,13 +19,19 @@ function getInitials(name) {
 export default function Hero() {
   const [photoFailed, setPhotoFailed] = useState(false)
   const showPhoto = Boolean(profile.photoUrl) && !photoFailed
+  const { isOn } = useLamp()
+  const isNight = !isOn
 
   return (
     <section
       id="top"
-      className="relative flex min-h-screen items-center overflow-hidden bg-grid pt-24"
+      data-panel
+      data-night={isNight}
+      className="hero-scope relative flex min-h-dvh snap-start items-center overflow-hidden pt-24"
     >
-      <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-6 py-16 md:grid-cols-[1.15fr_0.85fr]">
+      <CityScene isNight={isNight} />
+
+      <div className="hero-content relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-6 py-16 md:grid-cols-[1.15fr_0.85fr]">
         <div className="flex flex-col items-start gap-6">
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-text">
             Bem-vindo ao{' '}

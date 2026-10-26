@@ -1,0 +1,519 @@
+/* Cenário PhotoLumi: estúdio fotográfico com as informações numa tela de cavalete no centro.
+   Entrada: flash da câmera, fotos do varal reveladas uma a uma e o cavalete surgindo.
+   O estilo base é o estado final; as animações só definem o `from` (reduzir movimento = sem animação). */
+
+.pl {
+  --floor: clamp(70px, 12vh, 120px);
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 100%;
+  padding: 196px 24px 0;
+  overflow: hidden;
+}
+
+/* fundo infinito: parede e piso sem emenda */
+.pl-cyc {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 14% at 50% 94%, rgba(0, 0, 0, 0.16), transparent 70%),
+    linear-gradient(#f7f4ea 0, #efebdc 55%, #ddd7c2 100%);
+  transition: filter 1000ms ease;
+}
+
+.sr[data-night="true"] .pl-cyc {
+  filter: brightness(0.16) saturate(0.7);
+}
+
+.pl-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* varal atravessando o topo */
+.pl-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 62px;
+  height: 170px;
+}
+
+.pl-line > svg {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 100%;
+  height: 40px;
+}
+
+.pl-photo {
+  --w: clamp(52px, 5.4vw, 78px);
+  position: absolute;
+  left: var(--x);
+  top: var(--sag);
+  width: var(--w);
+  aspect-ratio: 4 / 5;
+  margin: 0;
+  padding: 6px 6px 16px;
+  background: #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.28);
+  transform-origin: 50% 0;
+  animation:
+    pl-develop 1500ms ease-out calc(500ms + var(--i) * 220ms) both,
+    pl-sway 6s ease-in-out calc(2.4s + var(--i) * 0.4s) infinite;
+}
+
+.pl-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(#e8d9b8, #b9a47a);
+}
+
+.pl-img.is-logo {
+  background: #f5f3ea url(/photoLumi.jpg) 90% 50% / 270% no-repeat;
+}
+
+.pl-img.is-sunset {
+  background:
+    radial-gradient(circle at 50% 62%, #fff3b0 0 9%, transparent 10%),
+    linear-gradient(#f9c97b, #e8765a 62%, #5b3a58);
+}
+
+.pl-img.is-portrait {
+  background:
+    radial-gradient(circle at 50% 36%, #3b2b24 0 15%, transparent 16%),
+    radial-gradient(ellipse at 50% 100%, #3b2b24 0 38%, transparent 39%),
+    linear-gradient(#f2c4b0, #d78f7a);
+}
+
+.pl-img.is-hills {
+  background:
+    radial-gradient(ellipse at 30% 100%, #4d7c4a 0 45%, transparent 46%),
+    radial-gradient(ellipse at 85% 100%, #2f5d3b 0 50%, transparent 51%),
+    linear-gradient(#a8d5f2, #e6f3fb);
+}
+
+.pl-img.is-flower {
+  background:
+    radial-gradient(circle at 50% 42%, #fde68a 0 8%, transparent 9%),
+    radial-gradient(circle at 50% 42%, #f472b6 0 22%, transparent 23%),
+    linear-gradient(#bbf7d0, #4ade80);
+}
+
+.pl-img.is-city {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 9px, rgba(254, 240, 138, 0.8) 9px 11px) 0 70% / 100% 40% no-repeat,
+    linear-gradient(#1e1b4b, #4c1d95 60%, #0f172a);
+}
+
+.pl-img.is-beach {
+  background:
+    linear-gradient(transparent 55%, #fde68a 55%),
+    linear-gradient(#7dd3fc 0 35%, #0ea5e9 35% 55%, transparent 55%);
+}
+
+.pl-pin {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 8px;
+  height: 20px;
+  transform: translateX(-50%);
+  border-radius: 2px;
+  background: linear-gradient(#e9c27b, #b98332);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* softbox (esquerda) */
+.pl-softbox {
+  position: absolute;
+  left: 2%;
+  bottom: calc(var(--floor) * 0.2);
+  width: clamp(100px, 12vw, 180px);
+  height: clamp(240px, 46vh, 400px);
+}
+
+.pl-softbox-face {
+  position: absolute;
+  inset: 0 0 38%;
+  clip-path: polygon(8% 0, 92% 0, 100% 100%, 0 100%);
+  background: linear-gradient(#fffdf2, #f6efd2);
+  box-shadow: inset 0 0 0 5px #2b2b2b;
+  filter: drop-shadow(0 0 22px rgba(255, 244, 205, 0.9));
+}
+
+.pl-softbox-pole {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 6px;
+  height: 42%;
+  transform: translateX(-50%);
+  background: #2b2b2b;
+  border-radius: 3px;
+}
+
+.pl-softbox-pole::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 90px;
+  height: 8px;
+  transform: translateX(-50%);
+  border-radius: 4px;
+  background: #1a1a1a;
+}
+
+/* luz do softbox sobre o set (forte no escuro, quando é a luz principal) */
+.pl-beam {
+  position: absolute;
+  left: 8%;
+  bottom: 4%;
+  width: 70%;
+  height: 80%;
+  background: radial-gradient(ellipse 72% 38% at 0% 40%, rgba(255, 244, 205, 0.75), transparent 100%);
+  mix-blend-mode: screen;
+  opacity: 0.3;
+  transition: opacity 1000ms ease;
+}
+
+.sr[data-night="true"] .pl-beam {
+  opacity: 1;
+}
+
+.pl-tripod {
+  position: absolute;
+  left: 15%;
+  bottom: calc(var(--floor) * 0.2);
+  width: clamp(100px, 11vw, 160px);
+  height: auto;
+}
+
+.pl-led {
+  animation: pl-blink 1.6s steps(2, jump-none) infinite;
+}
+
+.sr[data-night="true"] .pl-tripod {
+  filter: brightness(0.8);
+}
+
+/* sombrinha de luz (direita) */
+.pl-umbrella {
+  position: absolute;
+  right: 14%;
+  bottom: calc(var(--floor) * 0.2);
+  width: clamp(110px, 12vw, 170px);
+  height: clamp(220px, 44vh, 360px);
+}
+
+.pl-umbrella-canopy {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 36%;
+  border-radius: 999px 999px 0 0;
+  transform: rotate(-12deg);
+  background:
+    repeating-conic-gradient(from -90deg at 50% 100%, rgba(0, 0, 0, 0.06) 0 8deg, transparent 8deg 16deg),
+    linear-gradient(#ffffff, #ece7d4);
+  box-shadow: inset 0 0 0 4px #2b2b2b, 0 0 26px rgba(255, 244, 205, 0.8);
+}
+
+.pl-umbrella-pole {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 6px;
+  height: 66%;
+  transform: translateX(-50%);
+  background: #2b2b2b;
+}
+
+.pl-umbrella-pole::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 80px;
+  height: 8px;
+  transform: translateX(-50%);
+  border-radius: 4px;
+  background: #1a1a1a;
+}
+
+/* rebatedor (direita) */
+.pl-reflector {
+  position: absolute;
+  right: 2%;
+  bottom: calc(var(--floor) * 0.2);
+  width: clamp(90px, 10vw, 140px);
+  height: clamp(220px, 44vh, 340px);
+}
+
+.pl-reflector-disc {
+  position: absolute;
+  inset: 0 0 34%;
+  border-radius: 50%;
+  transform: rotate(14deg);
+  background: radial-gradient(circle at 40% 35%, #fffbe8, #e8c56b 80%);
+  box-shadow: inset 0 0 0 5px #3a3a3a, 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.pl-reflector-pole {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 6px;
+  height: 40%;
+  transform: translateX(-50%);
+  background: #2b2b2b;
+}
+
+/* cavalete com a tela das informações */
+.pl-easel {
+  position: relative;
+  z-index: 2;
+  width: clamp(320px, 42vw, 540px);
+  margin-bottom: calc(var(--floor) * 0.25);
+  animation: pl-easel-in 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 1000ms both;
+
+  --pinfo-ink: #2d2b20;
+  --pinfo-muted: #5d5a48;
+  --pinfo-accent: #55533f;
+  --pinfo-tag-bg: #ecead9;
+}
+
+/* travas no topo da tela */
+.pl-clamp {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  z-index: 1;
+  width: 70px;
+  height: 22px;
+  transform: translateX(-50%);
+  border-radius: 4px;
+  background: #3a2a1c;
+  box-shadow: -48px 6px 0 -6px #2a1d12, 48px 6px 0 -6px #2a1d12;
+}
+
+.pl-board {
+  position: relative;
+  padding: 14px 20px 18px;
+  border: 10px solid #b88a52;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.025) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.025) 0 1px, transparent 1px 3px),
+    #fbfaf5;
+  box-shadow:
+    0 22px 44px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 2px rgba(0, 0, 0, 0.25),
+    inset 0 0 34px rgba(0, 0, 0, 0.07);
+  transition: box-shadow 1000ms ease;
+}
+
+.sr[data-night="true"] .pl-board {
+  box-shadow:
+    0 0 60px 6px rgba(255, 244, 205, 0.28),
+    0 22px 44px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 2px rgba(0, 0, 0, 0.25);
+}
+
+.pl-shot {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 6;
+  margin-bottom: 14px;
+  object-fit: contain;
+  background: #f5f3ea;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  animation: pl-develop 1400ms ease-out 1500ms both;
+}
+
+.pl-tray {
+  display: block;
+  width: 108%;
+  height: 16px;
+  margin: 0 -4%;
+  border-radius: 3px;
+  background: linear-gradient(#c79a5d, #8a6234);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.35);
+}
+
+.pl-legs {
+  position: relative;
+  height: clamp(56px, 10vh, 100px);
+}
+
+.pl-legs::before {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: -14px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3), transparent 70%);
+}
+
+.pl-legs::after {
+  content: "";
+  position: absolute;
+  left: 23%;
+  right: 23%;
+  top: 52%;
+  height: 8px;
+  border-radius: 3px;
+  background: linear-gradient(#a97b45, #7a5530);
+}
+
+.pl-legs i {
+  position: absolute;
+  top: 0;
+  width: 16px;
+  height: 112%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #b88a52, #8a6234);
+  box-shadow: 2px 0 3px rgba(0, 0, 0, 0.3);
+  transform-origin: 50% 0;
+}
+
+.pl-leg-l {
+  left: 15%;
+  transform: rotate(7deg);
+}
+
+.pl-leg-r {
+  right: 15%;
+  transform: rotate(-7deg);
+}
+
+.pl-leg-back {
+  left: 50%;
+  width: 12px;
+  height: 100%;
+  margin-left: -6px;
+  background: linear-gradient(90deg, #6b4a28, #4a331b);
+}
+
+.pl-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  animation: pl-flash 800ms ease-out 250ms both;
+}
+
+@keyframes pl-flash {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* a foto aparece "da química": escura e sépia, clareando até a cor final */
+@keyframes pl-develop {
+  from {
+    opacity: 0;
+    filter: brightness(0.15) sepia(1) contrast(0.6);
+  }
+  35% {
+    opacity: 1;
+    filter: brightness(0.55) sepia(1) hue-rotate(-25deg) blur(2px);
+  }
+}
+
+@keyframes pl-sway {
+  50% {
+    transform: rotate(2.2deg);
+  }
+}
+
+@keyframes pl-easel-in {
+  from {
+    opacity: 0;
+    transform: translateY(34px) scale(0.94);
+  }
+}
+
+@keyframes pl-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* ---------- telas médias: some o que não cabe ao lado do cavalete ---------- */
+
+@media (max-width: 1000px) {
+  .pl-tripod,
+  .pl-umbrella {
+    display: none;
+  }
+}
+
+/* ---------- celular: varal + cavalete (sem as pernas) ---------- */
+
+@media (max-width: 767px) {
+  .pl {
+    align-items: flex-start;
+    padding: 190px 14px 28px;
+  }
+
+  .pl-line {
+    top: 60px;
+  }
+
+  .pl-photo {
+    --w: 56px;
+  }
+
+  .pl-photo:nth-of-type(n + 5) {
+    display: none;
+  }
+
+  .pl-photo:nth-of-type(1) { --x: 4%; }
+  .pl-photo:nth-of-type(2) { --x: 27%; }
+  .pl-photo:nth-of-type(3) { --x: 50%; }
+  .pl-photo:nth-of-type(4) { --x: 73%; }
+
+  .pl-softbox,
+  .pl-beam,
+  .pl-reflector,
+  .pl-legs,
+  .pl-tray {
+    display: none;
+  }
+
+  .pl-easel {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .pl-board {
+    padding: 14px 16px 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-photo,
+  .pl-shot,
+  .pl-easel,
+  .pl-flash,
+  .pl-led {
+    animation: none;
+  }
+}

@@ -1,0 +1,471 @@
+/* Cenário PrimeGarage: box de estética automotiva com um carro grande no centro. Entrada: o portão
+   sobe, a espuma escorre e o reflexo desliza pela lataria. O estilo base é o estado final; as
+   animações só definem o `from`. */
+
+.pg {
+  --floor: clamp(110px, 22vh, 190px);
+  position: relative;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+.pg-wall {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.2), transparent 40%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 2px, transparent 2px 64px),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.08) 0 2px, transparent 2px 64px),
+    #cfd8d3;
+  transition: filter 1000ms ease;
+}
+
+.sr[data-night="true"] .pg-wall {
+  filter: brightness(0.2);
+}
+
+/* luminária fluorescente do teto */
+.pg-tube {
+  position: absolute;
+  top: 58px;
+  left: 18%;
+  width: 52%;
+  height: 12px;
+  border-radius: 6px;
+  background: #fffef2;
+  box-shadow: 0 0 26px 8px rgba(255, 252, 225, 0.8);
+}
+
+.pg-tube::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: -8%;
+  width: 116%;
+  height: 70vh;
+  background: radial-gradient(ellipse at 50% 0, rgba(255, 252, 225, 0.55), transparent 65%);
+  mix-blend-mode: screen;
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 1000ms ease;
+}
+
+.sr[data-night="true"] .pg-tube::after {
+  opacity: 1;
+}
+
+.pg-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--floor);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.28) 0 3px, transparent 3px),
+    repeating-linear-gradient(90deg, transparent 0 120px, rgba(0, 0, 0, 0.12) 120px 122px),
+    linear-gradient(#7d8a85, #55625d);
+  box-shadow: inset 0 14px 22px rgba(0, 0, 0, 0.25);
+  transition: filter 1000ms ease;
+}
+
+.sr[data-night="true"] .pg-floor {
+  filter: brightness(0.3);
+}
+
+.pg-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* letreiro neon do lava-jato */
+.pg-neon {
+  position: absolute;
+  top: 96px;
+  left: 4%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 18px;
+  border: 3px solid #3d6f5c;
+  border-radius: 12px;
+  background: rgba(11, 27, 21, 0.85);
+  color: #6f9a86;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1;
+  transition: color 600ms ease, box-shadow 600ms ease, border-color 600ms ease;
+}
+
+.pg-neon span:first-child {
+  font-size: clamp(1.4rem, 2.6vw, 2.2rem);
+}
+
+.pg-neon span:last-child {
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.sr[data-night="true"] .pg-neon {
+  border-color: #9dffd0;
+  color: #d9fff0;
+  text-shadow: 0 0 10px #9dffd0, 0 0 26px #34d399;
+  box-shadow: 0 0 22px 2px rgba(157, 255, 208, 0.6), inset 0 0 14px rgba(157, 255, 208, 0.35);
+  animation: pg-neon-flicker 4s linear infinite;
+}
+
+.pg-poster {
+  position: absolute;
+  top: 96px;
+  left: calc(4% + clamp(130px, 17vw, 230px));
+  width: clamp(64px, 7vw, 100px);
+  aspect-ratio: 1;
+  border: 6px solid #3b4a44;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+.pg-poster img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pg-shelf {
+  position: absolute;
+  top: 40%;
+  left: 3%;
+  width: clamp(130px, 15vw, 210px);
+  height: auto;
+}
+
+.pg-hose {
+  position: absolute;
+  top: 32%;
+  left: calc(3% + clamp(150px, 18vw, 240px));
+  width: clamp(60px, 7vw, 100px);
+  height: auto;
+}
+
+.pg-tires {
+  position: absolute;
+  left: 2%;
+  bottom: calc(var(--floor) * 0.2);
+  width: clamp(70px, 8vw, 110px);
+  height: auto;
+}
+
+/* o carro, bem maior, ocupa o centro-esquerda da cena */
+.pg-car {
+  position: absolute;
+  left: calc(50% - min(62vw, 900px) / 2);
+  bottom: calc(var(--floor) * 0.12);
+  width: min(62vw, 900px);
+}
+
+.pg-car-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  transition: filter 1000ms ease;
+}
+
+.sr[data-night="true"] .pg-car-svg {
+  filter: brightness(0.7);
+}
+
+.pg-headlight {
+  filter: drop-shadow(0 0 6px #fff7c2);
+}
+
+.sr[data-night="true"] .pg-headlight {
+  filter: drop-shadow(0 0 14px #fff7c2) drop-shadow(0 0 34px #fff7c2);
+}
+
+/* a lataria começa fosca e termina brilhante; o reflexo cruza o carro uma vez */
+.pg-shine {
+  animation: pg-shine 900ms ease-out 2100ms both;
+}
+
+.pg-gloss {
+  transform: translateX(840px);
+  animation: pg-gloss 1100ms ease-in-out 1900ms both;
+}
+
+/* espuma sobre o carro: some escorrendo depois que o portão abre */
+.pg-foam {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pg-foam i {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0, #e7f4fb 55%, #bcd9e6 100%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  animation: pg-foam-away 1300ms ease-in calc(1300ms + var(--d)) both;
+}
+
+/* água passando */
+.pg-water {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    repeating-linear-gradient(105deg, transparent 0 46px, rgba(160, 215, 240, 0.35) 46px 52px, transparent 52px 130px);
+  animation: pg-water 1100ms ease-in-out 1400ms both;
+}
+
+/* portão de enrolar: fechado no início, sobe e fica fora da tela */
+.pg-door {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  transform: translateY(-101%);
+  background:
+    linear-gradient(transparent calc(100% - 14px), #6b7378 calc(100% - 14px)),
+    repeating-linear-gradient(180deg, #d3d8da 0 22px, #aab1b4 22px 24px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  animation: pg-door-up 1200ms cubic-bezier(0.7, 0, 0.3, 1) 200ms both;
+  pointer-events: none;
+}
+
+/* ficha de serviço na parede, no alto à direita */
+.pg-ticket {
+  position: absolute;
+  top: 100px;
+  left: calc(50% - min(380px, 29vw) / 2);
+  z-index: 2;
+  width: min(380px, 29vw);
+  padding: 30px 20px 20px;
+  border-radius: 4px;
+  background:
+    repeating-linear-gradient(transparent 0 27px, rgba(31, 74, 60, 0.12) 27px 28px),
+    #f6f3e6;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  transform: rotate(-1.2deg);
+  animation: pg-ticket-in 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 1900ms both;
+
+  --pinfo-ink: #14231d;
+  --pinfo-muted: #3f5249;
+  --pinfo-accent: #1f4a3c;
+  --pinfo-tag-bg: #dce8df;
+}
+
+.pg-clip {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  width: 90px;
+  height: 26px;
+  transform: translateX(-50%);
+  border-radius: 5px;
+  background: linear-gradient(#5b6266, #3b4144);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.pg-ticket .pinfo-eyebrow {
+  font-family: ui-monospace, "Courier New", monospace;
+}
+
+.pg-ticket-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px dashed rgba(31, 74, 60, 0.4);
+  font-family: ui-monospace, "Courier New", monospace;
+  font-size: 0.78rem;
+  color: #1f4a3c;
+}
+
+.pg-ticket-line span:first-child {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@keyframes pg-door-up {
+  from {
+    transform: translateY(0);
+  }
+}
+
+@keyframes pg-foam-away {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  55% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(46px) scale(0.7);
+  }
+}
+
+@keyframes pg-water {
+  from {
+    opacity: 0;
+    transform: translateX(-30%);
+  }
+  40% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(30%);
+  }
+}
+
+@keyframes pg-gloss {
+  from {
+    transform: translateX(0);
+  }
+}
+
+@keyframes pg-shine {
+  from {
+    filter: brightness(0.72) saturate(0.55);
+  }
+}
+
+@keyframes pg-ticket-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) rotate(3deg);
+  }
+}
+
+@keyframes pg-neon-flicker {
+  0%, 92%, 96%, 100% { opacity: 1; }
+  94% { opacity: 0.55; }
+  98% { opacity: 0.8; }
+}
+
+/* ---------- telas médias ---------- */
+
+@media (max-width: 1100px) {
+  .pg-hose,
+  .pg-poster {
+    display: none;
+  }
+
+  .pg-car {
+    left: 18vw;
+    width: 64vw;
+  }
+
+  .pg-ticket {
+    width: 31vw;
+    left: calc(50% - 15.5vw);
+  }
+}
+
+/* ---------- celular: letreiro e carro em cima, ficha embaixo ---------- */
+
+@media (max-width: 767px) {
+  .pg {
+    --floor: 90px;
+    display: flex;
+    flex-direction: column;
+    padding: 64px 14px 28px;
+  }
+
+  .pg-decor,
+  .pg-tube {
+    display: none;
+  }
+
+  .pg-floor {
+    height: 110px;
+    top: 232px;
+    bottom: auto;
+  }
+
+
+  .pg-car {
+    position: relative;
+    left: 0;
+    bottom: auto;
+    width: 100%;
+    margin: 30px 0 34px;
+  }
+
+  .pg-ticket {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pg-door,
+  .pg-foam i,
+  .pg-water,
+  .pg-gloss,
+  .pg-shine,
+  .pg-neon,
+  .pg-ticket {
+    animation: none;
+  }
+}
+
+/* quadro de serviços na parede e lavadora de alta pressão, no lado direito */
+.pg-menu {
+  position: absolute;
+  top: 100px;
+  right: 3%;
+  width: clamp(150px, 15vw, 210px);
+  padding: 14px 16px 16px;
+  border: 7px solid #8d5f3a;
+  border-radius: 4px;
+  background: linear-gradient(#25392f, #1a2a22);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(0, 0, 0, 0.35);
+  color: #eef5ef;
+  font-family: "Caveat", cursive;
+  transition: filter 1000ms ease;
+}
+
+.pg-menu strong {
+  display: block;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 2px dashed rgba(238, 245, 239, 0.5);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.pg-menu ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+
+.sr[data-night="true"] .pg-menu {
+  filter: brightness(0.7);
+}
+
+.pg-washer {
+  position: absolute;
+  right: 2%;
+  bottom: calc(var(--floor) * 0.2);
+  width: clamp(90px, 10vw, 140px);
+  height: auto;
+}

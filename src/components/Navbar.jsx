@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Menu, Moon, Sun, X } from 'lucide-react'
 import { profile } from '../data/placeholders'
 import { useTheme } from '../context/ThemeContext'
@@ -12,22 +12,10 @@ const LINKS = [
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
   const { theme, toggleTheme } = useTheme()
 
-  useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 8)
-    onScroll()
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
   return (
-    <header
-      className={`fixed top-0 z-50 w-full transition-colors duration-300 ${
-        isScrolled ? 'bg-bg/80 backdrop-blur-md border-b border-border' : 'bg-transparent'
-      }`}
-    >
+    <header className="fixed top-0 z-50 w-full border-b border-border bg-bg/70 backdrop-blur-md">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <a href="#top" className="font-display text-lg font-bold text-text">
           BrunoTrevizani<span className="text-gradient">Studio</span>

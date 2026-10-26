@@ -5,7 +5,7 @@
 
 export const profile = {
   name: "Bruno Trevizani",
-  photoUrl: "/avatar.jpg",
+  photoUrl: "/bruno.jpg",
   title: "Desenvolvedor Full Stack",
   tagline:
     "Transformo ideias em projetos reais através do código, cuidando de cada etapa do desenvolvimento, do banco de dados à interface.",
@@ -45,7 +45,14 @@ export const skills = [
   { name: "Git", category: "Ferramentas" },
   { name: "Vercel", category: "Ferramentas" },
   { name: "Railway", category: "Ferramentas" },
+  { name: "Cloudflare", category: "Ferramentas" },
 ];
+
+// Rota exibida quando o projeto não tem código aberto no GitHub.
+export const PRIVATE_REPO_ROUTE = "/codigo-privado";
+
+// Rota exibida quando o projeto ainda não tem uma versão no ar (live_url vazio).
+export const UNDER_CONSTRUCTION_ROUTE = "/em-construcao";
 
 export const fallbackProjects = [
   {
@@ -60,13 +67,13 @@ export const fallbackProjects = [
   },
   {
     id: "fallback-2",
-    title: "App de Reservas Online",
+    title: "PhotoLumi",
     description:
-      "Sistema de agendamento com notificações automáticas por e-mail e integração de pagamentos.",
-    image_url: null,
-    tech_stack: ["Next.js", "Neon", "Stripe"],
-    live_url: "#",
-    repo_url: "#",
+      "Sistema de gestão para fotógrafas, onde facilita sua rotina e permite uma experiência única para o cliente da fotógrafa.",
+    image_url: "/photoLumi.jpg",
+    tech_stack: ["Next.js", "React", "PostgreSQL", "Cloudflare", "Resend"],
+    live_url: "https://photolumi.com.br",
+    repo_url: PRIVATE_REPO_ROUTE,
   },
   {
     id: "fallback-3",
@@ -75,8 +82,8 @@ export const fallbackProjects = [
       "Loja virtual performática com CMS headless, carrinho persistente e checkout otimizado.",
     image_url: null,
     tech_stack: ["React", "TypeScript", "Node.js"],
-    live_url: "#",
-    repo_url: "#",
+    live_url: "",
+    repo_url: "",
   },
   {
     id: "fallback-4",
@@ -86,7 +93,7 @@ export const fallbackProjects = [
     image_url: null,
     tech_stack: ["React", "Node.js", "MySQL"],
     live_url: "#",
-    repo_url: "#",
+    repo_url: "",
   },
   {
     id: "fallback-5",
@@ -96,6 +103,6 @@ export const fallbackProjects = [
     image_url: null,
     tech_stack: ["Node.js", "PostgreSQL", "Railway"],
     live_url: "#",
-    repo_url: "#",
+    repo_url: "",
   },
 ];
