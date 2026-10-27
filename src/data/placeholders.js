@@ -22,31 +22,31 @@ export const about = {
   sections: [
     {
       title: "Quem sou eu",
-      text: "Sou desenvolvedor full stack apaixonado por transformar ideias em soluções funcionais. Gosto de participar de todo o processo de desenvolvimento, desde o planejamento e modelagem do banco de dados até a criação da interface e da experiência do usuário.",
+      text: "Meu nome é Bruno e sou apaixonado por tecnologia e desenvolvimento de sistemas, sempre buscando aprender novas ferramentas, aprimorar minhas habilidades e transformar ideias em soluções práticas! Meu objetivo é evoluir profissionalmente e criar projetos que gerem valor para as pessoas.",
     },
     {
       title: "O que faço",
-      text: "Desenvolvo sistemas web completos: modelo o banco de dados, construo as APIs e crio interfaces pensadas para quem vai usar no dia a dia. Hoje trabalho em sistemas de gestão como o PrimeGarage e o PhotoLumi, cuidando do projeto de ponta a ponta, do planejamento até o deploy.",
+      text: "Atualmente curso ADS no IENH, trabalho na Sinos Tecnologia e desenvolvo projetos pessoais voltados à criação de sistemas e soluções digitais. Busco unir os conhecimentos acadêmicos à experiência prática para evoluir como desenvolvedor e transformar ideias em projetos reais!",
     },
     {
       title: "O que utilizo",
-      text: "Tenho experiência com tecnologias como React, Node.js, PHP, JavaScript e MySQL, sempre buscando aprender novas ferramentas e boas práticas para desenvolver aplicações mais eficientes, organizadas e escaláveis.",
+      text: "Utilizo JavaScript, TypeScript, React, Node.js, Express e Next.js para desenvolver aplicações e sistemas. Também trabalho com MySQL e PostgreSQL para bancos de dados, Git e GitHub para versionamento e ferramentas como Vercel e Railway para publicação e hospedagem dos meus projetos.",
     },
     {
       title: "Minha evolução",
-      text: "Comecei pelo básico de HTML, CSS e JavaScript, passei por PHP e MySQL e fui me aprofundando em React, Node.js e PostgreSQL. Cada projeto me trouxe um desafio novo, e foi resolvendo esses desafios na prática que fui crescendo como desenvolvedor.",
+      text: "Minha evolução na tecnologia é construída diariamente, por meio dos estudos, da experiência profissional e dos projetos pessoais. Cada desafio representa uma oportunidade de aprender algo novo, aprimorar minhas habilidades e me aproximar dos meus objetivos.",
     },
     {
       title: "Meu objetivo",
-      text: "Meu objetivo é criar soluções que resolvam problemas reais e facilitem a rotina das pessoas e dos negócios, sempre com código bem organizado, fácil de manter e com uma boa experiência para o usuário.",
+      text: "Meu objetivo é crescer profissionalmente na área da tecnologia, aprimorar meus conhecimentos em desenvolvimento de sistemas e transformar minhas ideias em soluções inovadoras, construindo projetos próprios e evoluindo constantemente como profissional.",
     },
     {
       title: "Onde quero chegar",
-      text: "Quero me tornar um desenvolvedor referência em projetos full stack, assumir desafios cada vez maiores e ter meus próprios produtos sendo usados por muitas pessoas, sem nunca parar de aprender.",
+      text: "Quero construir uma carreira sólida na área da tecnologia, evoluindo como desenvolvedor e tendo a oportunidade de trabalhar em grandes empresas. Ao mesmo tempo, sonho em transformar minhas ideias em negócios próprios, criando startups e soluções que gerem impacto real na vida das pessoas!",
     },
     {
       title: "Fora do código",
-      text: "Fora dos projetos, gosto de explorar novas tecnologias, desenvolver ideias próprias, acompanhar as tendências da área e aprender constantemente. Para mim, a evolução como desenvolvedor acontece através da prática, da curiosidade e da vontade de construir algo cada vez melhor.",
+      text: "Fora do código, gosto de explorar novas tecnologias, acompanhar as novidades da área e buscar conhecimentos que contribuam para meu crescimento profissional. Também dedico tempo aos meus projetos pessoais, transformando ideias em soluções reais e aprendendo na prática.",
     },
   ],
   highlights: [
@@ -72,6 +72,7 @@ export const skills = [
   { name: "Vercel", category: "Ferramentas" },
   { name: "Railway", category: "Ferramentas" },
   { name: "Cloudflare", category: "Ferramentas" },
+  { name: "VPS Hostinger", category: "Ferramentas" },
 ];
 
 // Rota exibida quando o projeto não tem código aberto no GitHub.

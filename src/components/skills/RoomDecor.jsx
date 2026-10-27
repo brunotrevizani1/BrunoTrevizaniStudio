@@ -51,6 +51,50 @@ function Frames() {
   )
 }
 
+function RoomWindow() {
+  return (
+    <svg className="room-window" viewBox="0 0 150 214" fill="none" aria-hidden="true">
+      <rect x="0" y="0" width="150" height="214" rx="6" fill="#8b5a2b" />
+      <rect x="10" y="10" width="130" height="194" fill="#7dd3fc" />
+      <g className="room-window-day">
+        <rect x="10" y="10" width="130" height="194" fill="url(#room-window-sky-day)" />
+        <circle cx="104" cy="52" r="15" fill="#fde047" />
+        <circle cx="104" cy="52" r="22" fill="#fde047" opacity="0.3" />
+        <g fill="#fff" opacity="0.95">
+          <ellipse cx="50" cy="70" rx="22" ry="8" />
+          <ellipse cx="64" cy="64" rx="14" ry="7" />
+          <ellipse cx="96" cy="120" rx="18" ry="6" />
+        </g>
+        <path d="M10 168 Q50 148 90 164 T140 156 V204 H10 Z" fill="#4ade80" />
+      </g>
+      <g className="room-window-night">
+        <rect x="10" y="10" width="130" height="194" fill="url(#room-window-sky-night)" />
+        <path d="M108 38 a16 16 0 1 0 14 24 a13 13 0 0 1 -14 -24 Z" fill="#f1f5f9" />
+        <g fill="#fff">
+          {[[30, 36, 1.6], [62, 24, 1.2], [48, 80, 1.4], [86, 96, 1.2], [26, 120, 1.3], [120, 110, 1.5], [70, 56, 1]].map(([x, y, r]) => (
+            <circle key={x + "-" + y} className="room-window-star" cx={x} cy={y} r={r} />
+          ))}
+        </g>
+        <path d="M10 172 Q50 156 90 168 T140 162 V204 H10 Z" fill="#14532d" />
+      </g>
+      <defs>
+        <linearGradient id="room-window-sky-day" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#38bdf8" />
+          <stop offset="1" stop-color="#bae6fd" />
+        </linearGradient>
+        <linearGradient id="room-window-sky-night" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#0b1026" />
+          <stop offset="1" stop-color="#312e81" />
+        </linearGradient>
+      </defs>
+      <rect x="70" y="10" width="10" height="194" fill="#8b5a2b" />
+      <rect x="10" y="102" width="130" height="10" fill="#8b5a2b" />
+      <rect x="10" y="10" width="130" height="194" fill="none" stroke="#5b3a1a" strokeWidth="2" />
+      <rect x="-8" y="204" width="166" height="10" rx="3" fill="#a06a35" />
+    </svg>
+  )
+}
+
 function FloorLamp() {
   return (
     <>
@@ -96,6 +140,7 @@ export default function RoomDecor() {
     <>
       <WallClock />
       <Frames />
+      <RoomWindow />
       <div className="room-rug" aria-hidden="true" />
       <svg className="room-plant-big" viewBox="0 0 80 100" fill="none" aria-hidden="true">
         <Plant x={20} floorY={100} />

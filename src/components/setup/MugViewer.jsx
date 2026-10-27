@@ -11,6 +11,29 @@ const HEAT_START = 0.3
 const HEAT_GAIN = 0.045 // por radiano mexido
 const HEAT_LOSS = 0.035 // por segundo
 const SPIN_FRICTION = 1.6
+const PERFECT_ON = 0.97
+const PERFECT_OFF = 0.9
+
+// bolhinhas da crema que aparecem na borda do café conforme ele esquenta (determinístico, sem Math.random)
+const FOAM = Array.from({ length: 34 }, (_, i) => {
+  const angle = i * 2.399963 // ângulo áureo: espalha sem padrão óbvio
+  const radius = COFFEE_R - 6 - ((i * 7) % 5) * 3.2
+  return {
+    x: C + Math.cos(angle) * radius,
+    y: C + Math.sin(angle) * radius,
+    r: 2.5 + ((i * 5) % 6) * 0.9,
+    at: (i % 10) / 10, // a partir de quanto de calor a bolha aparece
+  }
+})
+
+const SPARKLES = [
+  { left: '30%', top: '30%', delay: '0s', size: 16 },
+  { left: '68%', top: '24%', delay: '0.25s', size: 22 },
+  { left: '78%', top: '56%', delay: '0.5s', size: 14 },
+  { left: '22%', top: '62%', delay: '0.15s', size: 20 },
+  { left: '50%', top: '16%', delay: '0.4s', size: 12 },
+  { left: '46%', top: '80%', delay: '0.6s', size: 18 },
+]
 
 function heatStatus(heat) {
   if (heat >= 0.97) return 'No ponto! O Bruno agradece!'
@@ -87,6 +110,7 @@ export default function MugViewer({ originRect, onClosed }) {
     let frame = 0
     let prev = performance.now()
     let shownStatus = heatStatus(HEAT_START)
+    let perfect = false
     const step = (now) => {
       const dt = Math.min((now - prev) / 1000, 0.05)
       prev = now
@@ -101,6 +125,9 @@ export default function MugViewer({ originRect, onClosed }) {
         root.style.setProperty('--heat', s.heat.toFixed(3))
         root.style.setProperty('--vortex', Math.min(1, Math.abs(s.omega) / 9).toFixed(3))
       }
+      if (!perfect && s.heat >= PERFECT_ON) perfect = true
+      else if (perfect && s.heat < PERFECT_OFF) perfect = false
+      if (root && (root.dataset.perfect === 'true') !== perfect) root.dataset.perfect = String(perfect)
       const next = heatStatus(s.heat)
       if (next !== shownStatus) {
         shownStatus = next
@@ -221,9 +248,12 @@ export default function MugViewer({ originRect, onClosed }) {
             <circle cx={C} cy={C} r={196} fill="none" stroke="#e2e8f0" strokeWidth="3" />
             <circle cx={C} cy={C} r={218} fill="none" stroke="#fb923c" strokeWidth="2" opacity="0.6" />
 
-            {/* alça */}
-            <rect x={C + 150} y={C - 26} width="76" height="52" rx="24" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="2" />
-            <rect x={C + 176} y={C - 11} width="34" height="22" rx="11" fill="#f1f5f9" stroke="#cbd5e1" strokeWidth="2" />
+            {/* alça (vista de cima, a argola fica em pé: aparece como uma barra grossa, levemente inclinada) */}
+            <g transform={`rotate(-24 ${C} ${C})`}>
+              <rect x={C + 140} y={C - 29 + 12} width="138" height="58" rx="27" fill="rgba(0,0,0,0.2)" />
+              <rect x={C + 140} y={C - 29} width="138" height="58" rx="27" fill="#ffffff" stroke="#cbd5e1" strokeWidth="2" />
+              <rect x={C + 176} y={C - 20} width="88" height="14" rx="7" fill="#f1f5f9" />
+            </g>
 
             {/* caneca */}
             <circle cx={C} cy={C + 8} r={170} fill="rgba(0,0,0,0.18)" />
@@ -233,22 +263,11 @@ export default function MugViewer({ originRect, onClosed }) {
             {/* fundo da caneca, com a escrita */}
             <circle cx={C} cy={C} r={COFFEE_R} fill="#fdf6ec" />
             <g className="mug-bottom-text">
-              <path
-                d={`M${C - 15} ${C - 62} l-9 9 l9 9 M${C + 15} ${C - 62} l9 9 l-9 9 M${C + 6} ${C - 66} l-12 26`}
-                stroke="#c2410c"
-                strokeWidth="4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-              <text x={C} y={C + 2} textAnchor="middle">
+              <text x={C} y={C - 12} textAnchor="middle">
                 mexa para deixar
               </text>
-              <text x={C} y={C + 36} textAnchor="middle">
+              <text x={C} y={C + 24} textAnchor="middle">
                 o café no ponto!
-              </text>
-              <text x={C} y={C + 74} textAnchor="middle" className="mug-bottom-sign">
-                — Bruno
               </text>
             </g>
 
@@ -271,6 +290,24 @@ export default function MugViewer({ originRect, onClosed }) {
               </g>
             </g>
             <circle cx={C} cy={C} r={COFFEE_R} fill="none" stroke="rgba(0,0,0,0.25)" strokeWidth="3" />
+
+            {/* crema: bolhas na borda que vão surgindo com o calor */}
+            <g className="mug-foam" style={{ transformOrigin: `${C}px ${C}px` }}>
+              {FOAM.map((b, i) => (
+                <circle
+                  key={i}
+                  className="mug-foam-bubble"
+                  cx={b.x}
+                  cy={b.y}
+                  r={b.r}
+                  style={{ '--at': b.at }}
+                />
+              ))}
+            </g>
+
+            {/* ondas do café no ponto */}
+            <circle className="mug-ripple" cx={C} cy={C} r={COFFEE_R - 20} />
+            <circle className="mug-ripple mug-ripple-2" cx={C} cy={C} r={COFFEE_R - 20} />
           </svg>
 
           {/* colher (o pivô é o centro da concha; o cabo aponta para fora) */}
@@ -280,6 +317,21 @@ export default function MugViewer({ originRect, onClosed }) {
               <ellipse cx="0" cy="0" rx="25" ry="17" fill="#e2e8f0" stroke="#94a3b8" strokeWidth="2" />
               <ellipse cx="-3" cy="-4" rx="12" ry="6" fill="#ffffff" opacity="0.7" />
             </svg>
+          </div>
+
+          <div className="mug-glow" aria-hidden="true" />
+          <div className="mug-sparkles" aria-hidden="true">
+            {SPARKLES.map((sp, i) => (
+              <svg
+                key={i}
+                viewBox="-10 -10 20 20"
+                width={sp.size}
+                height={sp.size}
+                style={{ left: sp.left, top: sp.top, animationDelay: sp.delay }}
+              >
+                <path d="M0 -10 Q1.5 -1.5 10 0 Q1.5 1.5 0 10 Q-1.5 1.5 -10 0 Q-1.5 -1.5 0 -10Z" />
+              </svg>
+            ))}
           </div>
 
           <div className="mug-steam" aria-hidden="true">

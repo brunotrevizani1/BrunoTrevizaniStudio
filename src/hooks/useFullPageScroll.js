@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { hasZoomTransition, zoomBackward, zoomForward } from './windowZoom'
-import { OPEN_SECRET_ROOM } from '../components/secret-room/events'
+import { OPEN_SECRET_ROOM, SECRET_ROOM_CONTINUE } from '../components/secret-room/events'
 
 const DURATION = 850
 const COOLDOWN = 120
@@ -28,6 +28,8 @@ export function useFullPageScroll() {
     let lastWheelTime = 0
     let lastWheelDelta = 0
     let frame = 0
+    // a sala já foi visitada e a câmera voltou à mesa: o próximo scroll para baixo segue para a próxima aba
+    let skipShelf = false
 
     const getPanels = () => Array.from(document.querySelectorAll('[data-panel]'))
     const maxScroll = () => root.scrollHeight - window.innerHeight
@@ -113,12 +115,24 @@ export function useFullPageScroll() {
       })
     }
 
+    // pan da estante de volta ao close-up e, só depois dele, a próxima aba (sem passar pela estante de novo)
+    function returnToDeskThenNext(camera) {
+      const pan = camera.goTo('closeup')
+      runCamera(pan, 'up')
+      pan.then(() => setTimeout(() => go(1, true), COOLDOWN + 60))
+    }
+
     function tryCameraStep(panels, direction) {
+      if (panels[currentIndex(panels)]?.id !== 'sobre' || direction < 0) skipShelf = false
       if (panels[currentIndex(panels)]?.id !== 'sobre') return false
       const camera = aboutCamera()
       if (!camera) return false
 
       if (direction > 0 && camera.stage === 'closeup') {
+        if (skipShelf) {
+          skipShelf = false
+          return false
+        }
         runCamera(camera.goTo('shelf'), 'down')
         return true
       }
@@ -130,6 +144,10 @@ export function useFullPageScroll() {
           runCamera(lever.pull(), 'down')
           return true
         }
+        // a sala já foi visitada: a câmera só volta da estante para a mesa; o próximo scroll segue para a próxima aba
+        skipShelf = true
+        runCamera(camera.goTo('closeup'), 'up')
+        return true
       }
       if (direction < 0 && camera.stage === 'shelf') {
         runCamera(camera.goTo('closeup'), 'up')
@@ -138,14 +156,22 @@ export function useFullPageScroll() {
       return false
     }
 
-    function go(direction) {
+    function go(direction, skipCamera = false) {
       // a estante ainda está saindo da passagem e fechando (ver SkillsShelf)
       if (document.querySelector('#sobre .skshelf')?.__lever?.busy) return
       const panels = getPanels()
       if (panels.length === 0) return
-      if (tryCameraStep(panels, direction)) return
+      if (!skipCamera && tryCameraStep(panels, direction)) return
       const next = currentIndex(panels) + direction
       if (next < 0 || next >= panels.length) return
+      // voltando de Contato: o fluxo inverso é Sobre mim na estante e a estante abrindo para a sala de projetos
+      if (direction < 0 && panels[next]?.id === 'sobre') {
+        const camera = aboutCamera()
+        if (camera) {
+          openSecretRoom(panels, camera)
+          return
+        }
+      }
       if (tryZoom(panels, next - direction, next)) return
       animateTo(targetFor(panels, next, direction), direction > 0 ? 'down' : 'up')
     }
@@ -282,6 +308,13 @@ export function useFullPageScroll() {
       animateTo(top, top > window.scrollY ? 'down' : 'up')
     }
 
+    // rolou para baixo no corredor da sala secreta: ela fechou e a estante também, agora a câmera volta
+    function onSecretRoomContinue() {
+      const camera = aboutCamera()
+      if (camera && camera.stage === 'shelf') returnToDeskThenNext(camera)
+      else go(1, true)
+    }
+
     const isTouch = window.matchMedia('(pointer: coarse)').matches
 
     if (!isTouch) {
@@ -289,12 +322,14 @@ export function useFullPageScroll() {
       window.addEventListener('keydown', onKeyDown)
     }
     document.addEventListener('click', onClick)
+    window.addEventListener(SECRET_ROOM_CONTINUE, onSecretRoomContinue)
 
     return () => {
       cancelAnimationFrame(frame)
       window.removeEventListener('wheel', onWheel)
       window.removeEventListener('keydown', onKeyDown)
       document.removeEventListener('click', onClick)
+      window.removeEventListener(SECRET_ROOM_CONTINUE, onSecretRoomContinue)
       delete root.dataset.scrollDir
     }
   }, [])

@@ -1,8 +1,6 @@
-import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
 import Contact from './components/Contact'
-import Footer from './components/Footer'
 import BackToTop from './components/BackToTop'
 import PrivateRepo from './components/PrivateRepo'
 import UnderConstruction from './components/UnderConstruction'
@@ -34,13 +32,11 @@ function App() {
         ) : (
           <>
             <FullPageScroll />
-            <Navbar />
             <main>
               <Hero />
               <About />
               <Contact />
             </main>
-            <Footer />
             <BackToTop />
           </>
         )}

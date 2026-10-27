@@ -10,7 +10,7 @@ import Screen from './Screen'
 import { STAGE_H, STAGE_W, cameraTransform, computeCameras, easeInOutCubic, mixCameras } from './camera'
 
 const PAD_W = 170
-const PAD_H = 52
+const PAD_H = 78
 const MOUSE_W = 26
 const MOUSE_H = 42
 const KEY_HOLD_MS = 150

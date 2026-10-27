@@ -1,12 +1,12 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ArrowLeft, Moon, Sun } from 'lucide-react'
-import Navbar from '../Navbar'
 import Hub from './Hub'
 import { getScene, preloadScene } from './sceneRegistry'
 import { useLamp } from '../../context/LampContext'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { fitScale, resetZoom, zoomIn } from '../../hooks/cameraZoom'
+import { CONTINUE_DOWN } from './events'
 import './secret-room.css'
 
 // Fases: arriving -> hub -> entering -> scene -> leaving -> returning -> hub ... -> closing
@@ -17,7 +17,10 @@ const REDUCED_MS = { arriving: 500, leaving: 300, returning: 300, closing: 300 }
 const DOOR_OPEN_MS = 1300
 const DOOR_ZOOM_MS = 1500
 const AUTO_NEXT = { arriving: ['hub', 'arrive'], leaving: ['returning', 'leave'], returning: ['hub', 'returning'], closing: [null, 'close'] }
-// no corredor, rolar para cima (roda, setas, PageUp ou deslizar o dedo para baixo) sai da sala
+// no corredor, rolar para cima (roda, setas, PageUp ou deslizar o dedo para baixo) volta para a estante;
+// rolar para baixo (roda, setas, PageDown, espaço) sai da sala e segue para a próxima aba.
+// A "cauda" de inércia da roda logo depois de chegar no corredor não conta como gesto.
+const HUB_SETTLE_MS = 500
 const SWIPE_PX = 60
 
 /**
@@ -37,6 +40,8 @@ export default function SecretRoom({ onClosing, onClosed }) {
   const zoomTimer = useRef(0)
   const lastDoor = useRef(null)
   const leaveTo = useRef(null)
+  const continueDown = useRef(false)
+  const hubAt = useRef(0)
   const phaseRef = useRef(phase)
   phaseRef.current = phase
 
@@ -58,7 +63,7 @@ export default function SecretRoom({ onClosing, onClosed }) {
     const auto = AUTO_NEXT[phase]
     if (!auto) return undefined
     const [next, key] = auto
-    const timer = setTimeout(() => (next ? setPhase(next) : onClosed(leaveTo.current)), reduced ? REDUCED_MS[phase] : MS[key])
+    const timer = setTimeout(() => (next ? setPhase(next) : onClosed(leaveTo.current ?? (continueDown.current ? CONTINUE_DOWN : null))), reduced ? REDUCED_MS[phase] : MS[key])
     return () => clearTimeout(timer)
   }, [phase, reduced, onClosed])
 
@@ -70,6 +75,7 @@ export default function SecretRoom({ onClosing, onClosed }) {
   }, [phase])
 
   useEffect(() => {
+    if (phase === 'hub') hubAt.current = performance.now()
     if (phase === 'scene') backRef.current?.focus({ preventScroll: true })
   }, [phase])
 
@@ -99,8 +105,9 @@ export default function SecretRoom({ onClosing, onClosed }) {
   }, [])
 
   // sair da sala: só pelo corredor (rolando para cima, Esc ou um link do cabeçalho)
-  const close = useCallback(() => {
+  const close = useCallback(({ down = false } = {}) => {
     if (phaseRef.current !== 'hub') return
+    continueDown.current = down
     onClosing?.({ quick: Boolean(leaveTo.current) })
     setPhase('closing')
   }, [onClosing])
@@ -114,10 +121,19 @@ export default function SecretRoom({ onClosing, onClosed }) {
       } else if (['ArrowUp', 'PageUp', 'Home'].includes(event.key) && phaseRef.current === 'hub') {
         event.preventDefault()
         close()
+      } else if (
+        (['ArrowDown', 'PageDown', 'End'].includes(event.key) || (event.key === ' ' && !event.shiftKey)) &&
+        phaseRef.current === 'hub' &&
+        !event.target.closest?.('a, button, input, textarea, select')
+      ) {
+        event.preventDefault()
+        close({ down: true })
       }
     }
     const onWheel = (event) => {
-      if (event.deltaY < 0 && phaseRef.current === 'hub') close()
+      if (phaseRef.current !== 'hub') return
+      if (event.deltaY < 0) close()
+      else if (event.deltaY > 0 && performance.now() - hubAt.current > HUB_SETTLE_MS) close({ down: true })
     }
     let touchStartY = null
     const onTouchStart = (event) => {
@@ -189,7 +205,6 @@ export default function SecretRoom({ onClosing, onClosed }) {
 
       {/* cabeçalho do site: aparece só no corredor (os cenários dos projetos ficam sem ele) */}
       <div className="sr-nav" onClickCapture={handleNavClick} inert={inScene || undefined}>
-        <Navbar />
       </div>
 
       <div className="sr-bar">

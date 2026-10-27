@@ -17,7 +17,7 @@ export default function MobileSkills() {
     <div id="skills" className="mt-12">
       <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-accent">Skills</p>
       <h3 className="mb-1 font-display text-2xl font-bold text-text">
-        Cada livro é uma linguagem ou ferramenta usada nos meus projetos
+        Cada livro é uma linguagem ou ferramenta que utilizo
       </h3>
       <p className="mb-5 text-sm text-text-muted">Toque em um livro para abrir.</p>
 

@@ -1260,9 +1260,9 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 .setup-desk-top {
   position: absolute;
   left: 270px;
-  top: 566px;
+  top: 530px;
   width: 3200px;
-  height: 86px;
+  height: 140px;
   background: linear-gradient(#dcab72, #c28d58);
   box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.4);
   border-top-left-radius: 8px;
@@ -1272,7 +1272,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 .setup-desk-front {
   position: absolute;
   left: 270px;
-  top: 652px;
+  top: 670px;
   width: 3200px;
   height: 48px;
   background: linear-gradient(#93633a, #6d4524);
@@ -1283,7 +1283,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 .setup-floor {
   position: absolute;
   left: -2000px;
-  top: 700px;
+  top: 718px;
   width: 6000px;
   height: 900px;
   background: repeating-linear-gradient(90deg, #8c6a45 0 118px, #77583a 118px 120px);
@@ -1300,7 +1300,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 .setup-mug {
   position: absolute;
   left: 1262px;
-  top: 562px;
+  top: 526px;
   width: 64px;
   padding: 0;
   border: 0;
@@ -1338,17 +1338,17 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 /* monitor */
 .setup-monitor {
   position: absolute;
-  left: 320px;
+  left: 364px;
   top: 104px;
-  width: 860px;
+  width: 772px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .setup-monitor-bezel {
-  width: 860px;
-  height: 436px;
+  width: 772px;
+  height: 398px;
   padding: 16px 16px 0;
   background: linear-gradient(#2b3047, #1b1f32);
   border-radius: 18px;
@@ -1387,8 +1387,8 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 /* tela (sistema) */
 .setup-screen {
   position: relative;
-  width: 828px;
-  height: 388px;
+  width: 740px;
+  height: 350px;
   overflow: hidden;
   border-radius: 6px;
   background: #0b1220;
@@ -1560,7 +1560,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 .setup-keyboard {
   position: absolute;
   left: 500px;
-  top: 598px;
+  top: 568px;
   width: 420px;
 }
 
@@ -1613,9 +1613,9 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 .setup-pad {
   position: absolute;
   left: 970px;
-  top: 596px;
+  top: 568px;
   width: 170px;
-  height: 52px;
+  height: 78px;
   border-radius: 10px;
   background: linear-gradient(#27303f, #1b222f);
   border: 2px solid rgba(251, 146, 60, 0.5);
@@ -1700,7 +1700,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 .setup-brand {
   position: absolute;
-  left: 236px;
+  left: 0;
   right: 0;
   top: 0;
   bottom: 34px;
@@ -1714,24 +1714,24 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 .setup-brand-name {
   font-family: var(--font-display);
-  font-size: 50px;
+  font-size: 34px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.02em;
-  color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.07);
 }
 
 .setup-brand-name em {
   font-style: normal;
-  color: rgba(251, 146, 60, 0.3);
+  color: rgba(251, 146, 60, 0.18);
 }
 
 .setup-brand-sub {
-  margin-top: 12px;
-  font-size: 14px;
+  margin-top: 8px;
+  font-size: 11px;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.06);
 }
 
 .setup-screen-content {
@@ -1985,17 +1985,17 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 }
 
 .book-spine-title {
-  padding: 8px 3px;
-  border: 1px solid rgba(240, 207, 133, 0.75);
+  padding: 7px 4px;
+  border: 1.5px solid rgba(255, 226, 150, 0.95);
   border-radius: 2px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.42);
   font-family: "Cinzel", "Cormorant Garamond", Georgia, serif;
   font-size: var(--fs, 12px);
-  font-weight: 600;
-  letter-spacing: 0.07em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   white-space: nowrap;
-  color: #f7e3a8;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+  color: #fff3c4;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 0 1px 2px rgba(0, 0, 0, 0.85);
   writing-mode: vertical-rl;
   transform: rotate(180deg);
 }
@@ -2087,6 +2087,117 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   height: 40%;
   pointer-events: none;
   opacity: calc(0.1 + var(--heat) * 0.9);
+}
+
+/* café no ponto (data-perfect): brilho dourado, ondas, estrelinhas, mais vapor */
+.mug-foam-bubble {
+  fill: rgba(233, 201, 163, 0.55);
+  stroke: rgba(255, 244, 224, 0.5);
+  stroke-width: 1;
+  opacity: clamp(0, calc((var(--heat) - var(--at) * 0.7) * 2.2), 0.9);
+}
+
+.mug-ripple {
+  fill: none;
+  stroke: rgba(255, 226, 170, 0.9);
+  stroke-width: 3;
+  opacity: 0;
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+.mug-scene[data-perfect="true"] .mug-ripple {
+  animation: mug-ripple 2.2s ease-out infinite;
+}
+
+.mug-scene[data-perfect="true"] .mug-ripple-2 {
+  animation-delay: 1.1s;
+}
+
+.mug-glow {
+  position: absolute;
+  inset: -8%;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0) 55%, rgba(251, 191, 36, 0.55) 72%, rgba(251, 146, 60, 0) 100%);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.85);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+
+.mug-scene[data-perfect="true"] .mug-glow {
+  opacity: 1;
+  transform: scale(1);
+  animation: mug-glow 2.4s ease-in-out infinite alternate;
+}
+
+.mug-sparkles svg {
+  position: absolute;
+  fill: #fde68a;
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.9));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mug-scene[data-perfect="true"] .mug-sparkles svg {
+  animation: mug-sparkle 1.8s ease-in-out infinite;
+}
+
+.mug-scene[data-perfect="true"] .mug-steam {
+  opacity: 1;
+}
+
+.mug-scene[data-perfect="true"] .mug-status {
+  color: #fde68a;
+  text-shadow: 0 0 14px rgba(251, 191, 36, 0.8);
+  animation: mug-status-pop 520ms cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+.mug-scene[data-perfect="true"] .mug-meter {
+  box-shadow: 0 0 16px 3px rgba(251, 191, 36, 0.7);
+}
+
+.mug-scene[data-perfect="true"] .mug-meter span {
+  background: linear-gradient(90deg, #fbbf24, #fde68a, #fbbf24);
+  background-size: 200% 100%;
+  animation: mug-meter-shine 1.4s linear infinite;
+}
+
+.mug-scene[data-perfect="true"] .mug-top {
+  animation: mug-cheers 700ms ease-out;
+}
+
+@keyframes mug-ripple {
+  0% { opacity: 0.9; transform: scale(0.25); }
+  100% { opacity: 0; transform: scale(1.05); }
+}
+
+@keyframes mug-glow {
+  from { filter: brightness(0.9); }
+  to { filter: brightness(1.25); }
+}
+
+@keyframes mug-sparkle {
+  0% { opacity: 0; transform: translateY(8px) scale(0.2) rotate(0deg); }
+  40% { opacity: 1; transform: translateY(-6px) scale(1) rotate(60deg); }
+  100% { opacity: 0; transform: translateY(-28px) scale(0.3) rotate(140deg); }
+}
+
+@keyframes mug-status-pop {
+  0% { transform: scale(0.8); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@keyframes mug-meter-shine {
+  to { background-position: -200% 0; }
+}
+
+@keyframes mug-cheers {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.05) rotate(-1.5deg); }
+  70% { transform: scale(0.99) rotate(0.8deg); }
+  100% { transform: scale(1); }
 }
 
 .mug-steam span {
@@ -2532,14 +2643,15 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 .skshelf-plaque {
   align-self: center;
   flex-shrink: 0;
-  padding: 10px 5px;
+  padding: 8px 6px;
   border-radius: 4px;
-  background: linear-gradient(#e6bb64, #b98332);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  color: #3b2410;
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  background: linear-gradient(#f3d27f, #c9923a);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  color: #2a1707;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-shadow: 0 1px 0 rgba(255, 244, 205, 0.55);
   text-transform: uppercase;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
@@ -2718,6 +2830,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 .room-plant-big,
 .room-lamp,
+.room-window,
 .room-cat,
 .room-rug,
 .room-clock,
@@ -2814,7 +2927,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 }
 
 .room-cat {
-  left: -880px;
+  left: -1230px;
   top: 668px;
   z-index: 2;
   width: 170px;
@@ -2882,4 +2995,206 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 /* a estante também fecha com animação (a abertura, mais lenta, vem de .skshelf.is-open) */
 .skshelf {
   transition: transform 1400ms cubic-bezier(0.45, 0.05, 0.25, 1), filter 1000ms ease;
+}
+
+/* contato: o formulário é uma carta em papel pautado */
+.letter-paper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 30px 34px 28px;
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, transparent 56px, rgba(239, 68, 68, 0.28) 56px 58px, transparent 58px),
+    #fffaf0;
+  color: #3b2f22;
+  box-shadow: 0 2px 0 #eadfc8, 0 16px 34px rgba(60, 40, 10, 0.18);
+  transform: rotate(-0.6deg);
+}
+
+.letter-stamp {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 52px;
+  color: #ea580c;
+  background: #ffedd5;
+  border: 2px dashed #fb923c;
+  border-radius: 3px;
+  transform: rotate(4deg);
+}
+
+.letter-greeting {
+  margin: 0;
+  padding-left: 30px;
+  font-family: "Caveat", "Kalam", cursive;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #7c2d12;
+}
+
+.letter-body,
+.letter-line {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #1e3a8a;
+  font-family: "Kalam", "Caveat", cursive;
+  font-size: 18px;
+}
+
+.letter-body::placeholder,
+.letter-line::placeholder {
+  color: rgba(120, 100, 70, 0.5);
+}
+
+.letter-body {
+  width: 100%;
+  padding: 0 0 0 30px;
+  resize: none;
+  line-height: 32px;
+  background-image: repeating-linear-gradient(transparent 0 31px, rgba(96, 130, 190, 0.35) 31px 32px);
+  background-attachment: local;
+}
+
+.letter-sign {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-left: 30px;
+}
+
+.letter-sign label {
+  font-family: "Caveat", "Kalam", cursive;
+  font-size: 22px;
+  font-weight: 700;
+  color: #7c2d12;
+  white-space: nowrap;
+}
+
+.letter-line {
+  flex: 1;
+  min-width: 0;
+  padding: 2px 4px;
+  border-bottom: 1.5px solid rgba(96, 130, 190, 0.55);
+  transition: border-color 200ms ease;
+}
+
+.letter-line:focus,
+.letter-body:focus {
+  border-color: #ea580c;
+}
+
+.letter-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #ea580c, #fb923c);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 150ms ease, opacity 150ms ease;
+}
+
+.letter-send:hover:not(:disabled) {
+  transform: scale(1.02);
+}
+
+.letter-send:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .letter-paper {
+    padding: 26px 18px 22px;
+  }
+  .letter-greeting,
+  .letter-body,
+  .letter-sign {
+    padding-left: 14px;
+  }
+  .letter-paper {
+    background:
+      linear-gradient(90deg, transparent 32px, rgba(239, 68, 68, 0.28) 32px 34px, transparent 34px),
+      #fffaf0;
+  }
+}
+
+/* corda do dia/noite no topo da tela */
+/* treme sem parar (uma sacudidinha, uma pausa) para chamar a atenção: "me puxa!" */
+.sky-cord-sway {
+  transform-origin: 18px 0;
+  animation: sky-cord-sway 2.8s ease-in-out infinite;
+}
+
+@keyframes sky-cord-sway {
+  0%, 62%, 100% { transform: rotate(0deg) translateY(0); }
+  8% { transform: rotate(-5deg) translateY(4px); }
+  16% { transform: rotate(5deg) translateY(1px); }
+  24% { transform: rotate(-4deg) translateY(3px); }
+  32% { transform: rotate(3.5deg) translateY(0); }
+  40% { transform: rotate(-2.5deg) translateY(2px); }
+  48% { transform: rotate(1.5deg); }
+  56% { transform: rotate(-0.6deg); }
+}
+
+/* com "reduzir movimento" ligado a tremida continua, só que mais lenta e bem mais fraca */
+@media (prefers-reduced-motion: reduce) {
+  .sky-cord-sway {
+    animation-name: sky-cord-sway-soft;
+    animation-duration: 4s;
+  }
+}
+
+@keyframes sky-cord-sway-soft {
+  0%, 60%, 100% { transform: rotate(0deg); }
+  15% { transform: rotate(-1.8deg); }
+  30% { transform: rotate(1.8deg); }
+  45% { transform: rotate(-0.8deg); }
+}
+
+/* início: boas-vindas */
+.hero-content {
+  animation: fade-in-up 900ms ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-content {
+    animation: none;
+  }
+}
+
+/* janela à direita do monitor: céu de dia ou de noite, como o resto do site */
+.room-window {
+  left: 1190px;
+  top: 130px;
+  width: 190px;
+  height: 268px;
+  filter: drop-shadow(0 8px 12px rgba(40, 25, 5, 0.35));
+}
+
+.room-window-night {
+  opacity: 0;
+  transition: opacity 1000ms ease;
+}
+
+.setup-scene[data-night="true"] .room-window-night {
+  opacity: 1;
+}
+
+.room-window-star {
+  animation: city-twinkle 3s ease-in-out infinite;
 }

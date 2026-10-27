@@ -143,6 +143,16 @@ export const skillDetails = {
       ['Combina com', 'Node.js, PostgreSQL, Git'],
     ],
   },
+  'VPS Hostinger': {
+    tagline: 'Meu próprio servidor',
+    description:
+      'Servidor virtual privado da Hostinger, onde publico aplicações com controle total do ambiente, do sistema operacional à configuração do servidor.',
+    facts: [
+      ['Tipo', 'Servidor virtual (VPS)'],
+      ['Para quê', 'Hospedar aplicações com controle total'],
+      ['Combina com', 'Linux, Node.js, Git'],
+    ],
+  },
   Cloudflare: {
     tagline: 'Rede, DNS e proteção',
     description:

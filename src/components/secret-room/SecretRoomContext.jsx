@@ -1,5 +1,5 @@
 import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { OPEN_SECRET_ROOM } from './events'
+import { CONTINUE_DOWN, OPEN_SECRET_ROOM } from './events'
 
 // A sala secreta inteira (hub + CSS) só é baixada na primeira vez que alguém a abre.
 const loadRoom = () => import('./SecretRoom')
@@ -13,11 +13,11 @@ export function SecretRoomProvider({ children }) {
   const openRoom = useCallback((options = {}) => setSession({ onClosed: options.onClosed, onClosing: options.onClosing }), [])
   const handleClosed = useCallback((nextHref) => {
     setSession((current) => {
-      current?.onClosed?.()
+      current?.onClosed?.({ continueDown: nextHref === CONTINUE_DOWN })
       return null
     })
     // clicou num link do cabeçalho dentro da sala: refaz o clique na página, já sem a sala
-    if (nextHref) {
+    if (nextHref && nextHref !== CONTINUE_DOWN) {
       setTimeout(() => document.querySelector(`header a[href="${nextHref}"]`)?.click(), 300)
     }
   }, [])

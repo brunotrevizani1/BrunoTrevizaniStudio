@@ -175,8 +175,8 @@ function Clock() {
 }
 
 const START_GEOMS = {
-  terminal: { x: 140, y: 14, w: 674, h: 322 },
-  folder: { x: 92, y: 52, w: 520, h: 250 },
+  terminal: { x: 120, y: 33, w: 500, h: 250 },
+  folder: { x: 140, y: 43, w: 460, h: 230 },
 }
 
 export default function Screen({ on, cursorRef, onMove, onPress, onKey }) {

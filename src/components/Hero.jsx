@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { GithubIcon, LinkedinIcon, YoutubeIcon } from './icons/BrandIcons'
-import DeskLamp from './icons/DeskLamp'
+import SkyCord from './icons/SkyCord'
 import CityScene from './CityScene'
 import { useLamp } from '../context/LampContext'
 import { profile } from '../data/placeholders'
@@ -27,29 +27,31 @@ export default function Hero() {
       id="top"
       data-panel
       data-night={isNight}
-      className="hero-scope relative flex min-h-dvh snap-start items-center overflow-hidden pt-24"
+      className="hero-scope relative flex min-h-dvh snap-start items-center overflow-hidden py-12"
     >
       <CityScene isNight={isNight} />
 
-      <div className="hero-content relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-6 py-16 md:grid-cols-[1.15fr_0.85fr]">
-        <div className="flex flex-col items-start gap-6">
+      {/* corda no canto superior direito: puxar troca o dia pela noite */}
+      <SkyCord style={{ right: 'clamp(20px, 4vw, 64px)', top: 0 }} />
+
+      <div className="hero-content relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-6 md:grid-cols-[1.15fr_0.85fr]">
+        <div className="flex flex-col items-start gap-5">
+          <span className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Olá, eu sou o Bruno</span>
+
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-text">
-            Bem-vindo ao{' '}
-            <span className="text-gradient">{profile.name} Studio</span>
+            Bem-vindo ao <span className="text-gradient">{profile.name} Studio</span>
           </h1>
 
-          <p className="font-display text-xl sm:text-2xl font-medium text-text-muted">
-            {profile.title}
+          <p className="max-w-xl text-base sm:text-lg text-text-muted">
+            Quer conhecer um pouco mais sobre minha história e como surgiu minha paixão pela tecnologia? Aqui compartilho experiências, aprendizados e objetivos!
           </p>
 
-          <p className="max-w-xl text-base sm:text-lg text-text-muted">{profile.tagline}</p>
-
-          <div className="flex flex-wrap items-center gap-4 pt-2">
+          <div className="flex flex-wrap items-center gap-4 pt-1">
             <a
-              href="#projetos"
+              href="#sobre"
               className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-accent-from to-accent-to px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-105"
             >
-              Ver projetos
+              Começar a viagem
               <ArrowRight size={18} />
             </a>
             <a
@@ -60,7 +62,7 @@ export default function Hero() {
             </a>
           </div>
 
-          <div className="flex items-center gap-4 pt-4">
+          <div className="flex items-center gap-4 pt-2">
             <a
               href={profile.github}
               target="_blank"
@@ -92,27 +94,23 @@ export default function Hero() {
         </div>
 
         <div className="flex justify-center md:justify-end">
-          <div className="flex items-end">
-            <div className="relative shrink-0 sm:-mr-6 lg:-mr-12 xl:-mr-16">
-              <div
-                className="absolute inset-0 rounded-full bg-gradient-to-br from-accent-from to-accent-to blur-2xl opacity-40"
-                aria-hidden="true"
+          <div className="relative shrink-0">
+            <div
+              className="absolute inset-0 rounded-full bg-gradient-to-br from-accent-from to-accent-to blur-2xl opacity-40"
+              aria-hidden="true"
+            />
+            {showPhoto ? (
+              <img
+                src={profile.photoUrl}
+                alt={profile.name}
+                onError={() => setPhotoFailed(true)}
+                className="relative h-56 w-56 sm:h-72 sm:w-72 rounded-full border border-border object-cover object-[50%_30%]"
               />
-              {showPhoto ? (
-                <img
-                  src={profile.photoUrl}
-                  alt={profile.name}
-                  onError={() => setPhotoFailed(true)}
-                  className="relative h-56 w-56 sm:h-72 sm:w-72 rounded-full border border-border object-cover object-[50%_30%]"
-                />
-              ) : (
-                <div className="relative flex h-56 w-56 sm:h-72 sm:w-72 items-center justify-center rounded-full border border-border bg-surface font-display text-6xl sm:text-7xl font-bold text-gradient">
-                  {getInitials(profile.name)}
-                </div>
-              )}
-            </div>
-
-            <DeskLamp className="hidden sm:block h-72 sm:h-[26rem] w-auto shrink-0 text-text-muted/80" />
+            ) : (
+              <div className="relative flex h-56 w-56 sm:h-72 sm:w-72 items-center justify-center rounded-full border border-border bg-surface font-display text-6xl sm:text-7xl font-bold text-gradient">
+                {getInitials(profile.name)}
+              </div>
+            )}
           </div>
         </div>
       </div>

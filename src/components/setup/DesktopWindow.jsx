@@ -2,8 +2,8 @@ import { useRef, useState } from 'react'
 import { Maximize2, Minimize2, Minus, X } from 'lucide-react'
 
 // Tamanho lógico da tela do monitor e da barra de tarefas (ver .setup-screen no CSS).
-export const SCREEN_W = 828
-export const SCREEN_H = 388
+export const SCREEN_W = 740
+export const SCREEN_H = 350
 export const TASKBAR_H = 34
 export const AREA_H = SCREEN_H - TASKBAR_H
 

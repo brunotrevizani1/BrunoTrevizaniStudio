@@ -39,9 +39,8 @@ export default function Hub({ enteringId, focusId, onOpen }) {
       </div>
       <div className="srhub-title">
         <span className="srhub-eyebrow">Sala secreta</span>
-        <h2>Escolha uma porta</h2>
+        <h2>Cada porta guarda um projeto. Pode entrar!</h2>
         <div className="srhub-orn" aria-hidden="true">✦</div>
-        <p>Cada porta guarda um projeto. Pode entrar!</p>
       </div>
 
       <ul className="srhub-doors" onKeyDown={handleKeyDown}>

@@ -1,7 +1,7 @@
 // Lombada de um livro da estante; clicar abre o livro (BookViewer).
 export default function SkillBook({ skill, color, width, height, isOut, onOpen }) {
   // nomes longos usam fonte menor para caber na altura da lombada
-  const fontSize = Math.max(10, Math.min(13.6, 13.6 - Math.max(0, skill.name.length - 6) * 0.4))
+  const fontSize = Math.max(11.5, Math.min(16, 16 - Math.max(0, skill.name.length - 5) * 0.55))
 
   return (
     <button

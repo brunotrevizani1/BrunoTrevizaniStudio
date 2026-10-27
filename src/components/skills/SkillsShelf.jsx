@@ -4,6 +4,7 @@ import BookViewer from './BookViewer'
 import { CATEGORY_COLORS, FALLBACK_DETAILS, groupedSkills, hashOf } from './shelfData'
 import { skillDetails } from '../../data/skillDetails'
 import { useSecretRoom } from '../secret-room/SecretRoomContext'
+import { SECRET_ROOM_CONTINUE } from '../secret-room/events'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { createVeil, fitScale, resetZoom, zoomIn, zoomOut } from '../../hooks/cameraZoom'
 import {
@@ -124,12 +125,13 @@ export default function SkillsShelf() {
             back.remove()
           })()
         },
-        onClosed: () => {
+        onClosed: ({ continueDown } = {}) => {
           leaving.then(() => {
             swingRef.current = 'closed'
             setSwing('closed')
             setTimeout(() => {
               if (shelf.__lever) shelf.__lever.busy = false
+              if (continueDown) window.dispatchEvent(new Event(SECRET_ROOM_CONTINUE))
             }, SHELF_CLOSE_MS)
           })
         },
@@ -159,7 +161,7 @@ export default function SkillsShelf() {
       <div ref={shelfRef} className={`skshelf${swing === 'closed' ? '' : swing === 'pulling' ? ' is-pulling' : ' is-open'}`}>
         <div className="skshelf-lights" aria-hidden="true" />
         <div className="skshelf-crown">
-          <span className="skshelf-sign">Cada livro é uma linguagem ou ferramenta usada nos meus projetos</span>        </div>
+          <span className="skshelf-sign">Cada livro é uma linguagem ou ferramenta que utilizo</span>        </div>
 
         <div className="skshelf-inner">
           {/* prateleira de enfeites */}
@@ -180,7 +182,7 @@ export default function SkillsShelf() {
               aria-label="Puxar o livro Projetos e abrir a passagem secreta"
             >
               <span className="book-lever-body">
-                <span className="book-lever-tag" aria-hidden="true">Puxe</span>
+                <span className="book-lever-tag" aria-hidden="true">Clique</span>
                 <span className="book-spine-title">Projetos</span>
               </span>
             </button>
