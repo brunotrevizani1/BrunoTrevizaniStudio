@@ -3,11 +3,7 @@ import { Folder, TerminalSquare } from 'lucide-react'
 import DesktopWindow from './DesktopWindow'
 import { about, profile } from '../../data/placeholders'
 
-const FOLDERS = [
-  { title: 'Quem sou eu', paragraph: 0 },
-  { title: 'O que utilizo', paragraph: 1 },
-  { title: 'Fora do código', paragraph: 2 },
-]
+const FOLDERS = about.sections
 
 function FolderIcon({ size = 48 }) {
   return (
@@ -324,7 +320,7 @@ export default function Screen({ on, cursorRef, onMove, onPress, onKey }) {
             onClose={() => setOpenFolder(null)}
           >
             <div className="setup-folder-body">
-              <p>{about.paragraphs[FOLDERS[openFolder].paragraph]}</p>
+              <p>{FOLDERS[openFolder].text}</p>
             </div>
           </DesktopWindow>
         )}

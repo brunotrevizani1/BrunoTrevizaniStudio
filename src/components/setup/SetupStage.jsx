@@ -5,6 +5,7 @@ import RoomDecor from '../skills/RoomDecor'
 import Keyboard from './Keyboard'
 import { keyIdFromEvent } from './keyIds'
 import DeskMouse from './DeskMouse'
+import DeskMug from './DeskMug'
 import Screen from './Screen'
 import { STAGE_H, STAGE_W, cameraTransform, computeCameras, easeInOutCubic, mixCameras } from './camera'
 
@@ -173,20 +174,6 @@ export default function SetupStage({ isNight }) {
         <div className="setup-desk-top" />
         <div className="setup-desk-front" />
 
-        <div className="setup-mug">
-          <div className="desk-steam" aria-hidden="true">
-            <span style={{ animationDelay: '0s' }} />
-            <span style={{ animationDelay: '0.9s' }} />
-            <span style={{ animationDelay: '1.8s' }} />
-          </div>
-          <svg viewBox="0 0 70 62" fill="none" aria-hidden="true">
-            <path d="M52 20 h6 a9 9 0 0 1 0 22 h-8" stroke="#f8fafc" strokeWidth="6" strokeLinecap="round" />
-            <path d="M8 14 h46 v28 a16 16 0 0 1 -16 16 h-14 a16 16 0 0 1 -16 -16 Z" fill="#f8fafc" />
-            <ellipse cx="31" cy="15" rx="23" ry="5" fill="#7c4a24" />
-            <path d="M14 30 h34" stroke="#fb923c" strokeWidth="5" strokeLinecap="round" />
-          </svg>
-        </div>
-
         {/* monitor */}
         <div className="setup-monitor">
           <div className="setup-monitor-bezel">
@@ -211,6 +198,7 @@ export default function SetupStage({ isNight }) {
 
         <Keyboard pressed={pressed} />
         <DeskMouse mouseRef={mouseRef} clicking={clicking} />
+        <DeskMug />
 
         <div className="setup-floor" />
       </div>

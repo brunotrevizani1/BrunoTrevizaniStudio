@@ -18,10 +18,36 @@ export const profile = {
 };
 
 export const about = {
-  paragraphs: [
-    "Sou desenvolvedor full stack apaixonado por transformar ideias em soluções funcionais. Gosto de participar de todo o processo de desenvolvimento, desde o planejamento e modelagem do banco de dados até a criação da interface e da experiência do usuário.",
-    "Tenho experiência com tecnologias como React, Node.js, PHP, JavaScript e MySQL, sempre buscando aprender novas ferramentas e boas práticas para desenvolver aplicações mais eficientes, organizadas e escaláveis.",
-    "Fora dos projetos, gosto de explorar novas tecnologias, desenvolver ideias próprias, acompanhar as tendências da área e aprender constantemente. Para mim, a evolução como desenvolvedor acontece através da prática, da curiosidade e da vontade de construir algo cada vez melhor.",
+  // cada seção vira uma pasta na área de trabalho do setup (desktop) e um post-it (celular)
+  sections: [
+    {
+      title: "Quem sou eu",
+      text: "Sou desenvolvedor full stack apaixonado por transformar ideias em soluções funcionais. Gosto de participar de todo o processo de desenvolvimento, desde o planejamento e modelagem do banco de dados até a criação da interface e da experiência do usuário.",
+    },
+    {
+      title: "O que faço",
+      text: "Desenvolvo sistemas web completos: modelo o banco de dados, construo as APIs e crio interfaces pensadas para quem vai usar no dia a dia. Hoje trabalho em sistemas de gestão como o PrimeGarage e o PhotoLumi, cuidando do projeto de ponta a ponta, do planejamento até o deploy.",
+    },
+    {
+      title: "O que utilizo",
+      text: "Tenho experiência com tecnologias como React, Node.js, PHP, JavaScript e MySQL, sempre buscando aprender novas ferramentas e boas práticas para desenvolver aplicações mais eficientes, organizadas e escaláveis.",
+    },
+    {
+      title: "Minha evolução",
+      text: "Comecei pelo básico de HTML, CSS e JavaScript, passei por PHP e MySQL e fui me aprofundando em React, Node.js e PostgreSQL. Cada projeto me trouxe um desafio novo, e foi resolvendo esses desafios na prática que fui crescendo como desenvolvedor.",
+    },
+    {
+      title: "Meu objetivo",
+      text: "Meu objetivo é criar soluções que resolvam problemas reais e facilitem a rotina das pessoas e dos negócios, sempre com código bem organizado, fácil de manter e com uma boa experiência para o usuário.",
+    },
+    {
+      title: "Onde quero chegar",
+      text: "Quero me tornar um desenvolvedor referência em projetos full stack, assumir desafios cada vez maiores e ter meus próprios produtos sendo usados por muitas pessoas, sem nunca parar de aprender.",
+    },
+    {
+      title: "Fora do código",
+      text: "Fora dos projetos, gosto de explorar novas tecnologias, desenvolver ideias próprias, acompanhar as tendências da área e aprender constantemente. Para mim, a evolução como desenvolvedor acontece através da prática, da curiosidade e da vontade de construir algo cada vez melhor.",
+    },
   ],
   highlights: [
     { label: "Disponibilidade", value: "Full-time" },

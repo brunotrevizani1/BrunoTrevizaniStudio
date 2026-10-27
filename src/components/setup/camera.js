@@ -6,8 +6,8 @@ export const STAGE_H = 730
 export const NAV_H = 68
 
 // Centro do close-up (monitor + teclado + mouse) e da estante (ver .skshelf no CSS).
-const CLOSEUP_CENTER = { x: 750, y: 377 }
-const SHELF_CENTER = { x: -820, y: 392 }
+const CLOSEUP_CENTER = { x: 812, y: 377 }
+const SHELF_CENTER = { x: -820, y: 368 }
 
 const clamp = (value, min, max) => Math.max(min, Math.min(value, max))
 
@@ -18,13 +18,13 @@ export function computeCameras(width, height) {
     closeup: {
       cx: CLOSEUP_CENTER.x,
       cy: CLOSEUP_CENTER.y,
-      scale: clamp(Math.min(width / 960, (availableH - 70) / 564), 0.35, 1.6),
+      scale: clamp(Math.min(width / 1050, (availableH - 70) / 564), 0.35, 1.6),
       offsetY: 34,
     },
     shelf: {
       cx: SHELF_CENTER.x,
       cy: SHELF_CENTER.y,
-      scale: clamp(Math.min(width / 1180, availableH / 770), 0.3, 1.3),
+      scale: clamp(Math.min(width / 1180, availableH / 820), 0.3, 1.3),
       offsetY: 0,
     },
   }

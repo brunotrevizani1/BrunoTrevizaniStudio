@@ -1119,6 +1119,8 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 .postit-yellow { background: #fde68a; }
 .postit-pink { background: #fbcfe8; }
 .postit-blue { background: #bde3ff; }
+.postit-green { background: #c6f1c9; }
+.postit-orange { background: #fed7aa; }
 
 .sticker {
   padding: 8px 14px;
@@ -1297,15 +1299,36 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 .setup-mug {
   position: absolute;
-  left: 346px;
-  top: 566px;
-  width: 62px;
-  transition: filter 1000ms ease;
+  left: 1262px;
+  top: 562px;
+  width: 64px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: filter 1000ms ease, transform 200ms ease;
+}
+
+.setup-mug:hover {
+  transform: translateY(-4px) rotate(-3deg);
+}
+
+.setup-mug:focus-visible {
+  outline: 2px solid #fb923c;
+  outline-offset: 4px;
+  border-radius: 8px;
 }
 
 .setup-mug svg {
   display: block;
   width: 100%;
+}
+
+.setup-mug-name {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 700;
+  fill: #c2410c;
 }
 
 .setup-scene[data-night="true"] .setup-mug {
@@ -1660,7 +1683,11 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 /* Área de trabalho, janelas e botão de ligar/desligar do monitor */
 
+/* 8 ícones: duas colunas de 4, preenchidas de cima para baixo */
 .setup-icons {
+  display: grid;
+  grid-template-rows: repeat(4, auto);
+  grid-auto-flow: column;
   gap: 6px;
 }
 
@@ -1673,7 +1700,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 .setup-brand {
   position: absolute;
-  left: 140px;
+  left: 236px;
   right: 0;
   top: 0;
   bottom: 34px;
@@ -1687,7 +1714,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 .setup-brand-name {
   font-family: var(--font-display);
-  font-size: 60px;
+  font-size: 50px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.02em;
@@ -1971,6 +1998,160 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
   writing-mode: vertical-rl;
   transform: rotate(180deg);
+}
+
+/* caneca de perto (MugViewer) */
+.mug-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  perspective: 1600px;
+  --heat: 0.3;
+  --vortex: 0;
+  --spin: 0rad;
+}
+
+.mug-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: 50% 50%;
+}
+
+.mug-top {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+}
+
+.mug-top:active {
+  cursor: grabbing;
+}
+
+.mug-top > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.mug-bottom-text text {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+  fill: #9a3412;
+}
+
+.mug-bottom-text .mug-bottom-sign {
+  font-size: 18px;
+  font-weight: 500;
+  fill: #c2410c;
+}
+
+/* o redemoinho deixa o café mais ralo no meio, revelando a escrita do fundo */
+.mug-coffee {
+  opacity: calc(0.9 - var(--vortex) * 0.45);
+}
+
+.mug-swirl {
+  transform-box: view-box;
+  transform: rotate(var(--spin));
+}
+
+.mug-spoon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.35));
+}
+
+.mug-spoon svg {
+  position: absolute;
+  left: -30px;
+  top: -20px;
+  overflow: visible;
+}
+
+.mug-steam {
+  position: absolute;
+  left: 30%;
+  top: 22%;
+  width: 40%;
+  height: 40%;
+  pointer-events: none;
+  opacity: calc(0.1 + var(--heat) * 0.9);
+}
+
+.mug-steam span {
+  position: absolute;
+  bottom: 0;
+  width: 26px;
+  height: 90px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.55);
+  filter: blur(10px);
+  opacity: 0;
+  animation: mug-steam 2.8s ease-out infinite;
+}
+
+@keyframes mug-steam {
+  0% { transform: translateY(0) scaleX(1); opacity: 0; }
+  30% { opacity: 0.8; }
+  100% { transform: translateY(-120px) scaleX(2); opacity: 0; }
+}
+
+.mug-panel {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  transition: opacity 500ms ease;
+}
+
+.mug-status {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+}
+
+.mug-meter {
+  width: min(260px, 70vw);
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+
+.mug-meter span {
+  display: block;
+  height: 100%;
+  width: calc(var(--heat) * 100%);
+  border-radius: inherit;
+  background: linear-gradient(90deg, #38bdf8, #fb923c 60%, #ef4444);
+  background-size: min(260px, 70vw) 100%;
+}
+
+.mug-hint {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
 }
 
 /* livro aberto */
@@ -2310,7 +2491,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 32px;
+  padding: 9px 24px;
   margin: 0 -10px;
   border-radius: 8px 8px 2px 2px;
   background: linear-gradient(#b8814a, #8a592b);
@@ -2319,12 +2500,13 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 .skshelf-sign {
   font-family: "Cinzel", "Cormorant Garamond", Georgia, serif;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: 0.2em;
-  color: #fde7b0;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.55);
-  text-transform: uppercase;
+  line-height: 1.25;
+  letter-spacing: 0.03em;
+  text-align: center;
+  color: #fff3d1;
+  text-shadow: 0 1px 0 #5a3816, 0 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 .skshelf-inner {

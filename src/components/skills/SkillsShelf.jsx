@@ -159,8 +159,7 @@ export default function SkillsShelf() {
       <div ref={shelfRef} className={`skshelf${swing === 'closed' ? '' : swing === 'pulling' ? ' is-pulling' : ' is-open'}`}>
         <div className="skshelf-lights" aria-hidden="true" />
         <div className="skshelf-crown">
-          <span className="skshelf-sign">Minhas skills · clique em um livro</span>
-        </div>
+          <span className="skshelf-sign">Cada livro é uma linguagem ou ferramenta usada nos meus projetos</span>        </div>
 
         <div className="skshelf-inner">
           {/* prateleira de enfeites */}
