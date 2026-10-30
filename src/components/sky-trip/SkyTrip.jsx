@@ -1,6 +1,5 @@
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { createVeil, fitScale, zoomIn } from '../../hooks/cameraZoom'
 import './sky-trip.css'
 
@@ -180,7 +179,6 @@ export default function SkyTrip({ astro, onClose }) {
   const [leaving, setLeaving] = useState(false)
   const rootRef = useRef(null)
   const earthRef = useRef(null)
-  const reduced = usePrefersReducedMotion()
   const world = WORLDS[astro]
   const { Buddy, Decor } = world
 
@@ -199,10 +197,6 @@ export default function SkyTrip({ astro, onClose }) {
     const earth = earthRef.current
     if (leaving || !root || !earth) return
     setLeaving(true)
-    if (reduced) {
-      onClose(EARTH_VEIL)
-      return
-    }
     // a animação de entrada prende o transform do universo; ela sai antes do zoom
     root.style.animation = 'none'
     const rect = earth.getBoundingClientRect()
@@ -223,7 +217,7 @@ export default function SkyTrip({ astro, onClose }) {
     } finally {
       veil.remove()
     }
-  }, [leaving, reduced, onClose])
+  }, [leaving, onClose])
 
   useEffect(() => {
     const onKey = (event) => {

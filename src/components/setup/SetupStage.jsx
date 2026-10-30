@@ -7,6 +7,7 @@ import { keyIdFromEvent } from './keyIds'
 import DeskMouse from './DeskMouse'
 import DeskMug from './DeskMug'
 import Screen from './Screen'
+import { setSiteProgress } from '../../state/siteProgress'
 import { STAGE_H, STAGE_W, cameraTransform, computeCameras, easeInOutCubic, mixCameras } from './camera'
 
 const PAD_W = 205
@@ -58,12 +59,14 @@ function useStageCamera(containerRef, stageRef, captionRef) {
         cancelAnimationFrame(frame)
         rearmLever(true)
         name = target
+        setSiteProgress({ shelf: target === 'shelf' })
         apply({ ...cameras[target] })
       },
       goTo(target, duration = PAN_MS) {
         cancelAnimationFrame(frame)
         rearmLever(target === 'closeup')
         name = target
+        setSiteProgress({ shelf: target === 'shelf' })
         const from = { ...current }
         const start = performance.now()
         return new Promise((resolve) => {
@@ -90,6 +93,7 @@ function useStageCamera(containerRef, stageRef, captionRef) {
       cancelAnimationFrame(frame)
       observer.disconnect()
       delete container.__setupCamera
+      setSiteProgress({ shelf: false })
     }
   }, [containerRef, stageRef, captionRef])
 }

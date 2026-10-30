@@ -1,7 +1,6 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import SkyTrip from './sky-trip/SkyTrip'
 import InkFilter from './icons/InkFilter'
-import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 import { createVeil, fitScale, resetZoom, zoomIn, zoomOut } from '../hooks/cameraZoom'
 
 const VIEW_W = 1440
@@ -97,8 +96,6 @@ const TRIP_VEILS = {
   moon: 'radial-gradient(circle, #2b2d5c 0%, #0d0b24 70%, #05040f 100%)',
 }
 
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-
 function Skyline({ buildings, layerName }) {
   return (
     <g className={`city-${layerName}`} filter="url(#city-ink)">
@@ -154,7 +151,16 @@ export default function CityScene({ isNight }) {
   const sceneRef = useRef(null)
   const busy = useRef(false)
   const [trip, setTrip] = useState(null)
-  const reduced = usePrefersReducedMotion()
+
+  // fora da tela a cidade não precisa animar (janelas piscando refazem o filtro de contorno)
+  useEffect(() => {
+    const scene = sceneRef.current
+    const observer = new IntersectionObserver(([entry]) => {
+      scene.dataset.offscreen = String(entry.intersectionRatio === 0)
+    })
+    observer.observe(scene)
+    return () => observer.disconnect()
+  }, [])
 
   // clicar no sol (de dia) ou na lua (de noite): a câmera mergulha nele e abre um "universo"
   const visit = useCallback(
@@ -169,25 +175,22 @@ export default function CityScene({ isNight }) {
       const rect = event.currentTarget.getBoundingClientRect()
       const sceneRect = scene.getBoundingClientRect()
       const veil = createVeil(TRIP_VEILS[astro])
-      if (reduced) {
-        veil.style.opacity = '1'
-      } else {
-        await zoomIn(
-          scene,
-          {
-            originX: rect.left + rect.width / 2 - sceneRect.left,
-            originY: rect.top + rect.height / 2 - sceneRect.top,
-            scale: fitScale({ width: rect.width * 0.4, height: rect.height * 0.4 }),
-          },
-          TRIP_ZOOM_MS,
-          veil,
-        )
-      }
+      scene.classList.add('is-zooming')
+      await zoomIn(
+        scene,
+        {
+          originX: rect.left + rect.width / 2 - sceneRect.left,
+          originY: rect.top + rect.height / 2 - sceneRect.top,
+          scale: fitScale({ width: rect.width * 0.4, height: rect.height * 0.4 }),
+        },
+        TRIP_ZOOM_MS,
+        veil,
+      )
       setTrip(astro)
       // o universo chega por cima do véu; depois o véu pode sair
       setTimeout(() => veil.remove(), 700)
     },
-    [reduced],
+    [],
   )
 
   // caminho inverso: o véu cobre a tela e a câmera se afasta do astro enquanto ele some
@@ -196,19 +199,14 @@ export default function CityScene({ isNight }) {
     const back = createVeil(veil, 1)
     const hero = scene.closest('.hero-scope')
     setTrip(null)
-    setTimeout(() => hero && delete hero.dataset.zoom, reduced ? 0 : TRIP_BACK_MS * 0.55)
-    if (reduced) {
-      back.style.transition = 'opacity 400ms ease'
-      back.style.opacity = '0'
-      await wait(400)
-    } else {
-      await zoomOut(scene, TRIP_BACK_MS, back)
-    }
+    setTimeout(() => hero && delete hero.dataset.zoom, TRIP_BACK_MS * 0.55)
+    await zoomOut(scene, TRIP_BACK_MS, back)
     resetZoom(scene)
+    scene.classList.remove('is-zooming')
     back.remove()
     delete document.documentElement.dataset.modal
     busy.current = false
-  }, [reduced, trip])
+  }, [trip])
 
   return (
     <div

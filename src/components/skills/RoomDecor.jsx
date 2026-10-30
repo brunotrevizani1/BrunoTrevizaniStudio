@@ -204,9 +204,20 @@ function FloorLamp({ on, onToggle }) {
   )
 }
 
+// clicar no gato: ele dá um pulo, sai correndo pela esquerda e some da tela
 function SleepingCat() {
+  const [fleeing, setFleeing] = useState(false)
+  const [gone, setGone] = useState(false)
+  if (gone) return null
+
   return (
-    <div className="room-cat">
+    <button
+      type="button"
+      className={`room-cat${fleeing ? ' is-fleeing' : ''}`}
+      aria-label="Acordar o gato"
+      onClick={() => setFleeing(true)}
+      onAnimationEnd={(event) => event.target === event.currentTarget && setGone(true)}
+    >
       <div className="desk-zzz" aria-hidden="true">
         <span style={{ animationDelay: '0s' }}>z</span>
         <span style={{ animationDelay: '1.1s' }}>z</span>
@@ -225,7 +236,7 @@ function SleepingCat() {
         <path d="M35 61 l3 3 l3 -3 Z" fill="#fb7185" />
         <ellipse cx="62" cy="76" rx="16" ry="7" fill="#fbbf24" />
       </svg>
-    </div>
+    </button>
   )
 }
 

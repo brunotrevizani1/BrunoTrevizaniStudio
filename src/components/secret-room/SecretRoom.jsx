@@ -7,6 +7,7 @@ import { useLamp } from '../../context/LampContext'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { fitScale, resetZoom, zoomIn } from '../../hooks/cameraZoom'
 import { CONTINUE_DOWN } from './events'
+import { setSiteProgress } from '../../state/siteProgress'
 import './secret-room.css'
 
 // Fases: arriving -> hub -> entering -> scene -> leaving -> returning -> hub ... -> closing
@@ -109,6 +110,7 @@ export default function SecretRoom({ initialProject, onClosing, onClosed }) {
   const close = useCallback(({ down = false } = {}) => {
     if (phaseRef.current !== 'hub') return
     continueDown.current = down
+    setSiteProgress({ exitDown: down })
     onClosing?.({ quick: Boolean(leaveTo.current) })
     setPhase('closing')
   }, [onClosing])
@@ -175,6 +177,16 @@ export default function SecretRoom({ initialProject, onClosing, onClosed }) {
   )
 
   const inScene = phase === 'scene' || phase === 'leaving'
+
+  // linha do tempo: a sala está aberta e, dentro de um cenário, qual é o projeto
+  const inProject = phase === 'entering' || inScene
+  useEffect(() => {
+    setSiteProgress({ roomOpen: true, project: inProject && active ? active.id : null })
+  }, [inProject, active])
+  useEffect(() => {
+    setSiteProgress({ exitDown: false })
+    return () => setSiteProgress({ roomOpen: false, project: null })
+  }, [])
   const Scene = active ? getScene(active.scene) : null
   // ao voltar ao corredor o foco vai para a porta de onde o visitante veio (ou a primeira)
   const focusId = phase === 'hub' ? lastDoor.current : undefined

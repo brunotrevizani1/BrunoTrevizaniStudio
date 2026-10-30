@@ -555,7 +555,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 }
 
 .city-sun {
-  left: 56%;
+  left: 78%;
   top: 13%;
   width: 120px;
   height: 120px;
@@ -591,7 +591,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 /* lua */
 .city-moon {
-  left: 60%;
+  left: 80%;
   top: 15%;
   width: 104px;
   height: 104px;
@@ -1319,6 +1319,35 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 .is-zooming {
   will-change: transform;
+  contain: layout paint;
+}
+
+/* Durante o zoom a cena vira uma textura só: qualquer animação dentro dela (janelas piscando,
+   nuvens, pássaros, raios do sol) invalida a camada e re-roda o filtro de contorno (feMorphology)
+   a cada quadro, que é o que trava. Congela tudo e desliga as transições de cor. */
+.is-zooming *,
+.is-zooming *::before,
+.is-zooming *::after {
+  animation-play-state: paused !important;
+  transition: none !important;
+}
+
+/* o filtro de contorno (feMorphology) é caro de re-rasterizar a cada quadro do zoom: troca por um
+   contorno em stroke, que tem quase o mesmo desenho */
+.is-zooming .city-skyline g[filter] {
+  filter: none;
+}
+
+.is-zooming .city-body {
+  stroke: #1e1b3a;
+  stroke-width: 5;
+  paint-order: stroke;
+}
+
+.city-scene[data-offscreen="true"] *,
+.city-scene[data-offscreen="true"] *::before,
+.city-scene[data-offscreen="true"] *::after {
+  animation-play-state: paused !important;
 }
 
 .zoom-arrive .desk-scene,
@@ -1327,8 +1356,8 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 }
 
 @keyframes zoom-arrive {
-  from { transform: scale(1.45); filter: blur(10px); }
-  to { transform: scale(1); filter: blur(0); }
+  from { transform: scale(1.45); opacity: 0.4; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 /* janela escolhida na transição: acende forte conforme a câmera se aproxima */
@@ -1707,8 +1736,8 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   width: 420px;
 }
 
-/* teclado de desenho: corpo laranja contornado, teclas brancas com traço escuro;
-   à noite cada fileira acende numa cor (--glow, ver Keyboard.jsx) */
+/* teclado de desenho: corpo laranja contornado, teclas brancas com traço escuro,
+   igual de dia e de noite */
 .setup-keyboard-body {
   padding: 7px;
   border: 4px solid #1e1b3a;
@@ -1745,18 +1774,6 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   background: #ffd23f;
   transform: translateY(2px);
   box-shadow: 0 0 0 #1e1b3a;
-}
-
-.setup-scene[data-night="true"] .setup-keyboard-body {
-  background: #3b3f6b;
-}
-
-.setup-scene[data-night="true"] .setup-key {
-  background: var(--glow);
-}
-
-.setup-scene[data-night="true"] .setup-key.is-pressed {
-  background: #ffffff;
 }
 
 /* mouse e mousepad */
@@ -4166,12 +4183,14 @@ img.hero-photo-img {
   display: block;
 }
 
-/* refletores em cima do painel; à noite acendem e jogam luz na foto */
+/* refletores cinza embaixo do painel, em braços que saem da passarela e apontam pra cima;
+   à noite acendem e jogam luz na foto */
 .hero-billboard-lamps {
   position: absolute;
-  left: 14%;
-  right: 14%;
-  top: -27px;
+  left: 12%;
+  right: 12%;
+  bottom: -12px;
+  z-index: 3;
   display: flex;
   justify-content: space-between;
   pointer-events: none;
@@ -4179,33 +4198,36 @@ img.hero-photo-img {
 
 .hero-billboard-lamps i {
   position: relative;
-  width: 30px;
-  height: 16px;
+  width: 38px;
+  height: 22px;
   border: 3px solid #1e1b3a;
-  border-radius: 10px 10px 4px 4px;
-  background: #3b3f6b;
+  border-radius: 4px 4px 8px 8px;
+  background: repeating-linear-gradient(180deg, #e3e4f0 0 4px, #b4b6cc 4px 6px);
 }
 
+/* braço até a passarela */
 .hero-billboard-lamps i::before {
   content: "";
   position: absolute;
   left: 50%;
-  top: 10px;
+  top: 100%;
   width: 5px;
-  height: 16px;
+  height: 24px;
   margin-left: -2.5px;
-  background: #1e1b3a;
+  border: 2px solid #1e1b3a;
+  border-top: 0;
+  background: #fb923c;
 }
 
 .hero-billboard-lamps i::after {
   content: "";
   position: absolute;
   left: 50%;
-  top: 12px;
-  width: 120px;
-  height: 140px;
+  bottom: 12px;
+  width: 130px;
+  height: 150px;
   transform: translateX(-50%);
-  background: radial-gradient(ellipse at 50% 0, rgba(255, 236, 160, 0.75), transparent 70%);
+  background: radial-gradient(ellipse at 50% 100%, rgba(255, 236, 160, 0.75), transparent 70%);
   opacity: 0;
   transition: opacity 1000ms ease;
 }
@@ -4218,48 +4240,71 @@ img.hero-photo-img {
   opacity: 1;
 }
 
-/* passarela logo abaixo do painel */
+/* passarela de vigas laranja logo abaixo do painel: viga de cima mais larga, a de baixo deslocada */
 .hero-billboard-deck {
   position: absolute;
-  left: 4%;
-  right: 4%;
-  top: calc(100% - 4px);
+  left: -3%;
+  right: -3%;
+  top: calc(100% + 4px);
   z-index: 1;
-  height: 16px;
+  height: 14px;
   border: 4px solid #1e1b3a;
-  border-radius: 4px;
-  background: repeating-linear-gradient(90deg, #9da1d6 0 14px, #1e1b3a 14px 17px);
+  border-radius: 3px;
+  background: linear-gradient(180deg, #fdba74 0 35%, #fb923c 35%);
   box-shadow: 5px 5px 0 #1e1b3a;
 }
 
-/* colunas: descem bem além da tela; com travessas entre elas */
-.hero-billboard-legs {
-  position: absolute;
-  left: 9%;
-  right: 9%;
-  top: calc(100% + 8px);
-  height: 100vh;
-  display: flex;
-  justify-content: space-between;
-}
-
-.hero-billboard-legs::before {
+.hero-billboard-deck::after {
   content: "";
   position: absolute;
-  left: 22px;
-  right: 22px;
-  top: 0;
-  bottom: 0;
-  background: repeating-linear-gradient(180deg, transparent 0 70px, #1e1b3a 70px 74px, #9da1d6 74px 82px, #1e1b3a 82px 86px);
+  left: 8%;
+  right: -3%;
+  top: 100%;
+  height: 12px;
+  margin-top: 6px;
+  border: 4px solid #1e1b3a;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #fdba74 0 35%, #ea580c 35%);
+  box-shadow: 5px 5px 0 #1e1b3a;
+}
+
+/* um poste redondo só, laranja, que desce além da tela */
+.hero-billboard-legs {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 26px);
+  width: 46px;
+  height: 100vh;
+  margin-left: -23px;
 }
 
 .hero-billboard-legs i {
-  width: 24px;
+  display: block;
+  width: 100%;
   height: 100%;
   border: 4px solid #1e1b3a;
   border-bottom: 0;
-  background: linear-gradient(90deg, #b9bce6 0 40%, #9da1d6 40%);
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(90deg, #fdba74 0 22%, #fb923c 22% 68%, #ea580c 68%);
   box-shadow: 5px 0 0 rgba(30, 27, 58, 0.35);
+}
+
+.hero-billboard-legs i + i {
+  display: none;
+}
+
+/* colar de ferro onde o poste encontra a passarela */
+.hero-billboard-legs::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  right: -10px;
+  top: -4px;
+  height: 18px;
+  z-index: 1;
+  border: 4px solid #1e1b3a;
+  border-radius: 5px;
+  background: #ea580c;
 }
 
 .hero-scope[data-night="true"] .hero-billboard-legs,
@@ -4285,4 +4330,399 @@ img.hero-photo-img {
   .hero-photo.is-spinning {
     animation-duration: 1ms;
   }
+}
+
+/* faixa de avião do Hero: o avião cruza a tela e, ao sair pela direita, volta a entrar pela esquerda */
+.hero-plane-lane {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: clamp(56px, 9vh, 96px);
+  z-index: 11;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-plane {
+  width: clamp(560px, 62vw, 960px);
+  animation: hero-plane-fly 26s linear infinite;
+}
+
+.hero-plane-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  animation: hero-plane-bob 3.2s ease-in-out infinite;
+}
+
+.hero-plane-banner {
+  transform-box: fill-box;
+  transform-origin: 100% 50%;
+  animation: hero-plane-flap 1.6s ease-in-out infinite alternate;
+}
+
+.hero-plane-prop {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: hero-plane-spin 0.18s linear infinite;
+}
+
+@keyframes hero-plane-fly {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100vw); }
+}
+
+@keyframes hero-plane-bob {
+  0%, 100% { transform: translateY(0) rotate(-0.6deg); }
+  50% { transform: translateY(10px) rotate(0.6deg); }
+}
+
+@keyframes hero-plane-flap {
+  from { transform: skewY(-1.5deg) scaleY(1); }
+  to { transform: skewY(1.5deg) scaleY(0.96); }
+}
+
+@keyframes hero-plane-spin {
+  from { transform: scaleY(1); }
+  50% { transform: scaleY(0.35); }
+  to { transform: scaleY(1); }
+}
+
+/* outdoors menores dos lados: frase no lugar da foto, tamanhos e alturas diferentes */
+.hero-billboard-side {
+  width: clamp(150px, 17vw, 230px);
+  padding-top: 24px;
+}
+
+.hero-billboard-left {
+  margin-top: 150px;
+  animation-delay: 450ms;
+}
+
+.hero-billboard-right {
+  width: clamp(170px, 20vw, 270px);
+  margin-top: 70px;
+  animation-delay: 650ms;
+}
+
+.hero-billboard-side .hero-photo {
+  padding: 7px;
+}
+
+.hero-billboard-side .hero-billboard-lamps i {
+  width: 28px;
+  height: 17px;
+}
+
+.hero-sign {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 10;
+  padding: 10px;
+  border: 4px solid #1e1b3a;
+  border-radius: 6px;
+  background: #fff7ed;
+  color: #1e1b3a;
+  font-family: var(--font-display);
+  font-size: clamp(13px, 1.45vw, 19px);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.hero-billboard-side .hero-billboard-legs {
+  width: 36px;
+  margin-left: -18px;
+}
+
+/* linha do tempo fixa na esquerda (ver Timeline): uma parada por etapa do site */
+.timeline {
+  position: fixed;
+  left: clamp(14px, 2vw, 32px);
+  top: 50%;
+  z-index: 95;
+  display: none;
+  transform: translateY(-50%);
+}
+
+@media (min-width: 768px) {
+  .timeline {
+    display: block;
+  }
+}
+
+html[data-modal="sky-trip"] .timeline {
+  display: none;
+}
+
+/* dentro da sala secreta a linha só mostra onde você está */
+.timeline[data-room="true"] {
+  pointer-events: none;
+}
+
+.timeline ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: clamp(24px, 5vh, 44px);
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+/* trecho de linha entre uma parada e a próxima; enche conforme o visitante avança */
+.timeline-segment {
+  position: absolute;
+  left: 8px;
+  top: 22px;
+  bottom: 0;
+  width: 6px;
+  border: 2px solid #1e1b3a;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.85);
+  overflow: hidden;
+}
+
+.timeline-fill {
+  display: block;
+  width: 100%;
+  background: #fb923c;
+  transition: height 350ms ease;
+}
+
+.timeline-stop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.timeline-dot {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border: 3px solid #1e1b3a;
+  border-radius: 9999px;
+  background: #ffffff;
+  transition: background 250ms ease, transform 250ms ease;
+}
+
+.timeline-stop.is-past .timeline-dot {
+  background: #fdba74;
+}
+
+.timeline-stop.is-current .timeline-dot {
+  background: #fb923c;
+  transform: scale(1.25);
+  box-shadow: 2px 2px 0 #1e1b3a;
+}
+
+.timeline-label,
+.timeline-sublabel {
+  padding: 3px 10px;
+  border: 3px solid #1e1b3a;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #1e1b3a;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.timeline-label {
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.timeline-stop.is-current .timeline-label,
+.timeline-stop:hover .timeline-label,
+.timeline-stop:focus-visible .timeline-label {
+  opacity: 1;
+  transform: none;
+  box-shadow: 2px 2px 0 #1e1b3a;
+}
+
+/* sub-paradas (projetos dentro da sala): recuadas, em losango e com ramal tracejado */
+.timeline-sub {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-left: 30px;
+  transition: grid-template-rows 350ms ease;
+}
+
+.timeline-sub[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+.timeline-sub > ol {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  padding-left: 14px;
+}
+
+.timeline-sub > ol::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 14px;
+  border-left: 3px dashed #1e1b3a;
+}
+
+.timeline-substop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  opacity: 0.8;
+}
+
+.timeline-substop::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  width: 10px;
+  border-top: 3px dashed #1e1b3a;
+}
+
+.timeline-subdot {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border: 3px solid #1e1b3a;
+  border-radius: 3px;
+  background: #ffffff;
+  transform: rotate(45deg);
+  transition: background 250ms ease, transform 250ms ease;
+}
+
+.timeline-sublabel {
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+.timeline-substop.is-current {
+  opacity: 1;
+}
+
+.timeline-substop.is-current .timeline-subdot {
+  background: #5bd26b;
+  transform: rotate(45deg) scale(1.25);
+}
+
+.timeline-substop.is-current .timeline-sublabel {
+  background: #5bd26b;
+  box-shadow: 2px 2px 0 #1e1b3a;
+}
+
+/* gato do cômodo: clicar faz ele pular, sair correndo pela esquerda e sumir */
+button.room-cat {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.room-cat.is-fleeing {
+  pointer-events: none;
+  animation: room-cat-flee 1.7s cubic-bezier(0.5, 0, 0.9, 0.6) forwards;
+}
+
+.room-cat.is-fleeing .desk-zzz {
+  display: none;
+}
+
+.room-cat.is-fleeing .desk-cat-body {
+  animation: room-cat-gallop 0.22s ease-in-out infinite;
+}
+
+@keyframes room-cat-flee {
+  0% { transform: translate(0, 0); }
+  14% { transform: translate(0, -90px) scale(1.06, 1.12); }
+  28% { transform: translate(0, 0); }
+  100% { transform: translate(-1700px, 0); }
+}
+
+@keyframes room-cat-gallop {
+  0%, 100% { transform: scale(1.1, 0.88) rotate(-2deg); }
+  50% { transform: scale(0.94, 1.08) rotate(2deg); }
+}
+
+/* desempenho: o que não está na tela ou não aparece de dia/noite não anima */
+[data-panel][data-offscreen="true"] *,
+[data-panel][data-offscreen="true"] *::before,
+[data-panel][data-offscreen="true"] *::after {
+  animation-play-state: paused !important;
+}
+
+.city-scene:not([data-night="true"]) .city-star,
+.city-scene:not([data-night="true"]) .city-shooting-star,
+.yard:not([data-night="true"]) .yard-star,
+.yard:not([data-night="true"]) .yard-firefly {
+  animation-play-state: paused;
+}
+
+/* nuvens e pássaros têm filtro/contorno e se movem o tempo todo: cada um vira uma camada própria,
+   pintada uma vez, e o scroll/animação só desloca a textura (sem repintar o filtro a cada quadro) */
+.city-cloud,
+.city-bird,
+.hero-plane {
+  will-change: transform;
+}
+
+/* nuvem como imagem SVG com contorno (em vez de blur + 4 drop-shadows animados): pintada uma vez */
+.city-cloud {
+  height: auto !important;
+  aspect-ratio: 248 / 112;
+  border-radius: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -6 248 112'%3E%3Cpath d='M30 98 Q0 98 0 76 Q0 54 28 52 Q30 22 64 22 Q82 0 112 14 Q132 -4 160 14 Q196 4 206 40 Q240 40 240 70 Q240 98 210 98 Z' fill='%23fff' stroke='%231e1b3a' stroke-width='4' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  filter: none;
+}
+
+.city-cloud::before,
+.city-cloud::after {
+  display: none;
+}
+
+/* avião: só transform/opacity no elemento HTML (a GPU anima sozinha); a faixa e a hélice não
+   animam dentro do SVG, que obrigava a repintar tudo a cada quadro */
+.hero-plane-banner,
+.hero-plane-prop {
+  animation: none;
+}
+
+/* brilho da alavanca: anima só a opacidade de um halo (antes animava box-shadow, que repintava a
+   estante inteira com seus filtros a cada quadro) */
+.book-lever-body {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 0 14px 2px rgba(251, 191, 36, 0.55);
+  animation: none;
+}
+
+.book-lever-body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 24px 6px rgba(251, 191, 36, 0.9);
+  opacity: 0;
+  pointer-events: none;
+  animation: lever-halo 2.6s ease-in-out infinite;
+  will-change: opacity;
+}
+
+@keyframes lever-halo {
+  50% { opacity: 1; }
 }

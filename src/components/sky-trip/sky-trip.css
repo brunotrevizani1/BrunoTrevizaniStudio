@@ -294,12 +294,3 @@
     bottom: 15%;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .sky-trip,
-  .sky-trip * {
-    animation-duration: 0.01ms !important;
-    animation-delay: 0s !important;
-    animation-iteration-count: 1 !important;
-  }
-}

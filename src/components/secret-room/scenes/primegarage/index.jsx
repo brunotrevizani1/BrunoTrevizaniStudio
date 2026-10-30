@@ -1,4 +1,5 @@
-import { useId } from 'react'
+import { useId, useRef, useState } from 'react'
+import { FoamLayer, WashOverlay } from './wash'
 import ProjectInfo from '../../ProjectInfo'
 import './primegarage.css'
 
@@ -79,9 +80,19 @@ function Car() {
   )
 }
 
-function Shelf() {
+function Shelf({ active, onToggle }) {
   return (
-    <svg className="pg-shelf" viewBox="0 0 250 150" aria-hidden="true" fill="none">
+    <svg
+      className="pg-shelf pg-tool"
+      viewBox="0 0 250 150"
+      fill="none"
+      role="button"
+      tabIndex={0}
+      aria-label="Pegar o sabão"
+      aria-pressed={active}
+      onClick={onToggle}
+      onKeyDown={(event) => (event.key === 'Enter' || event.key === ' ') && (event.preventDefault(), onToggle())}
+    >
       <rect x="4" y="62" width="242" height="8" rx="2" fill="#8a8f93" />
       <rect x="4" y="132" width="242" height="8" rx="2" fill="#8a8f93" />
       {[
@@ -117,9 +128,20 @@ function Hose() {
 }
 
 // lavadora de alta pressão com a pistola e a mangueira enroladas
-function Washer() {
+function Washer({ active, onToggle, washerRef }) {
   return (
-    <svg className="pg-washer" viewBox="0 0 130 160" aria-hidden="true" fill="none">
+    <svg
+      ref={washerRef}
+      className="pg-washer pg-tool"
+      viewBox="0 0 130 160"
+      fill="none"
+      role="button"
+      tabIndex={0}
+      aria-label="Pegar a lavadora de alta pressão"
+      aria-pressed={active}
+      onClick={onToggle}
+      onKeyDown={(event) => (event.key === 'Enter' || event.key === ' ') && (event.preventDefault(), onToggle())}
+    >
       <ellipse cx="62" cy="152" rx="56" ry="6" fill="#000" opacity="0.25" />
       <path d="M28 40 V22 q0 -8 8 -8 h52 q8 0 8 8 v18" stroke="#374151" strokeWidth="6" strokeLinecap="round" />
       <rect x="18" y="38" width="88" height="92" rx="12" fill="#facc15" />
@@ -156,9 +178,14 @@ function Tires() {
 /** Box de estética automotiva do PrimeGarage: portão que sobe, espuma saindo e carro brilhando. */
 export default function PrimeGarageScene({ project }) {
   const titleId = useId()
+  const washerRef = useRef(null)
+  const foamRef = useRef(null)
+  const [tool, setTool] = useState(null) // 'soap' | 'water' | null
+
+  const pick = (name) => setTool((current) => (current === name ? null : name))
 
   return (
-    <section className="pg" aria-labelledby={titleId}>
+    <section className="pg" data-tool={tool ?? undefined} aria-labelledby={titleId}>
       <div className="pg-wall" aria-hidden="true" />
       <div className="pg-tube" aria-hidden="true" />
       <div className="pg-floor" aria-hidden="true" />
@@ -171,7 +198,6 @@ export default function PrimeGarageScene({ project }) {
         <div className="pg-poster">
           <img src="/primeGarage.jpg" alt="" />
         </div>
-        <Shelf />
         <Hose />
         <Tires />
         <div className="pg-menu">
@@ -184,12 +210,13 @@ export default function PrimeGarageScene({ project }) {
             <li>Vitrificação</li>
           </ul>
         </div>
-        <Washer />
       </div>
 
-      <div className="pg-car" aria-hidden="true">
+      <div className="pg-car">
         <Car />
-        <div className="pg-foam">
+        {/* espuma passada pelo visitante: recortada no formato da lataria */}
+        <FoamLayer ref={foamRef} bodyPath={BODY} />
+        <div className="pg-foam" aria-hidden="true">
           {FOAM.map(([x, y, size, delay]) => (
             <i key={`${x}-${y}`} style={{ '--x': `${x}%`, '--y': `${y}%`, '--s': `${size}%`, '--d': `${delay}ms` }} />
           ))}
@@ -205,6 +232,20 @@ export default function PrimeGarageScene({ project }) {
           </p>
         </ProjectInfo>
       </article>
+
+      {tool && (
+        <p className="pg-hint" role="status">
+          {tool === 'soap' ? 'Sabão na mão! Segure e arraste sobre o carro.' : 'Lavadora ligada! Segure e arraste para tirar a espuma.'}
+        </p>
+      )}
+
+      {tool && <WashOverlay tool={tool} washerRef={washerRef} foamRef={foamRef} />}
+
+      {/* ferramentas: clicar escolhe; depois é segurar e arrastar sobre o carro (ficam acima da mira para poder largar) */}
+      <div className="pg-tools">
+        <Shelf active={tool === 'soap'} onToggle={() => pick('soap')} />
+        <Washer washerRef={washerRef} active={tool === 'water'} onToggle={() => pick('water')} />
+      </div>
 
       <div className="pg-water" aria-hidden="true" />
       <div className="pg-door" aria-hidden="true" />

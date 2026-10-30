@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import { ArrowRight } from 'lucide-react'
-import { GithubIcon, LinkedinIcon, YoutubeIcon } from './icons/BrandIcons'
 import SkyCord from './icons/SkyCord'
 import CityScene from './CityScene'
 import { useLamp } from '../context/LampContext'
@@ -14,6 +12,68 @@ function getInitials(name) {
     .map((part) => part[0])
     .join('')
     .toUpperCase()
+}
+
+// avião de desenho puxando uma faixa; o texto é um <text> do próprio SVG, então escala junto
+function PlaneBanner({ text }) {
+  const ink = { stroke: '#1e1b3a', strokeWidth: 5, strokeLinejoin: 'round', strokeLinecap: 'round' }
+  return (
+    <svg viewBox="0 0 1180 190" className="hero-plane-svg">
+      <g className="hero-plane-banner">
+        <path d="M6 40 Q70 22 130 40 T250 40 T370 40 T490 40 T610 40 T730 40 L730 150 Q670 168 610 150 T490 150 T370 150 T250 150 T130 150 T6 150 L40 95 Z" fill="#ffffff" {...ink} />
+        <text
+          x="395"
+          y="112"
+          textAnchor="middle"
+          fontFamily="Space Grotesk, sans-serif"
+          fontWeight="700"
+          fontSize="58"
+          fill="#1e1b3a"
+          textLength="620"
+          lengthAdjust="spacingAndGlyphs"
+        >
+          Bem-vindo ao <tspan fill="#ea580c">{text}</tspan>
+        </text>
+      </g>
+      <path d="M730 95 Q780 95 830 100" fill="none" stroke="#1e1b3a" strokeWidth="4" strokeLinecap="round" />
+      <g transform="translate(830 20)">
+        <path d="M22 66 L2 14 L44 14 L84 62 Z" fill="#ea580c" {...ink} />
+        <path d="M0 76 Q0 52 30 52 L246 52 Q326 52 326 88 Q326 124 246 124 L30 124 Q0 124 0 100 Z" fill="#fb923c" {...ink} />
+        <path d="M110 108 L84 150 L176 150 L206 108 Z" fill="#fdba74" {...ink} />
+        <ellipse cx="206" cy="82" rx="28" ry="19" fill="#bfe3ff" {...ink} />
+        <path d="M40 98 H290" stroke="#ea580c" strokeWidth="6" strokeLinecap="round" opacity="0.7" />
+        <g className="hero-plane-prop">
+          <ellipse cx="334" cy="88" rx="6" ry="42" fill="#1e1b3a" />
+        </g>
+      </g>
+    </svg>
+  )
+}
+
+// outdoor menor, só com uma frase; clicar também dá a volta no lugar
+function SideBillboard({ text, className }) {
+  const [spinning, setSpinning] = useState(false)
+  return (
+    <div className={`hero-billboard hero-billboard-side shrink-0 ${className}`}>
+      <span className="hero-billboard-legs" aria-hidden="true">
+        <i />
+      </span>
+      <span className="hero-billboard-deck" aria-hidden="true" />
+      <button
+        type="button"
+        className={`hero-photo${spinning ? ' is-spinning' : ''}`}
+        onClick={() => setSpinning(true)}
+        onAnimationEnd={(event) => event.target === event.currentTarget && setSpinning(false)}
+        aria-label="Girar o outdoor"
+      >
+        <span className="hero-billboard-lamps" aria-hidden="true">
+          <i />
+          <i />
+        </span>
+        <span className="hero-sign">{text}</span>
+      </button>
+    </div>
+  )
 }
 
 export default function Hero() {
@@ -35,66 +95,18 @@ export default function Hero() {
       {/* corda no canto superior direito: puxar troca o dia pela noite */}
       <SkyCord style={{ right: 'clamp(20px, 4vw, 64px)', top: 0 }} />
 
-      <div className="hero-content relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-6 md:grid-cols-[1.15fr_0.85fr]">
-        <div className="flex flex-col items-start gap-5">
-          <span className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Olá, eu sou o Bruno</span>
+      <h1 className="sr-only">Bem-vindo ao {profile.name} Studio</h1>
 
-          <h1 className="toon-text font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
-            Bem-vindo ao <span className="text-gradient">{profile.name} Studio</span>
-          </h1>
-
-          <p className="max-w-xl text-base sm:text-lg text-text-muted">
-            Quer conhecer um pouco mais sobre minha história e como surgiu minha paixão pela tecnologia? Aqui compartilho experiências, aprendizados e objetivos!
-          </p>
-
-          <div className="flex flex-wrap items-center gap-4 pt-1">
-            <a
-              href="#sobre"
-              className="toon-btn"
-            >
-              Começar a viagem
-              <ArrowRight size={18} />
-            </a>
-            <a
-              href="#contato"
-              className="toon-btn"
-            >
-              Entrar em contato
-            </a>
-          </div>
-
-          <div className="flex items-center gap-4 pt-2">
-            <a
-              href={profile.github}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="GitHub"
-              className="text-text-muted transition-colors hover:text-text"
-            >
-              <GithubIcon size={22} />
-            </a>
-            <a
-              href={profile.linkedin}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="LinkedIn"
-              className="text-text-muted transition-colors hover:text-text"
-            >
-              <LinkedinIcon size={22} />
-            </a>
-            <a
-              href={profile.youtube}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="YouTube"
-              className="text-text-muted transition-colors hover:text-text"
-            >
-              <YoutubeIcon size={22} />
-            </a>
-          </div>
+      {/* avião com faixa: cruza a tela da esquerda pra direita e, ao sair, volta pela esquerda */}
+      <div className="hero-content hero-plane-lane" aria-hidden="true">
+        <div className="hero-plane">
+          <PlaneBanner text={`${profile.name} Studio`} />
         </div>
+      </div>
 
-        <div className="flex justify-center md:justify-end">
+      <div className="hero-content relative z-10 mx-auto flex w-full max-w-6xl items-start justify-center gap-6 px-6 pt-24 lg:gap-10">
+        <SideBillboard text="Quer conhecer minha história?" className="hero-billboard-left hidden md:block" />
+        <div className="flex justify-center">
           {/* outdoor na frente dos prédios: sobe do pé da tela; as colunas descem até o fim da aba */}
           <div className="hero-billboard shrink-0">
             <span className="hero-billboard-legs" aria-hidden="true">
@@ -132,6 +144,7 @@ export default function Hero() {
             </button>
           </div>
         </div>
+        <SideBillboard text="Aqui apresento um pouco sobre minha vida e aprendizados!" className="hero-billboard-right hidden md:block" />
       </div>
     </section>
   )
