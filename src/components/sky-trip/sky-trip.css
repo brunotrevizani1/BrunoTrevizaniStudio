@@ -1,0 +1,305 @@
+/* Universos do sol e da lua (easter egg do Hero, ver CityScene) */
+.sky-trip {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  overflow: hidden;
+  color: #1e1b3a;
+  font-family: var(--font-display);
+  animation: sky-trip-in 600ms ease-out both;
+}
+
+.sky-trip.is-leaving {
+  pointer-events: none;
+}
+
+.sky-trip-sky {
+  position: absolute;
+  inset: 0;
+}
+
+.sky-trip-ground {
+  position: absolute;
+  left: -10%;
+  bottom: 0;
+  width: 120%;
+  height: 26%;
+  border-top: 4px solid #1e1b3a;
+  border-radius: 50% 50% 0 0 / 46px 46px 0 0;
+}
+
+.sky-trip-stage {
+  position: absolute;
+  left: 50%;
+  bottom: 17%;
+  width: min(92vw, 560px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sky-trip-buddy {
+  height: min(46vh, 360px);
+  width: auto;
+  overflow: visible;
+}
+
+/* balão de fala */
+.sky-trip-speech {
+  position: relative;
+  margin: 0 0 18px;
+  padding: 14px 22px;
+  border: 4px solid #1e1b3a;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 5px 5px 0 #1e1b3a;
+  text-align: center;
+  font-size: clamp(18px, 2.4vw, 26px);
+  font-weight: 700;
+  line-height: 1.25;
+  transform-origin: 50% 100%;
+  animation: sky-trip-speech 450ms cubic-bezier(0.3, 1.6, 0.5, 1) 1s both;
+}
+
+.sky-trip-speech small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.66em;
+  font-weight: 500;
+  color: #5b5990;
+}
+
+.sky-trip-speech::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -16px;
+  width: 22px;
+  height: 22px;
+  background: #ffffff;
+  border-right: 4px solid #1e1b3a;
+  border-bottom: 4px solid #1e1b3a;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* sol */
+.sky-trip-sun .sky-trip-sky {
+  background: radial-gradient(circle at 50% 115%, #fff3b0 0, #ffd23f 25%, #ff9f1c 55%, #e85d04 82%, #9d0208 100%);
+}
+
+.sky-trip-sun .sky-trip-ground {
+  background:
+    radial-gradient(ellipse 80px 18px at 20% 35%, #ffd23f 40%, transparent 72%),
+    radial-gradient(ellipse 120px 22px at 70% 55%, #ffba08 40%, transparent 72%),
+    linear-gradient(#ff9f1c, #e85d04 45%, #9d0208);
+  animation: sky-trip-lava 3s ease-in-out infinite alternate;
+}
+
+.sky-trip-flares {
+  position: absolute;
+  left: 0;
+  bottom: 22%;
+  width: 100%;
+  height: 34%;
+}
+
+.sky-trip-flares path {
+  fill: none;
+  stroke: #ffba08;
+  stroke-width: 16px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: sky-trip-flare 4.5s ease-in-out infinite;
+}
+
+.sky-trip-flares path:nth-child(2) {
+  animation-delay: 1.5s;
+}
+
+.sky-trip-flares path:nth-child(3) {
+  animation-delay: 3s;
+}
+
+.sky-trip-bubble {
+  position: absolute;
+  bottom: 18%;
+  border-radius: 9999px;
+  background: rgba(255, 243, 176, 0.75);
+  opacity: 0;
+  animation: sky-trip-bubble 4s ease-in infinite;
+}
+
+.sky-trip-sun .sky-trip-buddy {
+  transform-origin: 50% 100%;
+  animation: sky-trip-heat 1.4s ease-in-out infinite alternate;
+}
+
+.sky-trip-fan {
+  transform-box: fill-box;
+  transform-origin: 0 100%;
+  animation: sky-trip-fan 320ms ease-in-out infinite alternate;
+}
+
+.sky-trip-drop {
+  animation: sky-trip-drop 1.6s ease-in infinite;
+}
+
+/* lua */
+.sky-trip-moon .sky-trip-sky {
+  background: radial-gradient(ellipse at 50% 120%, #2b2d5c, #0d0b24 60%, #05040f);
+}
+
+.sky-trip-moon .sky-trip-ground {
+  background:
+    radial-gradient(ellipse 70px 16px at 18% 30%, #9d9daa 55%, transparent 60%),
+    radial-gradient(ellipse 40px 10px at 40% 70%, #9d9daa 55%, transparent 60%),
+    radial-gradient(ellipse 110px 22px at 78% 45%, #9d9daa 55%, transparent 60%),
+    radial-gradient(ellipse 30px 8px at 62% 22%, #9d9daa 55%, transparent 60%),
+    linear-gradient(#d6d6de, #a9a9b6);
+}
+
+.sky-trip-moon .sky-trip-speech {
+  animation-delay: 2.2s;
+}
+
+.sky-trip-star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 9999px;
+  background: #ffffff;
+  animation: city-twinkle 2.4s ease-in-out infinite alternate;
+}
+
+.sky-trip-earth {
+  position: absolute;
+  top: 9%;
+  right: 10%;
+  z-index: 1;
+  width: clamp(70px, 12vw, 150px);
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: none;
+  cursor: pointer;
+  animation: city-spin 80s linear infinite;
+  transition: filter 200ms ease;
+}
+
+.sky-trip-earth svg {
+  display: block;
+  width: 100%;
+}
+
+.sky-trip-earth:focus-visible {
+  outline: 3px solid #fb923c;
+  outline-offset: 6px;
+}
+
+.sky-trip-earth:hover {
+  filter: drop-shadow(0 0 18px rgba(127, 182, 255, 0.9));
+}
+
+/* no sol a Terra fica um pouco menor, mais longe */
+.sky-trip-sun .sky-trip-earth {
+  top: 8%;
+  width: clamp(60px, 9vw, 120px);
+}
+
+.sky-trip-flag {
+  animation: sky-trip-plant 300ms cubic-bezier(0.6, 0, 1, 1) 1s both;
+}
+
+.sky-trip-flag-cloth {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  animation:
+    sky-trip-unfurl 600ms ease-out 1.4s both,
+    sky-trip-wave 1.6s ease-in-out 2s infinite alternate;
+}
+
+.sky-trip-astronaut {
+  animation: sky-trip-hop 2.8s ease-in-out 2.4s infinite;
+}
+
+@keyframes sky-trip-in {
+  from { opacity: 0; transform: scale(1.15); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes sky-trip-speech {
+  from { opacity: 0; transform: scale(0); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes sky-trip-lava {
+  to { background-position: 30px 0, -40px 0, 0 0; }
+}
+
+@keyframes sky-trip-flare {
+  50% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -100; }
+}
+
+@keyframes sky-trip-bubble {
+  0% { opacity: 0; transform: translateY(0) scale(0.4); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-40vh) scale(1.2); }
+}
+
+@keyframes sky-trip-heat {
+  to { transform: scale(1.02, 0.98) skewX(1.5deg); }
+}
+
+@keyframes sky-trip-fan {
+  from { transform: rotate(-14deg); }
+  to { transform: rotate(12deg); }
+}
+
+@keyframes sky-trip-drop {
+  0% { opacity: 0; transform: translateY(-6px); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(46px); }
+}
+
+@keyframes sky-trip-plant {
+  from { transform: translateY(-48px); }
+  to { transform: none; }
+}
+
+@keyframes sky-trip-unfurl {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes sky-trip-wave {
+  from { transform: skewY(-3deg); }
+  to { transform: skewY(3deg); }
+}
+
+@keyframes sky-trip-hop {
+  0%, 100% { transform: none; }
+  45%, 55% { transform: translateY(-18px); }
+}
+
+@media (max-width: 720px) {
+  .sky-trip-buddy {
+    height: 38vh;
+  }
+
+  .sky-trip-stage {
+    bottom: 15%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sky-trip,
+  .sky-trip * {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+  }
+}

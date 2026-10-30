@@ -9,8 +9,8 @@ import DeskMug from './DeskMug'
 import Screen from './Screen'
 import { STAGE_H, STAGE_W, cameraTransform, computeCameras, easeInOutCubic, mixCameras } from './camera'
 
-const PAD_W = 170
-const PAD_H = 78
+const PAD_W = 205
+const PAD_H = 94
 const MOUSE_W = 26
 const MOUSE_H = 42
 const KEY_HOLD_MS = 150
@@ -103,6 +103,8 @@ export default function SetupStage({ isNight }) {
   useStageCamera(containerRef, stageRef, captionRef)
 
   const [monitorOn, setMonitorOn] = useState(true)
+  const [curtainOpen, setCurtainOpen] = useState(true)
+  const [lampOn, setLampOn] = useState(true)
   const [clicking, setClicking] = useState(false)
   const [pressed, setPressed] = useState(() => new Set())
   const clickTimer = useRef(0)
@@ -152,11 +154,13 @@ export default function SetupStage({ isNight }) {
       ref={containerRef}
       data-night={isNight}
       data-monitor={monitorOn ? 'on' : 'off'}
+      data-curtain={curtainOpen ? 'open' : 'closed'}
+      data-lamp={lampOn ? 'on' : 'off'}
       className="setup-scene absolute inset-0 overflow-hidden"
     >
       <div ref={captionRef} className="setup-caption">
         <span className="setup-caption-eyebrow">Sobre mim</span>
-        <h2 className="setup-caption-title">Quem escreve o código</h2>
+        <h2 className="toon-text setup-caption-title">Quem escreve o código</h2>
       </div>
 
       <div
@@ -165,7 +169,12 @@ export default function SetupStage({ isNight }) {
         style={{ width: STAGE_W, height: STAGE_H, left: 0, top: 0, transformOrigin: '0 0' }}
       >
 
-        <RoomDecor />
+        <RoomDecor
+          curtainOpen={curtainOpen}
+          onToggleCurtain={() => setCurtainOpen((value) => !value)}
+          lampOn={lampOn}
+          onToggleLamp={() => setLampOn((value) => !value)}
+        />
         <SkillsShelf />
 
         <div className="setup-monitor-glow" />
@@ -202,6 +211,12 @@ export default function SetupStage({ isNight }) {
 
         <div className="setup-floor" />
       </div>
+
+      {/* luz da cortina: de dia fechada escurece um pouco; de noite aberta entra um pouco de luar */}
+      <div className="setup-shade setup-shade-dim" aria-hidden="true" />
+      <div className="setup-shade setup-shade-moon" aria-hidden="true" />
+      {/* abajur desligado: o cômodo fica um pouco mais escuro */}
+      <div className="setup-shade setup-shade-lamp" aria-hidden="true" />
     </div>
   )
 }

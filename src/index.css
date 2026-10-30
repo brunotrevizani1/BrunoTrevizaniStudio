@@ -37,6 +37,119 @@
   --grid-line: rgba(20, 20, 28, 0.05);
 }
 
+/* botão padrão do site: contorno grosso, fundo branco e sombra sólida */
+.toon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 3px solid #1e1b3a;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #1e1b3a;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #1e1b3a;
+  transition: transform 150ms ease, box-shadow 150ms ease, translate 300ms ease, opacity 300ms ease;
+}
+
+.toon-btn:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 #1e1b3a;
+}
+
+.toon-btn:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #1e1b3a;
+}
+
+.toon-btn:focus-visible {
+  outline: 3px solid #fb923c;
+  outline-offset: 3px;
+}
+
+.toon-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.toon-btn-icon {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+}
+
+/* títulos no mesmo traço dos botões: letra branca, contorno grosso e sombra sólida */
+.toon-text {
+  color: #ffffff;
+  -webkit-text-stroke: max(5px, 0.13em) #1e1b3a;
+  paint-order: stroke fill;
+  text-shadow: max(3px, 0.07em) max(3px, 0.07em) 0 #1e1b3a;
+  letter-spacing: 0.01em;
+}
+
+/* cartão no mesmo traço: fundo chapado, contorno grosso e sombra sólida */
+.toon-card {
+  border: 4px solid #1e1b3a;
+  background: #ffffff;
+  color: #1e1b3a;
+  box-shadow: 6px 6px 0 #1e1b3a;
+}
+
+.toon-card-dark {
+  background: #2c2a4a;
+  color: #e6e6ef;
+}
+
+/* trilho de barra de progresso */
+.toon-track {
+  height: 18px;
+  overflow: hidden;
+  border: 3px solid #1e1b3a;
+  border-radius: 9999px;
+  background: #ffffff;
+  box-shadow: 3px 3px 0 #1e1b3a;
+}
+
+/* página inteira no estilo desenho (telas avulsas: código privado, em construção) */
+.toon-page {
+  background:
+    linear-gradient(rgba(30, 27, 58, 0.07) 2px, transparent 2px) 0 0 / 44px 44px,
+    linear-gradient(90deg, rgba(30, 27, 58, 0.07) 2px, transparent 2px) 0 0 / 44px 44px,
+    #b9bce6;
+  color: #1e1b3a;
+}
+
+.toon-page .text-text-muted {
+  color: #3b3f6b;
+}
+
+.toon-page a.text-text-muted:hover {
+  color: #1e1b3a;
+}
+
+/* dentro do cartão escuro (terminal) os textos ficam claros nos dois temas do site */
+.toon-card-dark .text-text {
+  color: #f1f1f8;
+}
+
+.toon-card-dark .text-text-muted {
+  color: #b9bce6;
+}
+
+.toon-card-dark .text-accent {
+  color: #fb923c;
+}
+
+/* o degradê recortado no texto não convive com o contorno: vira laranja sólido */
+.toon-text .text-gradient {
+  background: none;
+  color: #fb923c;
+}
+
 html {
   color-scheme: dark;
 }
@@ -422,8 +535,23 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 .city-sun,
 .city-moon {
   position: absolute;
+  padding: 0;
+  border: 0;
   border-radius: 9999px;
-  transition: transform 1400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 1000ms ease;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 1400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 1000ms ease, scale 300ms ease;
+}
+
+/* clicáveis (easter egg, ver SkyTrip): só o astro visível responde */
+.city-sun:hover,
+.city-moon:hover {
+  scale: 1.08;
+}
+
+.city-scene[data-night="true"] .city-sun,
+.city-scene:not([data-night="true"]) .city-moon {
+  pointer-events: none;
 }
 
 .city-sun {
@@ -431,6 +559,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   top: 13%;
   width: 120px;
   height: 120px;
+  background: transparent;
 }
 
 .city-scene[data-night="true"] .city-sun {
@@ -1322,6 +1451,8 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 .setup-mug svg {
   display: block;
   width: 100%;
+  overflow: visible;
+  filter: drop-shadow(3px 3px 0 #1e1b3a);
 }
 
 .setup-mug-name {
@@ -1346,20 +1477,22 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   align-items: center;
 }
 
+/* traço de desenho, como os botões (.toon-btn): contorno grosso, cor chapada e sombra sólida */
 .setup-monitor-bezel {
-  width: 772px;
-  height: 398px;
-  padding: 16px 16px 0;
-  background: linear-gradient(#2b3047, #1b1f32);
+  width: 760px;
+  height: 386px;
+  padding: 6px 6px 0;
+  border: 4px solid #1e1b3a;
   border-radius: 18px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4), inset 0 0 0 2px #3b4260;
+  background: #3b3f6b;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.14), 7px 7px 0 #1e1b3a;
 }
 
 .setup-monitor-chin {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 32px;
+  height: 22px;
 }
 
 .setup-monitor-led {
@@ -1370,18 +1503,28 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   box-shadow: 0 0 8px 2px rgba(251, 146, 60, 0.8);
 }
 
+/* pé: haste e base com o mesmo contorno (a altura total segue a mesma de antes) */
 .setup-monitor-neck {
-  width: 56px;
-  height: 30px;
-  background: linear-gradient(90deg, #1b1f32, #343a57, #1b1f32);
+  width: 58px;
+  height: 42px;
+  border: 4px solid #1e1b3a;
+  border-top: 0;
+  background: linear-gradient(90deg, #9da1d6 0 30%, #b9bce6 30%);
 }
 
 .setup-monitor-base {
-  width: 200px;
+  width: 230px;
   height: 14px;
-  border-radius: 8px 8px 4px 4px;
-  background: linear-gradient(#343a57, #242940);
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.35);
+  margin-top: -2px;
+  border: 4px solid #1e1b3a;
+  border-radius: 9999px;
+  background: #b9bce6;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.5), 4px 4px 0 #1e1b3a;
+}
+
+.setup-scene[data-night="true"] .setup-monitor-neck,
+.setup-scene[data-night="true"] .setup-monitor-base {
+  filter: brightness(0.7);
 }
 
 /* tela (sistema) */
@@ -1564,11 +1707,14 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   width: 420px;
 }
 
+/* teclado de desenho: corpo laranja contornado, teclas brancas com traço escuro;
+   à noite cada fileira acende numa cor (--glow, ver Keyboard.jsx) */
 .setup-keyboard-body {
-  padding: 6px;
-  border-radius: 9px;
-  background: linear-gradient(#cbd5e1, #94a3b8);
-  box-shadow: 0 12px 16px rgba(0, 0, 0, 0.35);
+  padding: 7px;
+  border: 4px solid #1e1b3a;
+  border-radius: 14px;
+  background: #fb923c;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.35), 0 6px 0 #1e1b3a;
   transform: perspective(520px) rotateX(52deg);
   transform-origin: 50% 0;
   transition: background 1000ms ease;
@@ -1583,54 +1729,81 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 .setup-key {
   flex-basis: 0;
   height: 13px;
-  border-radius: 2.5px;
-  background: linear-gradient(#f8fafc, #e2e8f0);
-  box-shadow: 0 2px 0 #94a3b8;
+  border: 1.5px solid #1e1b3a;
+  border-radius: 4px;
+  background: #ffffff;
+  box-shadow: 0 2px 0 #1e1b3a;
   transition: transform 70ms ease, background 70ms ease, box-shadow 70ms ease;
 }
 
+.setup-key[data-key="enter"],
+.setup-key[data-key="backspace"] {
+  background: #ffd23f;
+}
+
 .setup-key.is-pressed {
-  background: #fb923c;
+  background: #ffd23f;
   transform: translateY(2px);
-  box-shadow: 0 0 0 #94a3b8, 0 0 12px 3px rgba(251, 146, 60, 0.95);
+  box-shadow: 0 0 0 #1e1b3a;
 }
 
 .setup-scene[data-night="true"] .setup-keyboard-body {
-  background: linear-gradient(#273044, #161c2c);
+  background: #3b3f6b;
 }
 
 .setup-scene[data-night="true"] .setup-key {
-  background: linear-gradient(#3a4660, #26304a);
-  box-shadow: 0 2px 0 #0f172a, 0 0 5px rgba(251, 146, 60, 0.4);
+  background: var(--glow);
 }
 
 .setup-scene[data-night="true"] .setup-key.is-pressed {
-  background: #fb923c;
-  box-shadow: 0 0 0 #0f172a, 0 0 14px 4px rgba(251, 146, 60, 1);
+  background: #ffffff;
 }
 
 /* mouse e mousepad */
+
+/* mousepad laranja contornado, com sombra sólida (tamanho = PAD_W x PAD_H do SetupStage) */
 .setup-pad {
   position: absolute;
-  left: 970px;
-  top: 568px;
-  width: 170px;
-  height: 78px;
-  border-radius: 10px;
-  background: linear-gradient(#27303f, #1b222f);
-  border: 2px solid rgba(251, 146, 60, 0.5);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  left: 967px;
+  top: 554px;
+  width: 205px;
+  height: 94px;
+  border: 4px solid #1e1b3a;
+  border-radius: 14px;
+  background: #fb923c;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.3), 4px 4px 0 #1e1b3a;
+  transition: background 1000ms ease;
 }
 
+.setup-pad::after {
+  content: "BT";
+  position: absolute;
+  right: 8px;
+  bottom: 4px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  -webkit-text-stroke: 3px #1e1b3a;
+  paint-order: stroke fill;
+}
+
+.setup-scene[data-night="true"] .setup-pad {
+  background: #c2410c;
+}
+
+/* mouse branco contornado, rodinha laranja */
 .setup-mouse {
   position: absolute;
   left: 0;
   top: 0;
   width: 26px;
   height: 42px;
-  border-radius: 13px 13px 15px 15px;
-  background: linear-gradient(#eceff3, #9aa3b2);
-  box-shadow: 0 5px 7px rgba(0, 0, 0, 0.5);
+  border: 3px solid #1e1b3a;
+  border-radius: 13px 13px 13px 13px / 17px 17px 25px 25px;
+  background: #ffffff;
+  box-shadow: 3px 3px 0 #1e1b3a;
+  overflow: hidden;
   transition: transform 60ms linear;
 }
 
@@ -1638,37 +1811,39 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   position: absolute;
   top: 0;
   width: 50%;
-  height: 17px;
-  background: rgba(255, 255, 255, 0.55);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  height: 15px;
+  background: #ffffff;
+  border-bottom: 2.5px solid #1e1b3a;
   transition: transform 60ms ease, background 60ms ease;
 }
 
 .setup-mouse-btn-left {
   left: 0;
-  border-radius: 13px 0 0 0;
-  border-right: 0.5px solid rgba(0, 0, 0, 0.3);
+  border-right: 1.5px solid #1e1b3a;
 }
 
 .setup-mouse-btn-right {
   right: 0;
-  border-radius: 0 13px 0 0;
 }
 
+/* o clique pinta o botão (o contorno do mouse já recorta, então ele não precisa afundar) */
 .setup-mouse-btn-left.is-down {
-  background: #fb923c;
-  transform: translateY(1.5px);
-  box-shadow: 0 0 10px 2px rgba(251, 146, 60, 0.9);
+  background: #ffd23f;
 }
 
 .setup-mouse-wheel {
   position: absolute;
-  left: calc(50% - 2px);
-  top: 4px;
-  width: 4px;
+  left: calc(50% - 3px);
+  top: 3px;
+  width: 6px;
   height: 9px;
-  border-radius: 2px;
-  background: #374151;
+  border: 1.5px solid #1e1b3a;
+  border-radius: 3px;
+  background: #fb923c;
+}
+
+.setup-scene[data-night="true"] .setup-mouse {
+  filter: brightness(0.85);
 }
 
 @keyframes setup-pop {
@@ -2265,6 +2440,146 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   text-align: center;
 }
 
+/* vaso de planta trazido para perto, para regar (PlantViewer) */
+.plant-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  --water: 0.15;
+}
+
+.plant-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: 50% 50%;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+  outline: none;
+}
+
+.plant-stage:active {
+  cursor: grabbing;
+}
+
+.plant-stage:focus-visible {
+  outline: 3px solid #fb923c;
+  outline-offset: 8px;
+  border-radius: 24px;
+}
+
+.plant-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.plant-area > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* sem água as folhas caem para os lados e perdem a cor; regada, a planta se levanta */
+.plant-body {
+  filter: saturate(calc(0.35 + var(--water) * 0.85)) brightness(calc(0.85 + var(--water) * 0.2));
+}
+
+.plant-leaf {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transform: rotate(calc(var(--angle) + var(--side) * (1 - var(--water)) * 38deg)) scale(calc(0.86 + var(--water) * 0.14));
+}
+
+.plant-soil-wet {
+  opacity: calc(var(--water) * 0.85);
+}
+
+.plant-flower {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  scale: 0;
+  transition: scale 600ms cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.plant-scene[data-happy="true"] .plant-flower {
+  scale: 1;
+}
+
+/* gotas d'água (canvas desenhado pelo PlantViewer) */
+.plant-drops {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* o regador anda sem transição (acompanha o ponteiro); só a inclinação é suave */
+.plant-can {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.3));
+}
+
+.plant-can svg {
+  display: block;
+  transform-origin: 96px 66px;
+  transition: transform 200ms ease;
+}
+
+.plant-sparkles svg {
+  position: absolute;
+  opacity: 0;
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.9));
+  pointer-events: none;
+}
+
+.plant-scene[data-happy="true"] .plant-sparkles svg {
+  animation: mug-sparkle 1.8s ease-in-out infinite;
+}
+
+.plant-meter span {
+  width: calc(var(--water) * 100%);
+  background: linear-gradient(90deg, #a16207, #4ade80 60%, #22c55e);
+  background-size: min(260px, 70vw) 100%;
+}
+
+.plant-scene[data-happy="true"] .mug-status {
+  color: #bbf7d0;
+  text-shadow: 0 0 14px rgba(74, 222, 128, 0.8);
+  animation: mug-status-pop 520ms cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+/* vaso do cômodo: clicável (classe dupla para vencer o .room-plant-big, que vem depois) */
+.room-plant-big.room-plant-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: filter 1000ms ease, transform 200ms ease;
+}
+
+.room-plant-btn svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.room-plant-btn:hover {
+  transform: translateY(-4px) rotate(-2deg);
+}
+
+.room-plant-btn:focus-visible {
+  outline: 2px solid #fb923c;
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
 /* livro aberto */
 .book-scene {
   position: fixed;
@@ -2287,19 +2602,6 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   top: 22px;
   right: 24px;
   z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.14);
-  color: #fff;
-  transition: opacity 400ms ease, background-color 150ms ease;
-}
-
-.book-close:hover {
-  background: rgba(255, 255, 255, 0.28);
 }
 
 .book-hint {
@@ -2861,36 +3163,178 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   top: 150px;
   width: 104px;
   height: 104px;
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: none;
+  cursor: pointer;
   filter: drop-shadow(0 6px 8px rgba(40, 25, 5, 0.35));
 }
 
-.room-clock-second {
-  transform-origin: 50px 50px;
-  animation: city-spin 60s linear infinite;
+.room-clock.room-clock {
+  transition: filter 1000ms ease, transform 200ms ease;
 }
 
+.room-clock svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.room-clock:hover {
+  transform: rotate(-6deg) scale(1.05);
+}
+
+.room-clock:focus-visible {
+  outline: 2px solid #fb923c;
+  outline-offset: 4px;
+}
+
+/* relógio aberto (RoomClock): usa a cena dos quadros (.photo-scene/.photo-card), redondo */
+.clock-card {
+  border-radius: 9999px;
+  filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.45));
+}
+
+.clock-card-face {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.clock-digital {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 6vw, 46px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  -webkit-text-stroke: 8px #1e1b3a;
+  paint-order: stroke fill;
+  text-shadow: 4px 4px 0 #1e1b3a;
+}
+
+.clock-date {
+  text-transform: capitalize;
+}
+
+/* quadros ao lado da estante (PhotoFrames): mosaico 2x2, cada um com uma capa genérica */
 .room-frame {
-  left: -430px;
-  width: 132px;
+  padding: 0;
   border: 8px solid #8b5a2b;
   border-radius: 3px;
   box-shadow: 0 8px 14px rgba(40, 25, 5, 0.3), inset 0 0 0 2px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
 }
 
-.room-frame-a {
-  top: 140px;
-  height: 92px;
+.room-frame.room-frame {
+  transition: filter 1000ms ease, transform 200ms ease;
+}
+
+.room-frame:hover {
+  transform: rotate(-3deg) scale(1.04);
+}
+
+.room-frame:focus-visible {
+  outline: 2px solid #fb923c;
+  outline-offset: 4px;
+}
+
+.room-frame-1 {
+  left: -450px;
+  top: 116px;
+  width: 118px;
+  height: 84px;
+}
+
+.room-frame-2 {
+  left: -320px;
+  top: 136px;
+  width: 78px;
+  height: 64px;
+}
+
+.room-frame-3 {
+  left: -450px;
+  top: 216px;
+  width: 104px;
+  height: 80px;
+}
+
+.room-frame-4 {
+  left: -334px;
+  top: 218px;
+  width: 92px;
+  height: 120px;
+}
+
+/* capas: pôr do sol, montanha, noite com lua e formas abstratas */
+.room-frame-cover-a {
   background:
     radial-gradient(circle at 72% 34%, #fff3b0 0 12%, transparent 13%),
     linear-gradient(#fdba74 0 56%, #7c2d12 56% 100%);
 }
 
-.room-frame-b {
-  top: 262px;
-  height: 104px;
+.room-frame-cover-b {
   background:
     linear-gradient(135deg, transparent 46%, #0f766e 46% 60%, transparent 60%),
     linear-gradient(#dbeafe 0 55%, #1e3a8a 55% 100%);
+}
+
+.room-frame-cover-c {
+  background:
+    radial-gradient(circle at 30% 30%, #f8fafc 0 10%, transparent 11%),
+    radial-gradient(circle at 70% 22%, #fff 0 1.5%, transparent 2%),
+    radial-gradient(circle at 82% 48%, #fff 0 1.5%, transparent 2%),
+    radial-gradient(ellipse at 50% 100%, #166534 0 34%, transparent 35%),
+    linear-gradient(#1e1b4b, #4338ca);
+}
+
+.room-frame-cover-d {
+  background:
+    radial-gradient(circle at 34% 30%, #fb923c 0 18%, transparent 19%),
+    linear-gradient(160deg, transparent 52%, #0e7490 52% 70%, transparent 70%),
+    radial-gradient(circle at 70% 76%, #facc15 0 14%, transparent 15%),
+    #fef3c7;
+}
+
+/* foto aberta: o quadro vira no ar enquanto vem para perto */
+.photo-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  perspective: 1800px;
+}
+
+.photo-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  cursor: zoom-out;
+}
+
+.photo-face {
+  position: absolute;
+  inset: 0;
+  border: 12px solid #8b5a2b;
+  border-radius: 4px;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45), inset 0 0 0 2px rgba(0, 0, 0, 0.15);
+  backface-visibility: hidden;
+}
+
+.photo-back {
+  transform: rotateY(180deg);
+  background: #2a1a0c;
+}
+
+.photo-back img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
 }
 
 .room-lamp {
@@ -2901,6 +3345,67 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   filter: drop-shadow(4px 4px 6px rgba(40, 25, 5, 0.3));
 }
 
+/* cordinha pendurada na borda da cúpula (a cúpula termina em y=96 do abajur, ~466 no palco) */
+.room-lamp-cord {
+  position: absolute;
+  left: -368px;
+  top: 462px;
+  z-index: 2;
+  overflow: visible;
+  transform-origin: 50% 0;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.room-lamp-cord:active {
+  cursor: grabbing;
+}
+
+/* a tremidinha da corda do Hero, girando pelo topo desta cordinha */
+.room-lamp-cord.sky-cord-sway {
+  transform-origin: 10px 0;
+}
+
+.room-lamp-cord g:focus-visible {
+  outline: 2px solid #fb923c;
+  outline-offset: 2px;
+}
+
+/* cúpula acesa (clara e brilhando) ou apagada (bege acinzentado) */
+.room-lamp-shade {
+  fill: #fde7b0;
+  transition: fill 400ms ease;
+}
+
+.room-lamp-rim {
+  fill: #f6cf7a;
+  transition: fill 400ms ease;
+}
+
+.room-lamp-shine {
+  opacity: 0.7;
+  transition: opacity 400ms ease;
+}
+
+.setup-scene[data-lamp="on"] .room-lamp {
+  filter: drop-shadow(4px 4px 6px rgba(40, 25, 5, 0.3)) drop-shadow(0 0 14px rgba(255, 207, 122, 0.55));
+}
+
+.setup-scene[data-lamp="off"] .room-lamp-shade {
+  fill: #cbbf9f;
+}
+
+.setup-scene[data-lamp="off"] .room-lamp-rim {
+  fill: #a8987a;
+}
+
+.setup-scene[data-lamp="off"] .room-lamp-shine {
+  opacity: 0.15;
+}
+
+
 .room-lamp-glow {
   position: absolute;
   left: -540px;
@@ -2908,12 +3413,17 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   width: 330px;
   height: 440px;
   background: radial-gradient(ellipse at 50% 28%, rgba(255, 207, 122, 0.6), transparent 66%);
-  opacity: 0.1;
-  transition: opacity 1000ms ease;
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 600ms ease;
 }
 
 .setup-scene[data-night="true"] .room-lamp-glow {
   opacity: 1;
+}
+
+.setup-scene[data-lamp="off"] .room-lamp-glow {
+  opacity: 0;
 }
 
 .room-rug {
@@ -3092,29 +3602,8 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 }
 
 .letter-send {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
   margin-top: 6px;
   padding: 12px 24px;
-  border: 0;
-  border-radius: 9999px;
-  background: linear-gradient(90deg, #ea580c, #fb923c);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 150ms ease, opacity 150ms ease;
-}
-
-.letter-send:hover:not(:disabled) {
-  transform: scale(1.02);
-}
-
-.letter-send:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
 }
 
 @media (max-width: 480px) {
@@ -3197,4 +3686,603 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 .room-window-star {
   animation: city-twinkle 3s ease-in-out infinite;
+}
+
+/* cortina: dois painéis que se juntam no meio da janela (fechada) ou se recolhem nas laterais */
+.room-curtains {
+  position: absolute;
+  left: 1166px;
+  top: 108px;
+  z-index: 1;
+  width: 238px;
+  height: 306px;
+}
+
+.room-curtain-rod {
+  position: absolute;
+  left: -10px;
+  right: -10px;
+  top: 0;
+  height: 9px;
+  border-radius: 9999px;
+  background: linear-gradient(#a06a35, #5b3a1a);
+  box-shadow: 0 3px 4px rgba(40, 25, 5, 0.3);
+}
+
+.room-curtain-rod::before,
+.room-curtain-rod::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #7a4c22;
+}
+
+.room-curtain-rod::before {
+  left: -6px;
+}
+
+.room-curtain-rod::after {
+  right: -6px;
+}
+
+.room-curtain {
+  position: absolute;
+  top: 4px;
+  bottom: 0;
+  width: 50%;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.12), transparent 30%, rgba(60, 20, 5, 0.18)),
+    repeating-linear-gradient(90deg, #d9623b 0 5px, #f08a5d 13px, #f6a77c 17px, #d9623b 26px);
+  box-shadow: 0 8px 12px rgba(40, 25, 5, 0.25);
+  transition: transform 900ms cubic-bezier(0.5, 0, 0.2, 1), filter 1000ms ease;
+}
+
+/* barra ondulada embaixo do tecido */
+.room-curtain::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 8px;
+  background: radial-gradient(circle at 6px 0, #d9623b 6px, transparent 6.5px) 0 0 / 13px 8px repeat-x;
+}
+
+.room-curtain-left {
+  left: 0;
+  transform-origin: 0 0;
+}
+
+.room-curtain-right {
+  right: 0;
+  transform-origin: 100% 0;
+}
+
+.room-curtains[data-open="true"] .room-curtain {
+  transform: scaleX(0.2);
+}
+
+.room-curtain-hit {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+}
+
+.room-curtain-hit:focus-visible {
+  outline: 2px solid #fb923c;
+  outline-offset: 4px;
+}
+
+.room-curtains:hover .room-curtain {
+  filter: brightness(1.08);
+}
+
+/* feixe de luz que entra pela janela aberta, inclinado até a mesa */
+.room-curtain-beam {
+  position: absolute;
+  left: 20px;
+  top: 30px;
+  width: 200px;
+  height: 520px;
+  clip-path: polygon(8% 0, 92% 0, 70% 100%, -60% 100%);
+  background: linear-gradient(rgba(255, 244, 200, 0.28), transparent 85%);
+  pointer-events: none;
+  transition: opacity 1000ms ease, background 1000ms ease;
+}
+
+.setup-scene[data-night="true"] .room-curtain-beam {
+  background: linear-gradient(rgba(170, 195, 255, 0.22), transparent 85%);
+}
+
+.room-curtains[data-open="false"] .room-curtain-beam {
+  opacity: 0;
+}
+
+.setup-scene[data-night="true"] .room-curtain {
+  filter: brightness(0.62);
+}
+
+/* camadas de luz sobre a cena toda (abaixo da legenda) */
+.setup-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1000ms ease;
+}
+
+.setup-shade-dim {
+  background: rgba(60, 40, 30, 0.24);
+  mix-blend-mode: multiply;
+}
+
+.setup-shade-moon {
+  background: radial-gradient(ellipse at 75% 35%, rgba(150, 175, 240, 0.32), rgba(110, 130, 200, 0.14) 70%);
+  mix-blend-mode: screen;
+}
+
+.setup-shade-lamp {
+  background: rgba(40, 28, 45, 0.22);
+  mix-blend-mode: multiply;
+  transition-duration: 600ms;
+}
+
+.setup-scene[data-lamp="off"] .setup-shade-lamp,
+.setup-scene:not([data-night="true"])[data-curtain="closed"] .setup-shade-dim,
+.setup-scene[data-night="true"][data-curtain="open"] .setup-shade-moon {
+  opacity: 1;
+}
+
+/* =====================================================================
+   Estilo desenho no cômodo da estante: mesmo traço dos botões (.toon-btn),
+   com contorno grosso #1e1b3a, cores chapadas e sombra sólida deslocada.
+   Fica no fim do arquivo para valer por cima das regras anteriores.
+   ===================================================================== */
+.setup-scene {
+  --ink: #1e1b3a;
+  /* contorno em volta da silhueta (funciona em SVGs e formas recortadas) */
+  --outline: drop-shadow(2.5px 0 0 var(--ink)) drop-shadow(-2.5px 0 0 var(--ink)) drop-shadow(0 2.5px 0 var(--ink))
+    drop-shadow(0 -2.5px 0 var(--ink));
+  --pop: drop-shadow(5px 5px 0 var(--ink));
+}
+
+/* estante */
+.skshelf {
+  filter: var(--pop);
+}
+
+.setup-scene[data-night="true"] .skshelf {
+  filter: brightness(0.78) var(--pop);
+}
+
+.skshelf-crown {
+  border: 4px solid var(--ink);
+  border-radius: 16px 16px 4px 4px;
+  background: #d9954f;
+  box-shadow: inset 0 4px 0 rgba(255, 255, 255, 0.3);
+}
+
+.skshelf-sign {
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
+  color: #ffffff;
+  -webkit-text-stroke: 5px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 2px 2px 0 var(--ink);
+}
+
+.skshelf-inner {
+  border-left: 16px solid #d9954f;
+  border-right: 16px solid #c4803e;
+  background: #6b4429;
+  box-shadow: -4px 0 0 var(--ink), 4px 0 0 var(--ink), inset 0 0 0 3px var(--ink), inset 0 14px 0 rgba(0, 0, 0, 0.22);
+}
+
+.skshelf-plank {
+  height: 18px;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  background: #e4a463;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.35);
+}
+
+.skshelf-base {
+  border: 4px solid var(--ink);
+  border-radius: 0 0 10px 10px;
+  background: #c4803e;
+  box-shadow: inset 0 4px 0 rgba(255, 255, 255, 0.2);
+}
+
+.skshelf-plaque {
+  border: 2.5px solid var(--ink);
+  border-radius: 6px;
+  background: #ffd23f;
+  box-shadow: 2px 2px 0 var(--ink);
+  color: var(--ink);
+  font-family: var(--font-display);
+  text-shadow: none;
+}
+
+.skshelf-row-display > svg,
+.skshelf-decor {
+  filter: var(--outline);
+}
+
+/* livros: cor chapada, contorno e uma faixa de brilho */
+.book-spine {
+  border: 2.5px solid var(--ink);
+  border-radius: 4px 4px 3px 3px;
+  background:
+    linear-gradient(90deg, transparent 0 3px, rgba(255, 255, 255, 0.3) 3px 7px, transparent 7px),
+    var(--bc);
+  box-shadow: 2px 0 0 rgba(30, 27, 58, 0.35);
+}
+
+/* nome direto na lombada, em letreiro branco contornado (como os títulos .toon-text) */
+.book-spine-title {
+  padding: 6px 2px;
+  border: 0;
+  background: none;
+  color: #ffffff;
+  font-family: var(--font-display);
+  letter-spacing: 0.03em;
+  -webkit-text-stroke: 3.5px #1e1b3a;
+  paint-order: stroke fill;
+  text-shadow: 1.5px 1.5px 0 #1e1b3a;
+}
+
+.book-lever-body {
+  border: 2.5px solid var(--ink);
+  border-radius: 4px 4px 3px 3px;
+  background:
+    linear-gradient(90deg, transparent 0 3px, rgba(255, 255, 255, 0.35) 3px 7px, transparent 7px),
+    #fb923c;
+}
+
+.book-lever-tag {
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: #ffd23f;
+  color: var(--ink);
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+/* objetos do cômodo */
+.room-plant-big,
+.room-clock,
+.room-window,
+.room-lamp,
+.room-cat {
+  filter: var(--outline) var(--pop);
+}
+
+.setup-scene[data-night="true"] .room-plant-big,
+.setup-scene[data-night="true"] .room-clock,
+.setup-scene[data-night="true"] .room-cat {
+  filter: brightness(0.62) var(--outline) var(--pop);
+}
+
+.setup-scene[data-lamp="on"] .room-lamp {
+  filter: var(--outline) var(--pop) drop-shadow(0 0 14px rgba(255, 207, 122, 0.6));
+}
+
+.room-frame {
+  border-width: 6px;
+  border-color: #d9954f;
+  border-radius: 4px;
+  box-shadow: 0 0 0 3px var(--ink), 5px 5px 0 3px var(--ink), inset 0 0 0 3px var(--ink);
+}
+
+.room-rug {
+  box-shadow: 0 0 0 3px var(--ink), 0 5px 0 3px var(--ink), inset 0 0 0 4px rgba(255, 255, 255, 0.25);
+}
+
+.room-curtain {
+  box-shadow: none;
+  filter: var(--outline);
+}
+
+.setup-scene[data-night="true"] .room-curtain {
+  filter: brightness(0.62) var(--outline);
+}
+
+.room-curtains:hover .room-curtain {
+  filter: brightness(1.08) var(--outline);
+}
+
+.room-curtain-rod {
+  box-shadow: 0 0 0 2.5px var(--ink), 3px 3px 0 2.5px var(--ink);
+}
+
+/* =====================================================================
+   Estilo desenho no início (cidade), na área de trabalho do monitor e nos
+   textos das telas de perto (caneca, planta, relógio). Os prédios ganham
+   contorno pelo filtro SVG (InkFilter, em CityScene).
+   ===================================================================== */
+.city-sun-core {
+  box-shadow: 0 0 0 4px #1e1b3a, 0 0 70px 28px rgba(255, 214, 90, 0.6);
+}
+
+.city-moon {
+  box-shadow: 0 0 0 4px #1e1b3a, 0 0 60px 16px rgba(190, 205, 255, 0.35);
+}
+
+.city-moon-crater {
+  box-shadow: inset 0 0 0 2px rgba(30, 27, 58, 0.45);
+}
+
+/* nuvens chapadas e contornadas, sem o desfoque */
+.city-cloud {
+  background: #ffffff;
+  filter: drop-shadow(2.5px 0 0 #1e1b3a) drop-shadow(-2.5px 0 0 #1e1b3a) drop-shadow(0 2.5px 0 #1e1b3a)
+    drop-shadow(0 -2.5px 0 #1e1b3a);
+}
+
+/* área de trabalho do monitor */
+.setup-icon:hover {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 0 0 2px #1e1b3a;
+}
+
+.setup-icon.is-open {
+  background: #fb923c;
+  box-shadow: inset 0 0 0 2px #1e1b3a;
+}
+
+.setup-window {
+  border: 3px solid #1e1b3a;
+  border-radius: 12px;
+  box-shadow: 6px 6px 0 #1e1b3a;
+}
+
+.setup-window.is-maximized {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.setup-window-terminal {
+  background: #1f1d38;
+}
+
+.setup-window-folder {
+  border-color: #1e1b3a;
+  background: #2c2a4a;
+}
+
+.setup-window-bar {
+  border-bottom: 3px solid #1e1b3a;
+  background: #3b3f6b;
+}
+
+.setup-win-btn {
+  border: 2px solid #1e1b3a;
+  background: #ffffff;
+  color: #1e1b3a;
+}
+
+.setup-win-btn:hover {
+  background: #ffd23f;
+}
+
+.setup-win-btn-close {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.setup-win-btn-close:hover {
+  background: #f87171;
+}
+
+.setup-start {
+  border: 2px solid #1e1b3a;
+  background: #fb923c;
+}
+
+.setup-task-chip {
+  border: 2px solid #1e1b3a;
+  background: #3b3f6b;
+}
+
+/* textos das telas de perto (caneca, planta, relógio) no letreiro contornado */
+.mug-status {
+  -webkit-text-stroke: 5px #1e1b3a;
+  paint-order: stroke fill;
+}
+
+.mug-meter {
+  height: 14px;
+  border: 3px solid #1e1b3a;
+  background: #ffffff;
+  box-shadow: 3px 3px 0 #1e1b3a;
+}
+
+.mug-hint {
+  color: #ffffff;
+  font-weight: 600;
+  -webkit-text-stroke: 3px #1e1b3a;
+  paint-order: stroke fill;
+}
+
+/* outdoor do início (Hero): painel horizontal com a foto ocupando tudo, refletores, passarela
+   e duas colunas que descem até o pé da aba (o overflow da seção corta o resto).
+   Ele sobe de baixo da tela quando a página abre; clicar dá uma volta no lugar. */
+.hero-billboard {
+  position: relative;
+  width: clamp(260px, 28vw, 370px);
+  padding-top: 30px;
+  animation: hero-billboard-rise 1100ms cubic-bezier(0.2, 0.9, 0.3, 1.12) 250ms both;
+}
+
+.hero-photo {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  padding: 9px;
+  border: 5px solid #1e1b3a;
+  border-radius: 14px;
+  background: #fb923c;
+  box-shadow: inset 0 4px 0 rgba(255, 255, 255, 0.3), 8px 8px 0 #1e1b3a;
+  cursor: pointer;
+  transition: transform 200ms ease;
+}
+
+.hero-photo:hover {
+  transform: rotate(-1.5deg);
+}
+
+.hero-photo:focus-visible {
+  outline: 3px solid #fb923c;
+  outline-offset: 6px;
+}
+
+.hero-photo.is-spinning {
+  animation: hero-photo-spin 900ms cubic-bezier(0.45, 0.05, 0.25, 1);
+}
+
+/* a foto (quase quadrada) preenche o painel 16:10; o recorte tira só um pouco de cima e de
+   baixo, mirando no rosto */
+.hero-photo-img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border: 4px solid #1e1b3a;
+  border-radius: 6px;
+  object-fit: cover;
+  object-position: 50% 36%;
+}
+
+/* a imagem como bloco (sem o vão de linha); o fallback com as iniciais usa flex */
+img.hero-photo-img {
+  display: block;
+}
+
+/* refletores em cima do painel; à noite acendem e jogam luz na foto */
+.hero-billboard-lamps {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  top: -27px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.hero-billboard-lamps i {
+  position: relative;
+  width: 30px;
+  height: 16px;
+  border: 3px solid #1e1b3a;
+  border-radius: 10px 10px 4px 4px;
+  background: #3b3f6b;
+}
+
+.hero-billboard-lamps i::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  width: 5px;
+  height: 16px;
+  margin-left: -2.5px;
+  background: #1e1b3a;
+}
+
+.hero-billboard-lamps i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  width: 120px;
+  height: 140px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 0, rgba(255, 236, 160, 0.75), transparent 70%);
+  opacity: 0;
+  transition: opacity 1000ms ease;
+}
+
+.hero-scope[data-night="true"] .hero-billboard-lamps i {
+  background: #ffd23f;
+}
+
+.hero-scope[data-night="true"] .hero-billboard-lamps i::after {
+  opacity: 1;
+}
+
+/* passarela logo abaixo do painel */
+.hero-billboard-deck {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: calc(100% - 4px);
+  z-index: 1;
+  height: 16px;
+  border: 4px solid #1e1b3a;
+  border-radius: 4px;
+  background: repeating-linear-gradient(90deg, #9da1d6 0 14px, #1e1b3a 14px 17px);
+  box-shadow: 5px 5px 0 #1e1b3a;
+}
+
+/* colunas: descem bem além da tela; com travessas entre elas */
+.hero-billboard-legs {
+  position: absolute;
+  left: 9%;
+  right: 9%;
+  top: calc(100% + 8px);
+  height: 100vh;
+  display: flex;
+  justify-content: space-between;
+}
+
+.hero-billboard-legs::before {
+  content: "";
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(180deg, transparent 0 70px, #1e1b3a 70px 74px, #9da1d6 74px 82px, #1e1b3a 82px 86px);
+}
+
+.hero-billboard-legs i {
+  width: 24px;
+  height: 100%;
+  border: 4px solid #1e1b3a;
+  border-bottom: 0;
+  background: linear-gradient(90deg, #b9bce6 0 40%, #9da1d6 40%);
+  box-shadow: 5px 0 0 rgba(30, 27, 58, 0.35);
+}
+
+.hero-scope[data-night="true"] .hero-billboard-legs,
+.hero-scope[data-night="true"] .hero-billboard-deck {
+  filter: brightness(0.7);
+}
+
+@keyframes hero-billboard-rise {
+  from { transform: translateY(110vh); }
+  to { transform: none; }
+}
+
+@keyframes hero-photo-spin {
+  from { transform: perspective(900px) rotateY(0deg); }
+  to { transform: perspective(900px) rotateY(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-billboard {
+    animation: none;
+  }
+
+  .hero-photo.is-spinning {
+    animation-duration: 1ms;
+  }
 }

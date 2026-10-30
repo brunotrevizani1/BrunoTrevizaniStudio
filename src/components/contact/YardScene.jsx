@@ -1,5 +1,7 @@
 // Quintal de uma casa, desenhado em SVG num palco lógico de 1200x700 (o Contact escala/enquadra).
 // O dia e a noite seguem a lâmpada do site (night). A caixa de correio fica em MAILBOX.
+import InkFilter from '../icons/InkFilter'
+
 export const STAGE_W = 1200
 export const STAGE_H = 700
 export const MAILBOX = { x: 756, y: 543 }
@@ -53,6 +55,9 @@ export default function YardScene({ open, flagUp, sealed }) {
           <stop offset="0" stopColor="#86cf6c" />
           <stop offset="1" stopColor="#55a746" />
         </linearGradient>
+        {/* estilo desenho: contorno escuro e sombra sólida nos objetos do quintal */}
+        <InkFilter id="yard-ink" width={3} offset={5} />
+        <InkFilter id="yard-ink-soft" width={2.5} offset={0} />
         <radialGradient id="yard-glow" cx="50%" cy="50%" r="50%">
           <stop offset="0" stopColor="#ffe9a8" stopOpacity="0.95" />
           <stop offset="1" stopColor="#ffd479" stopOpacity="0" />
@@ -64,24 +69,24 @@ export default function YardScene({ open, flagUp, sealed }) {
       <rect className="yard-night-only" width="1200" height="480" fill="url(#yard-sky-night)" />
 
       {/* nuvens */}
-      <g className="yard-cloud yard-cloud-a" fill="#fff" opacity="0.92">
+      <g className="yard-cloud yard-cloud-a" fill="#fff" filter="url(#yard-ink-soft)">
         <ellipse cx="220" cy="96" rx="58" ry="18" />
         <ellipse cx="256" cy="84" rx="38" ry="18" />
         <ellipse cx="186" cy="88" rx="30" ry="14" />
       </g>
-      <g className="yard-cloud yard-cloud-b" fill="#fff" opacity="0.85">
+      <g className="yard-cloud yard-cloud-b" fill="#fff" filter="url(#yard-ink-soft)">
         <ellipse cx="640" cy="64" rx="64" ry="18" />
         <ellipse cx="676" cy="52" rx="40" ry="18" />
         <ellipse cx="604" cy="58" rx="32" ry="13" />
       </g>
-      <g className="yard-cloud yard-cloud-c" fill="#fff" opacity="0.8">
+      <g className="yard-cloud yard-cloud-c" fill="#fff" filter="url(#yard-ink-soft)">
         <ellipse cx="1010" cy="196" rx="52" ry="14" />
         <ellipse cx="1040" cy="186" rx="32" ry="14" />
       </g>
 
       {/* colinas ao fundo */}
-      <path d="M0 440 Q180 360 360 420 T720 410 T1060 400 T1200 420 L1200 500 L0 500Z" fill="#a8d894" />
-      <path d="M0 470 Q240 410 480 455 T900 445 T1200 460 L1200 520 L0 520Z" fill="#92cc7d" />
+      <path d="M0 440 Q180 360 360 420 T720 410 T1060 400 T1200 420 L1200 500 L0 500Z" fill="#a8d894" filter="url(#yard-ink-soft)" />
+      <path d="M0 470 Q240 410 480 455 T900 445 T1200 460 L1200 520 L0 520Z" fill="#92cc7d" filter="url(#yard-ink-soft)" />
 
       {/* gramado */}
       <rect y="462" width="1200" height="240" fill="url(#yard-grass)" />
@@ -103,7 +108,7 @@ export default function YardScene({ open, flagUp, sealed }) {
       ))}
 
       {/* casa */}
-      <g>
+      <g filter="url(#yard-ink)">
         <rect x="100" y="250" width="340" height="218" fill="#f6e2bd" />
         {Array.from({ length: 10 }, (_, i) => (
           <rect key={i} x="100" y={266 + i * 21} width="340" height="2" fill="#e6cd9f" />
@@ -137,7 +142,7 @@ export default function YardScene({ open, flagUp, sealed }) {
       </g>
 
       {/* árvore */}
-      <g>
+      <g filter="url(#yard-ink)">
         <rect x="1058" y="350" width="34" height="130" fill="#7a4b2a" />
         <path d="M1062 420 L1038 392 M1088 410 L1112 384" stroke="#7a4b2a" strokeWidth="8" strokeLinecap="round" />
         <circle cx="1075" cy="300" r="82" fill="#4a9a3a" />
@@ -150,6 +155,7 @@ export default function YardScene({ open, flagUp, sealed }) {
       </g>
 
       {/* cerca (o portão fica aberto no caminho) */}
+      <g filter="url(#yard-ink-soft)">
       <rect y="506" width="1200" height="7" fill="#f1f1ee" />
       <rect y="540" width="1200" height="7" fill="#f1f1ee" />
       {PICKETS.map((x) => (
@@ -161,10 +167,11 @@ export default function YardScene({ open, flagUp, sealed }) {
           <rect x={x - 2} y="480" width="18" height="9" rx="2" fill="#e7e5df" />
         </g>
       ))}
+      </g>
 
       {/* arbustos e flores na frente da cerca */}
       {[60, 150, 400, 500, 620, 880].map((x, i) => (
-        <g key={x}>
+        <g key={x} filter="url(#yard-ink-soft)">
           <ellipse cx={x} cy="566" rx={34 + (i % 2) * 8} ry="22" fill="#3f9b3e" />
           <ellipse cx={x - 14} cy="560" rx="22" ry="16" fill="#4fae48" />
         </g>
@@ -178,7 +185,7 @@ export default function YardScene({ open, flagUp, sealed }) {
       ))}
 
       {/* poste de luz */}
-      <g>
+      <g filter="url(#yard-ink)">
         <rect x="926" y="424" width="9" height="222" fill="#3f3f46" />
         <rect x="918" y="404" width="26" height="24" rx="5" fill="#27272a" />
         <rect x="922" y="410" width="18" height="14" rx="3" fill="#f5f0dc" />
@@ -186,7 +193,7 @@ export default function YardScene({ open, flagUp, sealed }) {
       </g>
 
       {/* caixa de correio */}
-      <g className="yard-mailbox" data-open={open}>
+      <g className="yard-mailbox" data-open={open} filter="url(#yard-ink)">
         <ellipse cx="756" cy="645" rx="32" ry="7" fill="#3f8f37" />
         <rect x="748" y="576" width="16" height="70" fill="#8a5a34" />
         <rect x="748" y="576" width="5" height="70" fill="#a57444" />
@@ -206,7 +213,7 @@ export default function YardScene({ open, flagUp, sealed }) {
       </g>
 
       {/* carta pousada na caixa, esperando o pássaro */}
-      <g className="yard-envelope" data-sealed={sealed}>
+      <g className="yard-envelope" data-sealed={sealed} filter="url(#yard-ink-soft)">
         <rect x="738" y="486" width="36" height="24" rx="3" fill="#fff7ed" stroke="#fdba74" strokeWidth="2" />
         <path d="M739 488 L756 500 L773 488" fill="none" stroke="#fdba74" strokeWidth="2" />
         <circle cx="756" cy="500" r="4" fill="#ea580c" />

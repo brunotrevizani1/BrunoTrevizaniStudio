@@ -18,6 +18,7 @@ function getInitials(name) {
 
 export default function Hero() {
   const [photoFailed, setPhotoFailed] = useState(false)
+  const [spinning, setSpinning] = useState(false)
   const showPhoto = Boolean(profile.photoUrl) && !photoFailed
   const { isOn } = useLamp()
   const isNight = !isOn
@@ -38,7 +39,7 @@ export default function Hero() {
         <div className="flex flex-col items-start gap-5">
           <span className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Olá, eu sou o Bruno</span>
 
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-text">
+          <h1 className="toon-text font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
             Bem-vindo ao <span className="text-gradient">{profile.name} Studio</span>
           </h1>
 
@@ -49,14 +50,14 @@ export default function Hero() {
           <div className="flex flex-wrap items-center gap-4 pt-1">
             <a
               href="#sobre"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-accent-from to-accent-to px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-105"
+              className="toon-btn"
             >
               Começar a viagem
               <ArrowRight size={18} />
             </a>
             <a
               href="#contato"
-              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-semibold text-text transition-colors hover:bg-surface"
+              className="toon-btn"
             >
               Entrar em contato
             </a>
@@ -94,23 +95,41 @@ export default function Hero() {
         </div>
 
         <div className="flex justify-center md:justify-end">
-          <div className="relative shrink-0">
-            <div
-              className="absolute inset-0 rounded-full bg-gradient-to-br from-accent-from to-accent-to blur-2xl opacity-40"
-              aria-hidden="true"
-            />
-            {showPhoto ? (
-              <img
-                src={profile.photoUrl}
-                alt={profile.name}
-                onError={() => setPhotoFailed(true)}
-                className="relative h-56 w-56 sm:h-72 sm:w-72 rounded-full border border-border object-cover object-[50%_30%]"
-              />
-            ) : (
-              <div className="relative flex h-56 w-56 sm:h-72 sm:w-72 items-center justify-center rounded-full border border-border bg-surface font-display text-6xl sm:text-7xl font-bold text-gradient">
-                {getInitials(profile.name)}
-              </div>
-            )}
+          {/* outdoor na frente dos prédios: sobe do pé da tela; as colunas descem até o fim da aba */}
+          <div className="hero-billboard shrink-0">
+            <span className="hero-billboard-legs" aria-hidden="true">
+              <i />
+              <i />
+            </span>
+            <span className="hero-billboard-deck" aria-hidden="true" />
+
+            {/* clicar no painel faz ele dar uma volta no lugar */}
+            <button
+              type="button"
+              className={`hero-photo${spinning ? ' is-spinning' : ''}`}
+              onClick={() => setSpinning(true)}
+              onAnimationEnd={(event) => event.target === event.currentTarget && setSpinning(false)}
+              aria-label="Girar o outdoor"
+            >
+              <span className="hero-billboard-lamps" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
+              {showPhoto ? (
+                <img
+                  src={profile.photoUrl}
+                  alt={profile.name}
+                  onError={() => setPhotoFailed(true)}
+                  draggable={false}
+                  className="hero-photo-img"
+                />
+              ) : (
+                <span className="hero-photo-img flex items-center justify-center bg-surface font-display text-5xl font-bold text-gradient">
+                  {getInitials(profile.name)}
+                </span>
+              )}
+            </button>
           </div>
         </div>
       </div>

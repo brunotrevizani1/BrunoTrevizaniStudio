@@ -9,15 +9,19 @@ const ROWS = [
   [['ctrlleft', 1.5], ['altleft', 1.5], ['space', 9], ['altright', 1.5], ['ctrlright', 1.5]],
 ]
 
+// cor da retroiluminação de cada fileira (só aparece à noite)
+const ROW_GLOW = ['#fb923c', '#f472b6', '#a78bfa', '#60a5fa', '#34d399']
+
 function Keyboard({ pressed }) {
   return (
     <div className="setup-keyboard">
       <div className="setup-keyboard-body">
         {ROWS.map((row, rowIndex) => (
-          <div key={rowIndex} className="setup-key-row">
+          <div key={rowIndex} className="setup-key-row" style={{ '--glow': ROW_GLOW[rowIndex] }}>
             {row.map(([id, span]) => (
               <span
                 key={id}
+                data-key={id}
                 className={`setup-key${pressed.has(id) ? ' is-pressed' : ''}`}
                 style={{ flexGrow: span }}
               />

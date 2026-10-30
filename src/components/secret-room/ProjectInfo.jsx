@@ -1,6 +1,6 @@
 import { ExternalLink, Lock } from 'lucide-react'
 import { GithubIcon } from '../icons/BrandIcons'
-import { codeLink } from '../../data/projects'
+import { codeLink, withProject } from '../../data/projects'
 import { UNDER_CONSTRUCTION_ROUTE } from '../../data/placeholders'
 
 /** Botões "Ver projeto" / "Ver código" iguais para todos os cenários. */
@@ -15,7 +15,7 @@ export function ProjectActions({ project }) {
     <div className="pinfo-actions">
       <a
         className="pinfo-btn pinfo-btn-primary"
-        href={hasLive ? project.liveUrl : UNDER_CONSTRUCTION_ROUTE}
+        href={hasLive ? project.liveUrl : withProject(UNDER_CONSTRUCTION_ROUTE, project)}
         {...(hasLive && { target: '_blank', rel: 'noreferrer' })}
       >
         <ExternalLink size={16} aria-hidden="true" />

@@ -167,7 +167,7 @@ export default function Contact() {
 
       <div className="yard-title" data-night={night} data-hidden={zoomed}>
         <span className="yard-title-eyebrow">Contato</span>
-        <h2>Vamos conversar?</h2>
+        <h2 className="toon-text">Vamos conversar?</h2>
         <p data-done={phase === 'done'} aria-live="polite">
           {subtitle}
         </p>
@@ -176,7 +176,7 @@ export default function Contact() {
       <div className="yard-email" data-hidden={phase !== 'writing'}>
         <Mail size={16} />
         <a href={`mailto:${profile.email}`}>{profile.email}</a>
-        <button type="button" onClick={handleCopyEmail} aria-label={copied ? 'E-mail copiado' : 'Copiar e-mail'}>
+        <button type="button" className="toon-btn toon-btn-icon" onClick={handleCopyEmail} aria-label={copied ? 'E-mail copiado' : 'Copiar e-mail'}>
           {copied ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} />}
         </button>
       </div>
@@ -184,7 +184,7 @@ export default function Contact() {
       {showLetter && (
         <div className="yard-letter" data-sealing={phase === 'sending'}>
           <form onSubmit={handleSubmit} className="letter-paper" aria-label="Carta para o Bruno">
-            <button type="button" className="letter-close" onClick={closeLetter} aria-label="Guardar a carta">
+            <button type="button" className="toon-btn toon-btn-icon letter-close" onClick={closeLetter} aria-label="Guardar a carta">
               <X size={15} strokeWidth={2.6} />
             </button>
             <span className="letter-stamp" aria-hidden="true">
@@ -233,7 +233,7 @@ export default function Contact() {
               />
             </div>
 
-            <button type="submit" disabled={submitting || phase === 'sending'} className="letter-send">
+            <button type="submit" disabled={submitting || phase === 'sending'} className="toon-btn letter-send">
               {submitting || phase === 'sending' ? (
                 <>
                   <Loader2 size={18} className="animate-spin" />

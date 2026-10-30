@@ -6,7 +6,7 @@ import PrivateRepo from './components/PrivateRepo'
 import UnderConstruction from './components/UnderConstruction'
 import { PRIVATE_REPO_ROUTE, UNDER_CONSTRUCTION_ROUTE } from './data/placeholders'
 import { LampProvider } from './context/LampContext'
-import { SecretRoomProvider } from './components/secret-room/SecretRoomContext'
+import { ResumeProject, SecretRoomProvider } from './components/secret-room/SecretRoomContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { useFullPageScroll } from './hooks/useFullPageScroll'
 
@@ -32,6 +32,7 @@ function App() {
         ) : (
           <>
             <FullPageScroll />
+            <ResumeProject />
             <main>
               <Hero />
               <About />

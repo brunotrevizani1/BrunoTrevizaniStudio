@@ -209,7 +209,7 @@ export default function MugViewer({ originRect, onClosed }) {
 
       <button
         type="button"
-        className="book-close"
+        className="toon-btn toon-btn-icon book-close"
         style={{ opacity: atDesk ? 0 : 1, pointerEvents: atDesk ? 'none' : 'auto' }}
         onClick={close}
         aria-label="Devolver a caneca"

@@ -1,55 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Plant } from '../setup/ShelfDecor'
+import PlantViewer from './PlantViewer'
+import PhotoFrames from './PhotoFrames'
+import RoomClock from './RoomClock'
 
 // Peças do cômodo ao redor da estante (todas em coordenadas do palco, via CSS .room-*).
-
-function currentAngles() {
-  const now = new Date()
-  const minutes = now.getMinutes() + now.getSeconds() / 60
-  return { minute: minutes * 6, hour: ((now.getHours() % 12) + minutes / 60) * 30 }
-}
-
-function WallClock() {
-  const [angles, setAngles] = useState(currentAngles)
-
-  useEffect(() => {
-    const timer = setInterval(() => setAngles(currentAngles()), 20000)
-    return () => clearInterval(timer)
-  }, [])
-
-  return (
-    <svg className="room-clock" viewBox="0 0 100 100" aria-hidden="true">
-      <circle cx="50" cy="50" r="46" fill="#8b5a2b" />
-      <circle cx="50" cy="50" r="39" fill="#fdf3dc" />
-      {Array.from({ length: 12 }, (_, index) => (
-        <line
-          key={index}
-          x1="50"
-          y1="15"
-          x2="50"
-          y2={index % 3 === 0 ? 22 : 19}
-          stroke="#5b3a1a"
-          strokeWidth={index % 3 === 0 ? 3 : 1.6}
-          strokeLinecap="round"
-          transform={`rotate(${index * 30} 50 50)`}
-        />
-      ))}
-      <line x1="50" y1="50" x2="50" y2="29" stroke="#3a2410" strokeWidth="4" strokeLinecap="round" transform={`rotate(${angles.hour} 50 50)`} />
-      <line x1="50" y1="50" x2="50" y2="20" stroke="#3a2410" strokeWidth="2.6" strokeLinecap="round" transform={`rotate(${angles.minute} 50 50)`} />
-      <line className="room-clock-second" x1="50" y1="56" x2="50" y2="18" stroke="#ea580c" strokeWidth="1.4" strokeLinecap="round" />
-      <circle cx="50" cy="50" r="3.4" fill="#ea580c" />
-    </svg>
-  )
-}
-
-function Frames() {
-  return (
-    <>
-      <div className="room-frame room-frame-a" aria-hidden="true" />
-      <div className="room-frame room-frame-b" aria-hidden="true" />
-    </>
-  )
-}
 
 function RoomWindow() {
   return (
@@ -95,17 +50,156 @@ function RoomWindow() {
   )
 }
 
-function FloorLamp() {
+// cortina da janela: clicar abre/fecha; a luz da cena acompanha (ver .setup-shade-*)
+function Curtains({ open, onToggle }) {
+  return (
+    <div className="room-curtains" data-open={open}>
+      <div className="room-curtain-beam" aria-hidden="true" />
+      <div className="room-curtain room-curtain-left" aria-hidden="true" />
+      <div className="room-curtain room-curtain-right" aria-hidden="true" />
+      <div className="room-curtain-rod" aria-hidden="true" />
+      <button
+        type="button"
+        className="room-curtain-hit"
+        onClick={onToggle}
+        aria-pressed={!open}
+        aria-label={open ? 'Fechar a cortina' : 'Abrir a cortina'}
+        title={open ? 'Fechar a cortina' : 'Abrir a cortina'}
+      />
+    </div>
+  )
+}
+
+// vaso grande do canto: clicar traz a planta para perto, para regar
+function BigPlant() {
+  const [originRect, setOriginRect] = useState(null)
+
+  return (
+    <>
+      <button
+        type="button"
+        className="room-plant-big room-plant-btn"
+        style={{ visibility: originRect ? 'hidden' : 'visible' }}
+        onClick={(event) => setOriginRect(event.currentTarget.getBoundingClientRect())}
+        aria-label="Regar a planta"
+        title="Regar a planta"
+      >
+        <svg viewBox="0 0 80 100" fill="none" aria-hidden="true">
+          <Plant x={20} floorY={100} />
+        </svg>
+      </button>
+
+      {originRect && <PlantViewer originRect={originRect} onClosed={() => setOriginRect(null)} />}
+    </>
+  )
+}
+
+// cordinha do abajur (mesma ideia da SkyCord do Hero): arrastar para baixo e soltar liga/desliga
+const CORD_REST = 46
+const CORD_MAX_PULL = 26
+const CORD_THRESHOLD = 14
+const CORD_VIEW_H = 90
+
+function LampCord({ on, onToggle }) {
+  const [pull, setPull] = useState(0)
+  const [dragging, setDragging] = useState(false)
+  const svgRef = useRef(null)
+  const drag = useRef({ active: false, startY: 0, unitsPerPixel: 1, lastPull: 0 })
+
+  function handlePointerDown(event) {
+    event.preventDefault()
+    event.stopPropagation()
+    const rect = svgRef.current.getBoundingClientRect()
+    drag.current = { active: true, startY: event.clientY, unitsPerPixel: CORD_VIEW_H / rect.height, lastPull: 0 }
+    setDragging(true)
+    window.addEventListener('pointermove', handlePointerMove)
+    window.addEventListener('pointerup', handlePointerUp)
+    window.addEventListener('pointercancel', handlePointerUp)
+  }
+
+  function handlePointerMove(event) {
+    if (!drag.current.active) return
+    const { startY, unitsPerPixel } = drag.current
+    const next = Math.max(0, Math.min(CORD_MAX_PULL, (event.clientY - startY) * unitsPerPixel))
+    drag.current.lastPull = next
+    setPull(next)
+  }
+
+  function handlePointerUp() {
+    if (!drag.current.active) return
+    drag.current.active = false
+    window.removeEventListener('pointermove', handlePointerMove)
+    window.removeEventListener('pointerup', handlePointerUp)
+    window.removeEventListener('pointercancel', handlePointerUp)
+    setDragging(false)
+    if (drag.current.lastPull >= CORD_THRESHOLD) onToggle()
+    setPull(0)
+  }
+
+  function handleKeyDown(event) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      onToggle()
+    }
+  }
+
+  const snap = dragging ? 'none' : 'all 320ms cubic-bezier(0.34, 1.56, 0.64, 1)'
+  const length = CORD_REST + pull
+
+  return (
+    <svg
+      ref={svgRef}
+      className={`room-lamp-cord${dragging ? '' : ' sky-cord-sway'}`}
+      viewBox={`0 0 20 ${CORD_VIEW_H}`}
+      width="20"
+      height={CORD_VIEW_H}
+      fill="none"
+    >
+      <g
+        onPointerDown={handlePointerDown}
+        onKeyDown={handleKeyDown}
+        onDragStart={(event) => event.preventDefault()}
+        role="button"
+        tabIndex={0}
+        aria-pressed={on}
+        aria-label={on ? 'Puxar a cordinha para desligar o abajur' : 'Puxar a cordinha para ligar o abajur'}
+      >
+        <rect x="0" y="0" width="20" height={CORD_VIEW_H} fill="transparent" />
+        {/* correntinha de bolinhas */}
+        <line
+          x1="10"
+          y1="0"
+          x2="10"
+          y2={length}
+          stroke="#b8925a"
+          strokeWidth="2.6"
+          strokeDasharray="0.1 4"
+          strokeLinecap="round"
+          style={{ transition: snap }}
+        />
+        {/* puxador de madeira */}
+        <g style={{ transform: `translateY(${pull}px)`, transition: snap }}>
+          <path d={`M7 ${CORD_REST} h6 l1.5 12 a4.5 4.5 0 0 1 -9 0 Z`} fill="#8b5a2b" />
+          <ellipse cx="8.6" cy={CORD_REST + 5} rx="1.2" ry="3" fill="#fff" opacity="0.35" />
+        </g>
+      </g>
+    </svg>
+  )
+}
+
+// abajur: a cordinha liga/desliga; a luz da cena acompanha (ver .setup-shade-lamp)
+function FloorLamp({ on, onToggle }) {
   return (
     <>
       <div className="room-lamp-glow" aria-hidden="true" />
       <svg className="room-lamp" viewBox="0 0 90 330" fill="none" aria-hidden="true">
         <ellipse cx="45" cy="320" rx="30" ry="8" fill="#3a2d1d" />
         <rect x="42" y="96" width="6" height="226" rx="3" fill="#6b4a2a" />
-        <path d="M14 96 L26 34 H64 L76 96 Z" fill="#fde7b0" />
-        <path d="M14 96 L26 34 H40 L34 96 Z" fill="#fff6d8" opacity="0.7" />
-        <ellipse cx="45" cy="96" rx="31" ry="6" fill="#f6cf7a" />
+        <path className="room-lamp-shade" d="M14 96 L26 34 H64 L76 96 Z" />
+        <path className="room-lamp-shine" d="M14 96 L26 34 H40 L34 96 Z" fill="#fff6d8" />
+        <ellipse className="room-lamp-rim" cx="45" cy="96" rx="31" ry="6" />
       </svg>
+      <LampCord on={on} onToggle={onToggle} />
     </>
   )
 }
@@ -135,17 +229,16 @@ function SleepingCat() {
   )
 }
 
-export default function RoomDecor() {
+export default function RoomDecor({ curtainOpen, onToggleCurtain, lampOn, onToggleLamp }) {
   return (
     <>
-      <WallClock />
-      <Frames />
+      <RoomClock />
+      <PhotoFrames />
       <RoomWindow />
+      <Curtains open={curtainOpen} onToggle={onToggleCurtain} />
       <div className="room-rug" aria-hidden="true" />
-      <svg className="room-plant-big" viewBox="0 0 80 100" fill="none" aria-hidden="true">
-        <Plant x={20} floorY={100} />
-      </svg>
-      <FloorLamp />
+      <BigPlant />
+      <FloorLamp on={lampOn} onToggle={onToggleLamp} />
       <SleepingCat />
     </>
   )

@@ -260,15 +260,10 @@
 }
 
 .yard-email button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid rgba(60, 40, 10, 0.2);
-  border-radius: 9999px;
-  background: #fff;
-  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-width: 2px;
+  box-shadow: 2px 2px 0 #1e1b3a;
 }
 
 /* a carta sobe da caixa de correio */
@@ -304,20 +299,10 @@
   position: absolute;
   top: 12px;
   left: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: 0;
-  border-radius: 9999px;
-  background: rgba(124, 45, 18, 0.1);
-  color: #7c2d12;
-  cursor: pointer;
-}
-
-.letter-close:hover {
-  background: rgba(124, 45, 18, 0.2);
+  width: 32px;
+  height: 32px;
+  border-width: 2px;
+  box-shadow: 2px 2px 0 #1e1b3a;
 }
 
 @keyframes yard-fade {
@@ -405,4 +390,65 @@
   .yard-letter {
     padding-top: 76px;
   }
+}
+
+/* =====================================================================
+   Estilo desenho no contato: mesmo traço dos botões (.toon-btn), com
+   contorno grosso #1e1b3a, cores chapadas e sombra sólida deslocada.
+   Os objetos do quintal ganham contorno pelo filtro SVG (InkFilter).
+   ===================================================================== */
+.yard-title,
+.yard-title[data-night="true"] {
+  text-shadow: none;
+}
+
+.yard-title-eyebrow,
+.yard-title[data-night="true"] .yard-title-eyebrow {
+  font-family: var(--font-display);
+  color: #ffd23f;
+  -webkit-text-stroke: 4px #1e1b3a;
+  paint-order: stroke fill;
+}
+
+.yard-title p,
+.yard-title[data-night="true"] p {
+  color: #ffffff;
+  font-weight: 700;
+  -webkit-text-stroke: 4px #1e1b3a;
+  paint-order: stroke fill;
+}
+
+.yard-title p[data-done="true"] {
+  border: 3px solid #1e1b3a;
+  background: #34d399;
+  color: #1e1b3a;
+  -webkit-text-stroke: 0;
+  box-shadow: 3px 3px 0 #1e1b3a;
+}
+
+.yard-email {
+  border: 3px solid #1e1b3a;
+  background: #ffffff;
+  color: #1e1b3a;
+  box-shadow: 4px 4px 0 #1e1b3a;
+}
+
+.yard-mailbox-name {
+  fill: #1e1b3a;
+}
+
+/* carta */
+.letter-paper {
+  border: 4px solid #1e1b3a;
+  border-radius: 14px;
+  box-shadow: 8px 8px 0 #1e1b3a;
+}
+
+.letter-stamp {
+  border: 2.5px solid #1e1b3a;
+  box-shadow: 2px 2px 0 #1e1b3a;
+}
+
+.letter-greeting {
+  color: #1e1b3a;
 }

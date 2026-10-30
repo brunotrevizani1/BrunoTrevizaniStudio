@@ -1,4 +1,8 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
+import SkyTrip from './sky-trip/SkyTrip'
+import InkFilter from './icons/InkFilter'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
+import { createVeil, fitScale, resetZoom, zoomIn, zoomOut } from '../hooks/cameraZoom'
 
 const VIEW_W = 1440
 const VIEW_H = 420
@@ -85,9 +89,19 @@ const CLOUDS = [
   { top: '8%', width: 180, delay: '-95s', duration: '170s' },
 ]
 
+// mergulho no sol / na lua: o véu tem a cor do universo que vai abrir
+const TRIP_ZOOM_MS = 1400
+const TRIP_BACK_MS = 1100
+const TRIP_VEILS = {
+  sun: 'radial-gradient(circle, #fff3b0 0%, #ffb627 60%, #e85d04 100%)',
+  moon: 'radial-gradient(circle, #2b2d5c 0%, #0d0b24 70%, #05040f 100%)',
+}
+
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 function Skyline({ buildings, layerName }) {
   return (
-    <g className={`city-${layerName}`}>
+    <g className={`city-${layerName}`} filter="url(#city-ink)">
       {buildings.map((building, index) => (
         <g key={index} transform={`translate(${building.x.toFixed(1)} ${building.top.toFixed(1)})`}>
           <rect
@@ -137,9 +151,68 @@ export default function CityScene({ isNight }) {
     [],
   )
   const stars = useMemo(createStars, [])
+  const sceneRef = useRef(null)
+  const busy = useRef(false)
+  const [trip, setTrip] = useState(null)
+  const reduced = usePrefersReducedMotion()
+
+  // clicar no sol (de dia) ou na lua (de noite): a câmera mergulha nele e abre um "universo"
+  const visit = useCallback(
+    async (astro, event) => {
+      const scene = sceneRef.current
+      if (busy.current || !scene) return
+      busy.current = true
+      document.documentElement.dataset.modal = 'sky-trip'
+      // o texto do Hero some durante o mergulho, como no zoom da janela (windowZoom)
+      const hero = scene.closest('.hero-scope')
+      if (hero) hero.dataset.zoom = 'in'
+      const rect = event.currentTarget.getBoundingClientRect()
+      const sceneRect = scene.getBoundingClientRect()
+      const veil = createVeil(TRIP_VEILS[astro])
+      if (reduced) {
+        veil.style.opacity = '1'
+      } else {
+        await zoomIn(
+          scene,
+          {
+            originX: rect.left + rect.width / 2 - sceneRect.left,
+            originY: rect.top + rect.height / 2 - sceneRect.top,
+            scale: fitScale({ width: rect.width * 0.4, height: rect.height * 0.4 }),
+          },
+          TRIP_ZOOM_MS,
+          veil,
+        )
+      }
+      setTrip(astro)
+      // o universo chega por cima do véu; depois o véu pode sair
+      setTimeout(() => veil.remove(), 700)
+    },
+    [reduced],
+  )
+
+  // caminho inverso: o véu cobre a tela e a câmera se afasta do astro enquanto ele some
+  const leave = useCallback(async (veil = TRIP_VEILS[trip]) => {
+    const scene = sceneRef.current
+    const back = createVeil(veil, 1)
+    const hero = scene.closest('.hero-scope')
+    setTrip(null)
+    setTimeout(() => hero && delete hero.dataset.zoom, reduced ? 0 : TRIP_BACK_MS * 0.55)
+    if (reduced) {
+      back.style.transition = 'opacity 400ms ease'
+      back.style.opacity = '0'
+      await wait(400)
+    } else {
+      await zoomOut(scene, TRIP_BACK_MS, back)
+    }
+    resetZoom(scene)
+    back.remove()
+    delete document.documentElement.dataset.modal
+    busy.current = false
+  }, [reduced, trip])
 
   return (
     <div
+      ref={sceneRef}
       aria-hidden="true"
       data-night={isNight}
       className="city-scene pointer-events-none absolute inset-0 overflow-hidden"
@@ -166,17 +239,17 @@ export default function CityScene({ isNight }) {
         <span className="city-shooting-star" />
       </div>
 
-      <div className="city-moon">
+      <button type="button" tabIndex={-1} className="city-moon" onClick={(event) => visit('moon', event)}>
         <span className="city-moon-crater" style={{ left: '22%', top: '28%', width: '20%', height: '20%' }} />
         <span className="city-moon-crater" style={{ left: '56%', top: '18%', width: '14%', height: '14%' }} />
         <span className="city-moon-crater" style={{ left: '48%', top: '58%', width: '24%', height: '24%' }} />
-      </div>
+      </button>
 
       {/* sol, nuvens e pássaros (dia) */}
-      <div className="city-sun">
+      <button type="button" tabIndex={-1} className="city-sun" onClick={(event) => visit('sun', event)}>
         <span className="city-sun-rays" />
         <span className="city-sun-core" />
-      </div>
+      </button>
 
       <div className="city-day-layer">
         {CLOUDS.map((cloud, index) => (
@@ -227,10 +300,16 @@ export default function CityScene({ isNight }) {
         preserveAspectRatio="xMidYMax slice"
         className="city-skyline"
       >
+        <defs>
+          {/* estilo desenho: contorno escuro em volta de cada camada de prédios */}
+          <InkFilter id="city-ink" width={2.5} offset={4} />
+        </defs>
         {skyline.map((layer) => (
           <Skyline key={layer.name} layerName={layer.name} buildings={layer.buildings} />
         ))}
       </svg>
+
+      {trip && <SkyTrip astro={trip} onClose={leave} />}
     </div>
   )
 }

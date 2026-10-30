@@ -63,9 +63,8 @@ const Door = forwardRef(function Door({ project, index, entering, onOpen }, ref)
         </span>
       </span>
       <span className="srdoor-plate">
-        <em>Nº {String(index + 1).padStart(2, '0')}</em>
+        <em>Porta {index + 1}</em>
         <strong>{project.name}</strong>
-        <small>{project.tagline}</small>
       </span>
     </button>
   )

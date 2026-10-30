@@ -2,8 +2,10 @@ import { useEffect } from 'react'
 import { ArrowLeft, Mail } from 'lucide-react'
 import Excavator from './Excavator'
 import { profile } from '../data/placeholders'
+import { backLink } from '../data/projects'
 
 export default function UnderConstruction() {
+  const back = backLink()
   useEffect(() => {
     window.scrollTo(0, 0)
     const previous = document.title
@@ -14,7 +16,7 @@ export default function UnderConstruction() {
   }, [])
 
   return (
-    <main className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-grid px-6 py-12 lg:h-dvh lg:py-8">
+    <main className="toon-page relative flex min-h-dvh items-center justify-center overflow-hidden px-6 py-12 lg:h-dvh lg:py-8">
       <div className="caution-tape absolute inset-x-0 top-0 h-3 opacity-90" aria-hidden="true" />
       <div className="caution-tape absolute inset-x-0 bottom-0 h-3 opacity-90" aria-hidden="true" />
 
@@ -24,7 +26,7 @@ export default function UnderConstruction() {
         </div>
 
         <h1
-          className="animate-fade-in-up font-display text-4xl font-bold leading-tight text-text sm:text-5xl"
+          className="toon-text animate-fade-in-up font-display text-4xl font-bold leading-tight sm:text-5xl"
           style={{ animationDelay: '100ms' }}
         >
           Projeto em <span className="text-gradient">construção</span>
@@ -43,8 +45,8 @@ export default function UnderConstruction() {
           role="progressbar"
           aria-label="Obras em andamento"
         >
-          <div className="h-3 overflow-hidden rounded-full border border-border bg-surface">
-            <div className="build-progress h-full rounded-full bg-gradient-to-r from-accent-from to-accent-to">
+          <div className="toon-track">
+            <div className="build-progress h-full rounded-full bg-[#fb923c]">
               <div className="build-stripes h-full w-full rounded-full" />
             </div>
           </div>
@@ -58,15 +60,15 @@ export default function UnderConstruction() {
           style={{ animationDelay: '250ms' }}
         >
           <a
-            href="/"
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-accent-from to-accent-to px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-105"
+            href={back.href}
+            className="toon-btn"
           >
             <ArrowLeft size={18} />
-            Voltar para o início
+            {back.label}
           </a>
           <a
             href="/#contato"
-            className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-semibold text-text transition-colors hover:bg-surface"
+            className="toon-btn"
           >
             <Mail size={18} />
             Falar comigo

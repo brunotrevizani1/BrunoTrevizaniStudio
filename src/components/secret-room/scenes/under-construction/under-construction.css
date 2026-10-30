@@ -214,3 +214,21 @@
     animation: none;
   }
 }
+
+/* =====================================================================
+   Estilo desenho no canteiro de obras: mesmo traço dos botões (.toon-btn).
+   A escavadeira ganha contorno pelo filtro SVG (InkFilter).
+   ===================================================================== */
+.uc-card {
+  border: 4px solid #1e1b3a;
+  box-shadow: 9px 9px 0 #1e1b3a;
+}
+
+.uc-progress-track {
+  border: 3px solid #1e1b3a;
+  box-shadow: 3px 3px 0 #1e1b3a;
+}
+
+.uc-worklight span {
+  border: 3px solid #1e1b3a;
+}

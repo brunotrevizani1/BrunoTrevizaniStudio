@@ -5,6 +5,7 @@ import LockIntro from './LockIntro'
 import PrivateTerminal from './PrivateTerminal'
 import { ClosedPadlock } from './icons/Padlocks'
 import { profile } from '../data/placeholders'
+import { backLink } from '../data/projects'
 
 const reasons = [
   'Projeto desenvolvido sob contrato, com código de propriedade do cliente.',
@@ -31,7 +32,7 @@ function LockedSeal() {
       >
         <circle cx="80" cy="80" r="77" stroke="currentColor" strokeWidth="2" strokeDasharray="36 12 6 12" />
       </svg>
-      <div className="relative flex h-28 w-28 items-center justify-center rounded-full border border-border bg-surface">
+      <div className="toon-card relative flex h-28 w-28 items-center justify-center rounded-full">
         <ClosedPadlock className="animate-lock-shake h-14 w-14 text-accent" />
       </div>
     </div>
@@ -40,6 +41,7 @@ function LockedSeal() {
 
 export default function PrivateRepo() {
   const [phase, setPhase] = useState('locked')
+  const back = backLink()
 
   useEffect(() => {
     if (phase !== 'opening') return
@@ -57,7 +59,7 @@ export default function PrivateRepo() {
   }, [])
 
   return (
-    <main className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-grid px-6 py-12 lg:h-dvh lg:py-8">
+    <main className="toon-page relative flex min-h-dvh items-center justify-center overflow-hidden px-6 py-12 lg:h-dvh lg:py-8">
       {phase !== 'open' && (
         <LockIntro phase={phase} onUnlock={() => setPhase('opening')} />
       )}
@@ -67,7 +69,7 @@ export default function PrivateRepo() {
       <div className="relative grid w-full max-w-6xl grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:items-stretch lg:gap-14">
         <div className="flex flex-col items-center gap-5 text-center lg:items-start lg:justify-between lg:text-left">
         <h1
-          className="animate-fade-in-up font-display text-4xl font-bold leading-tight text-text sm:text-5xl"
+          className="toon-text animate-fade-in-up font-display text-4xl font-bold leading-tight sm:text-5xl"
           style={{ animationDelay: '100ms' }}
         >
           Este código é <span className="text-gradient">privado</span>
@@ -92,15 +94,15 @@ export default function PrivateRepo() {
         >
           <div className="flex flex-wrap items-center justify-center gap-4 lg:justify-start">
             <a
-              href="/"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-accent-from to-accent-to px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-105"
+              href={back.href}
+              className="toon-btn"
             >
               <ArrowLeft size={18} />
-              Voltar para o início
+              {back.label}
             </a>
             <a
               href="/#contato"
-              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-semibold text-text transition-colors hover:bg-surface"
+              className="toon-btn"
             >
               <Mail size={18} />
               Falar comigo
@@ -141,9 +143,9 @@ export default function PrivateRepo() {
             {reasons.map((reason) => (
               <li
                 key={reason}
-                className="flex items-start gap-3 rounded-xl border border-border bg-surface/60 px-4 py-2.5 text-sm text-text-muted"
+                className="toon-card flex items-start gap-3 rounded-xl px-4 py-2.5 text-sm font-medium"
               >
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-r from-accent-from to-accent-to" />
+                <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full border-2 border-[#1e1b3a] bg-[#fb923c]" />
                 {reason}
               </li>
             ))}

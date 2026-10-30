@@ -113,14 +113,14 @@ export default function PrivateTerminal({ active }) {
 
   return (
     <div
-      className="animate-fade-in-up w-full overflow-hidden rounded-2xl border border-border bg-surface text-left shadow-2xl shadow-black/20"
+      className="toon-card toon-card-dark animate-fade-in-up w-full overflow-hidden rounded-2xl text-left"
       style={{ animationDelay: '200ms' }}
       onClick={() => inputRef.current?.focus()}
     >
-      <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-        <span className="h-3 w-3 rounded-full bg-red-400/80" />
-        <span className="h-3 w-3 rounded-full bg-yellow-400/80" />
-        <span className="h-3 w-3 rounded-full bg-green-400/80" />
+      <div className="flex items-center gap-2 border-b-4 border-[#1e1b3a] bg-[#3b3f6b] px-4 py-3">
+        <span className="h-3.5 w-3.5 rounded-full border-2 border-[#1e1b3a] bg-red-400" />
+        <span className="h-3.5 w-3.5 rounded-full border-2 border-[#1e1b3a] bg-yellow-400" />
+        <span className="h-3.5 w-3.5 rounded-full border-2 border-[#1e1b3a] bg-green-400" />
         <span className="ml-3 font-mono text-xs text-text-muted">terminal</span>
       </div>
 

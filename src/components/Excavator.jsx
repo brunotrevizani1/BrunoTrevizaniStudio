@@ -1,3 +1,5 @@
+import InkFilter from './icons/InkFilter'
+
 const dirtParticles = [
   { x: 330, y: 170, dx: '4px', delay: '0s', r: 4 },
   { x: 336, y: 172, dx: '14px', delay: '0.08s', r: 3 },
@@ -27,10 +29,11 @@ export default function Excavator({ className = 'h-auto max-h-[34vh] w-full max-
           <stop offset="0.85" stopColor="var(--color-border)" />
           <stop offset="1" stopColor="var(--color-border)" stopOpacity="0" />
         </linearGradient>
+        <InkFilter id="exc-ink" width={2} offset={4} />
       </defs>
 
       {/* placa */}
-      <g>
+      <g filter="url(#exc-ink)">
         <rect x="508" y="170" width="6" height="82" fill="#52525b" />
         <rect x="474" y="150" width="74" height="34" rx="5" fill="#facc15" />
         <rect x="474" y="150" width="74" height="34" rx="5" fill="none" stroke="#18181b" strokeWidth="2" />
@@ -48,14 +51,14 @@ export default function Excavator({ className = 'h-auto max-h-[34vh] w-full max-
       </g>
 
       {/* cone */}
-      <g>
+      <g filter="url(#exc-ink)">
         <polygon points="30,250 58,250 49,214 39,214" fill="#f97316" />
         <rect x="38" y="228" width="12" height="6" fill="#fff" opacity="0.9" />
         <rect x="26" y="248" width="36" height="6" rx="2" fill="#18181b" />
       </g>
 
       {/* escavadeira */}
-      <g className="exc-idle">
+      <g className="exc-idle" filter="url(#exc-ink)">
         {/* esteira */}
         <rect x="58" y="222" width="150" height="30" rx="15" fill="#27272a" />
         <rect x="64" y="228" width="138" height="18" rx="9" fill="none" stroke="#52525b" strokeWidth="2" strokeDasharray="7 6" />

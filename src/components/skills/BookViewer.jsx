@@ -103,7 +103,7 @@ export default function BookViewer({ skill, category, details, color, originRect
 
       <button
         type="button"
-        className="book-close"
+        className="toon-btn toon-btn-icon book-close"
         style={{ opacity: isOpen ? 1 : 0, pointerEvents: isOpen ? 'auto' : 'none' }}
         onClick={close}
         aria-label="Fechar livro"

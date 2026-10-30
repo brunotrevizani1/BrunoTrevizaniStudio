@@ -83,7 +83,7 @@ export default function LockIntro({ phase, onUnlock }) {
           onClick={onUnlock}
           disabled={isOpening}
           aria-label="Abrir cadeado"
-          className={`relative flex h-32 w-32 cursor-pointer items-center justify-center rounded-full border border-border bg-surface text-accent shadow-2xl shadow-black/40 outline-none transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-accent ${
+          className={`relative flex h-32 w-32 cursor-pointer items-center justify-center rounded-full border-4 border-[#1e1b3a] bg-white text-accent shadow-[6px_6px_0_#1e1b3a] outline-none transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-accent ${
             isOpening ? 'animate-lock-pop' : 'animate-lock-tremble'
           }`}
         >

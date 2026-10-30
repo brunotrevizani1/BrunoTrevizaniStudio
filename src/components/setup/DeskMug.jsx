@@ -21,9 +21,18 @@ function DeskMug() {
           <span style={{ animationDelay: '1.8s' }} />
         </div>
         <svg viewBox="0 0 70 62" fill="none" aria-hidden="true">
-          <path d="M52 20 h6 a9 9 0 0 1 0 22 h-8" stroke="#f8fafc" strokeWidth="6" strokeLinecap="round" />
-          <path d="M8 14 h46 v28 a16 16 0 0 1 -16 16 h-14 a16 16 0 0 1 -16 -16 Z" fill="#f8fafc" />
-          <ellipse cx="31" cy="15" rx="23" ry="5" fill="#7c4a24" />
+          {/* traço de desenho, como os botões: contorno escuro grosso (a sombra sólida vem do CSS) */}
+          <path d="M52 20 h6 a9 9 0 0 1 0 22 h-8" stroke="#1e1b3a" strokeWidth="11" strokeLinecap="round" />
+          <path d="M52 20 h6 a9 9 0 0 1 0 22 h-8" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" />
+          <path
+            d="M8 14 h46 v28 a16 16 0 0 1 -16 16 h-14 a16 16 0 0 1 -16 -16 Z"
+            fill="#ffffff"
+            stroke="#1e1b3a"
+            strokeWidth="3"
+            strokeLinejoin="round"
+          />
+          <path d="M13 20 v20" stroke="#dbeafe" strokeWidth="4" strokeLinecap="round" />
+          <ellipse cx="31" cy="15" rx="21.5" ry="4.5" fill="#7c4a24" stroke="#1e1b3a" strokeWidth="2.5" />
           {/* ícone </> e nome */}
           <path
             d="M25 27 l-3.5 3.5 l3.5 3.5 M37 27 l3.5 3.5 l-3.5 3.5 M33 26 l-4 9"

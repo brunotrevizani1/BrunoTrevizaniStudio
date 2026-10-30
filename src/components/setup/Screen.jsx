@@ -5,6 +5,16 @@ import { about, profile } from '../../data/placeholders'
 
 const FOLDERS = about.sections
 
+// nome da pasta no terminal: "Quem sou eu" -> "quem-sou-eu" (sem acento, para dar para digitar)
+const folderSlug = (text) =>
+  text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/\s+/g, '-')
+
+/** Índice da pasta digitada ("quem-sou-eu", "cd quem-sou-eu/", "open quem-sou-eu"...) ou -1. */
+function folderFromCommand(command) {
+  const target = command.trim().replace(/^(cd|open|cat)\s+/i, '').replace(/\/+$/, '')
+  return FOLDERS.findIndex((folder) => folderSlug(folder.title) === folderSlug(target))
+}
+
 function FolderIcon({ size = 48 }) {
   return (
     <svg viewBox="0 0 64 52" width={size} height={size * 0.82} aria-hidden="true">
@@ -43,14 +53,14 @@ function buildOutput(command) {
   switch (name) {
     case 'help':
       return [
-        { text: 'whoami   quem é você?', tone: 'muted' },
+        { text: 'sobre    quem é você?', tone: 'muted' },
         { text: 'stack    tecnologias principais', tone: 'muted' },
         { text: 'status   disponibilidade e localização', tone: 'muted' },
         { text: 'ls       pastas da área de trabalho', tone: 'muted' },
         { text: 'contato  como falar comigo', tone: 'muted' },
         { text: 'clear    limpa o terminal', tone: 'muted' },
       ]
-    case 'whoami':
+    case 'sobre':
       return [{ text: `${profile.name} · ${profile.title}`, tone: 'ok' }]
     case 'stack': {
       const stack = about.highlights.find((item) => item.label === 'Stack principal')
@@ -59,7 +69,10 @@ function buildOutput(command) {
     case 'status':
       return highlightLines()
     case 'ls':
-      return [{ text: FOLDERS.map((folder) => `${folder.title.toLowerCase().replace(/ /g, '-')}/`).join('  '), tone: 'hint' }]
+      return [
+        { text: FOLDERS.map((folder) => `${folderSlug(folder.title)}/`).join('  '), tone: 'hint' },
+        { text: 'Digite o nome de uma pasta para abrir.', tone: 'muted' },
+      ]
     case 'contato':
       return [
         { text: `email     ${profile.email}`, tone: 'ok', href: `mailto:${profile.email}`, linkFrom: 10 },
@@ -97,11 +110,40 @@ function OutputLine({ line }) {
   )
 }
 
-function MiniTerminal({ onKey }) {
+const COMMANDS = ['help', 'sobre', 'stack', 'status', 'ls', 'contato', 'clear']
+const FOLDER_PREFIX = /^((?:cd|open|cat)\s+)?(.*)$/i
+
+const commonPrefix = (words) =>
+  words.reduce((prefix, word) => {
+    let size = 0
+    while (size < prefix.length && prefix[size] === word[size]) size += 1
+    return prefix.slice(0, size)
+  })
+
+/**
+ * Tab do terminal: completa comandos e nomes de pasta (também depois de cd/open/cat).
+ * Devolve { value } com o texto completado ou { options } quando há várias possibilidades.
+ */
+function complete(input) {
+  const [, prefix = '', word] = input.match(FOLDER_PREFIX)
+  const typed = word.toLowerCase()
+  const folders = FOLDERS.map((folder) => `${folderSlug(folder.title)}/`)
+  const pool = prefix ? folders : [...COMMANDS, ...folders]
+  const matches = pool.filter((item) => item.startsWith(typed))
+  if (matches.length === 0) return {}
+  if (matches.length === 1) return { value: prefix + matches[0] }
+  const shared = commonPrefix(matches)
+  return shared.length > typed.length ? { value: prefix + shared } : { options: matches }
+}
+
+function MiniTerminal({ onKey, onOpenFolder }) {
   const [history, setHistory] = useState(INITIAL_HISTORY)
   const [value, setValue] = useState('')
   const inputRef = useRef(null)
   const bodyRef = useRef(null)
+  // setas: comandos já enviados (mais antigo primeiro) e a posição atual ao navegar por eles
+  const typed = useRef([])
+  const recall = useRef({ index: null, draft: '' })
 
   useEffect(() => {
     const body = bodyRef.current
@@ -112,13 +154,54 @@ function MiniTerminal({ onKey }) {
     event.preventDefault()
     const command = value.trim()
     setValue('')
+    recall.current = { index: null, draft: '' }
+    if (command && typed.current[typed.current.length - 1] !== command) typed.current.push(command)
 
     if (command.toLowerCase() === 'clear') {
       setHistory([])
       return
     }
 
+    const folder = command ? folderFromCommand(command) : -1
+    if (folder !== -1) {
+      onOpenFolder(folder)
+      setHistory((prev) => [...prev, { command, output: [{ text: `abrindo ${folderSlug(FOLDERS[folder].title)}/`, tone: 'ok' }] }])
+      return
+    }
+
     setHistory((prev) => [...prev, { command, output: command ? buildOutput(command) : [] }])
+  }
+
+  function handleKeyDown(event) {
+    onKey(event)
+
+    // Tab com a linha vazia continua navegando pelo foco normalmente
+    if (event.key === 'Tab' && !event.shiftKey && value.trim()) {
+      event.preventDefault()
+      const result = complete(value.trimStart())
+      if (result.value) setValue(result.value)
+      else if (result.options) {
+        setHistory((prev) => [...prev, { command: value, output: [{ text: result.options.join('  '), tone: 'hint' }] }])
+      }
+      return
+    }
+
+    if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return
+    const list = typed.current
+    if (list.length === 0) return
+    event.preventDefault()
+    const { index, draft } = recall.current
+
+    if (event.key === 'ArrowUp') {
+      const next = index === null ? list.length - 1 : Math.max(0, index - 1)
+      recall.current = { index: next, draft: index === null ? value : draft }
+      setValue(list[next])
+    } else if (index !== null) {
+      // descendo depois do último volta para o que estava sendo digitado
+      const next = index + 1
+      recall.current = next < list.length ? { index: next, draft } : { index: null, draft: '' }
+      setValue(next < list.length ? list[next] : draft)
+    }
   }
 
   return (
@@ -147,7 +230,7 @@ function MiniTerminal({ onKey }) {
             ref={inputRef}
             value={value}
             onChange={(event) => setValue(event.target.value)}
-            onKeyDown={onKey}
+            onKeyDown={handleKeyDown}
             type="text"
             spellCheck={false}
             autoComplete="off"
@@ -307,7 +390,7 @@ export default function Screen({ on, cursorRef, onMove, onPress, onKey }) {
           className="setup-window-terminal"
           onClose={() => setTerminalOpen(false)}
         >
-          <MiniTerminal onKey={onKey} />
+          <MiniTerminal onKey={onKey} onOpenFolder={openFolderWindow} />
         </DesktopWindow>
 
         {openFolder !== null && (

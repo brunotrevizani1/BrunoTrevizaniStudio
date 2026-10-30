@@ -28,17 +28,18 @@ const SWIPE_PX = 60
  * a porta e entra no cenário do projeto (carregado sob demanda). O corredor mostra o cabeçalho do
  * site; os cenários não. Esc volta um passo e rolar para cima no corredor volta para a estante.
  */
-export default function SecretRoom({ onClosing, onClosed }) {
+export default function SecretRoom({ initialProject, onClosing, onClosed }) {
   const { isOn, toggleLamp } = useLamp()
   const reduced = usePrefersReducedMotion()
-  const [phase, setPhase] = useState('arriving')
-  const [active, setActive] = useState(null)
+  // initialProject: abre direto no cenário (voltando da tela de código privado / em construção)
+  const [phase, setPhase] = useState(initialProject ? 'scene' : 'arriving')
+  const [active, setActive] = useState(initialProject ?? null)
   const [origin, setOrigin] = useState({ x: '50%', y: '55%' })
   const backRef = useRef(null)
   const worldRef = useRef(null)
   const curtainRef = useRef(null)
   const zoomTimer = useRef(0)
-  const lastDoor = useRef(null)
+  const lastDoor = useRef(initialProject?.id ?? null)
   const leaveTo = useRef(null)
   const continueDown = useRef(false)
   const hubAt = useRef(0)
@@ -209,7 +210,7 @@ export default function SecretRoom({ onClosing, onClosed }) {
 
       <div className="sr-bar">
         {inScene ? (
-          <button ref={backRef} type="button" className="sr-btn sr-btn-back" onClick={backToHub}>
+          <button ref={backRef} type="button" className="toon-btn sr-btn sr-btn-back" onClick={backToHub}>
             <ArrowLeft size={18} aria-hidden="true" />
             Voltar à sala secreta
           </button>
@@ -218,7 +219,7 @@ export default function SecretRoom({ onClosing, onClosed }) {
         )}
         <button
           type="button"
-          className="sr-btn sr-btn-icon"
+          className="toon-btn toon-btn-icon sr-btn sr-btn-icon"
           onClick={toggleLamp}
           aria-label={isOn ? 'Apagar a luz (modo noite)' : 'Acender a luz (modo dia)'}
         >

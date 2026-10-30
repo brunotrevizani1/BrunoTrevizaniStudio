@@ -517,3 +517,59 @@
     animation: none;
   }
 }
+
+/* =====================================================================
+   Estilo desenho no estúdio: mesmo traço dos botões (.toon-btn), com
+   contorno grosso #1e1b3a, cores chapadas e sombra sólida deslocada.
+   Fica no fim do arquivo para valer por cima das regras anteriores.
+   ===================================================================== */
+.pl {
+  --ink: #1e1b3a;
+  --outline: drop-shadow(2.5px 0 0 var(--ink)) drop-shadow(-2.5px 0 0 var(--ink)) drop-shadow(0 2.5px 0 var(--ink))
+    drop-shadow(0 -2.5px 0 var(--ink));
+  --pop: drop-shadow(5px 5px 0 var(--ink));
+}
+
+.pl-softbox,
+.pl-umbrella,
+.pl-reflector,
+.pl-tripod,
+.pl-legs,
+.pl-tray,
+.pl-clamp {
+  filter: var(--outline) var(--pop);
+}
+
+.sr[data-night="true"] .pl-tripod {
+  filter: brightness(0.8) var(--outline) var(--pop);
+}
+
+.pl-photo {
+  box-shadow: 0 0 0 3px var(--ink), 4px 4px 0 3px var(--ink);
+}
+
+.pl-pin {
+  border: 2px solid var(--ink);
+  background: #ffd23f;
+  box-shadow: none;
+}
+
+.pl-board {
+  border-color: #d9954f;
+  border-radius: 10px;
+  background: #fffdf5;
+  box-shadow: 0 0 0 4px var(--ink), 9px 9px 0 4px var(--ink), inset 0 0 0 4px var(--ink);
+}
+
+.sr[data-night="true"] .pl-board {
+  box-shadow:
+    0 0 0 4px var(--ink),
+    9px 9px 0 4px var(--ink),
+    inset 0 0 0 4px var(--ink),
+    0 0 60px 10px rgba(255, 244, 205, 0.3);
+}
+
+.pl-shot {
+  border: 3px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+}

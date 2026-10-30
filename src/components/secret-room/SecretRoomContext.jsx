@@ -1,5 +1,6 @@
 import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { CONTINUE_DOWN, OPEN_SECRET_ROOM } from './events'
+import { projectFromUrl } from '../../data/projects'
 
 // A sala secreta inteira (hub + CSS) só é baixada na primeira vez que alguém a abre.
 const loadRoom = () => import('./SecretRoom')
@@ -10,7 +11,10 @@ const SecretRoomContext = createContext(null)
 export function SecretRoomProvider({ children }) {
   const [session, setSession] = useState(null)
 
-  const openRoom = useCallback((options = {}) => setSession({ onClosed: options.onClosed, onClosing: options.onClosing }), [])
+  const openRoom = useCallback(
+    (options = {}) => setSession({ onClosed: options.onClosed, onClosing: options.onClosing, project: options.project }),
+    [],
+  )
   const handleClosed = useCallback((nextHref) => {
     setSession((current) => {
       current?.onClosed?.({ continueDown: nextHref === CONTINUE_DOWN })
@@ -35,7 +39,7 @@ export function SecretRoomProvider({ children }) {
       {children}
       {session && (
         <Suspense fallback={null}>
-          <SecretRoom onClosing={session.onClosing} onClosed={handleClosed} />
+          <SecretRoom initialProject={session.project} onClosing={session.onClosing} onClosed={handleClosed} />
         </Suspense>
       )}
     </SecretRoomContext.Provider>
@@ -48,4 +52,18 @@ export function useSecretRoom() {
     throw new Error('useSecretRoom precisa ser usado dentro de um SecretRoomProvider')
   }
   return context
+}
+
+/** Voltou de /codigo-privado ou /em-construcao (?projeto=<id>): reabre a sala já no cenário do projeto. */
+export function ResumeProject() {
+  const { openRoom } = useSecretRoom()
+
+  useEffect(() => {
+    const project = projectFromUrl()
+    if (!project) return
+    window.history.replaceState(null, '', window.location.pathname + window.location.hash)
+    openRoom({ project })
+  }, [openRoom])
+
+  return null
 }

@@ -70,9 +70,32 @@ export const projects = [
   },
 ]
 
+// As telas /codigo-privado e /em-construcao recebem ?projeto=<id> para o "Voltar" reabrir a sala
+// secreta já no cenário daquele projeto (ver ResumeProject em SecretRoomContext).
+const PROJECT_PARAM = 'projeto'
+
+/** Rota interna marcada com o projeto de onde o visitante saiu. */
+export function withProject(route, project) {
+  return `${route}?${PROJECT_PARAM}=${encodeURIComponent(project.id)}`
+}
+
+/** Projeto indicado no ?projeto= da URL atual (ou null). */
+export function projectFromUrl() {
+  const id = new URLSearchParams(window.location.search).get(PROJECT_PARAM)
+  return projects.find((project) => project.id === id && !project.placeholder) ?? null
+}
+
+/** Para onde o "Voltar" das telas internas leva: o projeto de origem ou o início. */
+export function backLink() {
+  const project = projectFromUrl()
+  return project
+    ? { href: withProject('/', project), label: `Voltar para o ${project.name}` }
+    : { href: '/', label: 'Voltar para o início' }
+}
+
 /** Destino do botão "Ver código" de um projeto (ou null quando não há código para mostrar). */
 export function codeLink(project) {
-  if (project.privateCode) return { href: PRIVATE_REPO_ROUTE, external: false }
+  if (project.privateCode) return { href: withProject(PRIVATE_REPO_ROUTE, project), external: false }
   if (project.repoUrl) return { href: project.repoUrl, external: true }
   return null
 }
