@@ -39,6 +39,7 @@
   left: 0;
   right: 0;
   top: 62px;
+  z-index: 3;
   height: 170px;
 }
 
@@ -186,12 +187,58 @@
   opacity: 1;
 }
 
-.pl-tripod {
+/* câmera no tripé: é um botão, cada clique tira uma foto para o varal */
+.pl-camera {
   position: absolute;
   left: 15%;
   bottom: calc(var(--floor) * 0.2);
+  z-index: 1;
   width: clamp(100px, 11vw, 160px);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: transform 200ms ease;
+}
+
+.pl-camera:hover {
+  transform: translateY(-4px);
+}
+
+.pl-camera:focus-visible {
+  outline: 3px solid #fb923c;
+  outline-offset: 6px;
+  border-radius: 8px;
+}
+
+.pl-tripod {
+  display: block;
+  width: 100%;
   height: auto;
+  overflow: visible;
+}
+
+.pl-tripod.is-kick {
+  animation: pl-kick 320ms ease-out;
+}
+
+.pl-camera-hint {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-bottom: 8px;
+  padding: 4px 12px;
+  transform: translateX(-50%);
+  border: 3px solid #1e1b3a;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #1e1b3a;
+  box-shadow: 3px 3px 0 #1e1b3a;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  animation: pl-hint 1.6s ease-in-out 2s infinite;
 }
 
 .pl-led {
@@ -413,6 +460,71 @@
   animation: pl-flash 800ms ease-out 250ms both;
 }
 
+/* flash do clique: sem o atraso da entrada da cena */
+.pl-flash.is-shot {
+  animation: pl-flash 520ms ease-out 110ms both;
+}
+
+/* obturador: duas cortinas pretas fecham e abrem a tela num piscar */
+.pl-shutter {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.pl-shutter::before,
+.pl-shutter::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: #1e1b3a;
+  animation: pl-shutter 240ms ease-in-out both;
+}
+
+.pl-shutter::before {
+  top: 0;
+  transform-origin: 50% 0;
+}
+
+.pl-shutter::after {
+  bottom: 0;
+  transform-origin: 50% 100%;
+}
+
+/* foto tirada: revela durante o voo e só começa a balançar depois de pendurada */
+.pl-photo-shot {
+  animation: pl-sway 6s ease-in-out 1.8s infinite;
+}
+
+.pl-photo-shot .pl-img {
+  animation: pl-develop 1500ms ease-out 300ms both;
+}
+
+@keyframes pl-shutter {
+  from,
+  to {
+    transform: scaleY(0);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes pl-kick {
+  30% {
+    transform: translateY(5px) rotate(-1.5deg);
+  }
+}
+
+@keyframes pl-hint {
+  50% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
 @keyframes pl-flash {
   0% {
     opacity: 0;
@@ -459,8 +571,15 @@
 /* ---------- telas médias: some o que não cabe ao lado do cavalete ---------- */
 
 @media (max-width: 1000px) {
-  .pl-tripod,
+  .pl-camera,
   .pl-umbrella {
+    display: none;
+  }
+}
+
+/* com a câmera na tela o varal começa vazio */
+@media (min-width: 1001px) {
+  .pl-photo-sample {
     display: none;
   }
 }
@@ -513,6 +632,12 @@
   .pl-shot,
   .pl-easel,
   .pl-flash,
+  .pl-flash.is-shot,
+  .pl-shutter::before,
+  .pl-shutter::after,
+  .pl-tripod.is-kick,
+  .pl-camera-hint,
+  .pl-photo-shot .pl-img,
   .pl-led {
     animation: none;
   }

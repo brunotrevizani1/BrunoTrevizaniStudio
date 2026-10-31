@@ -30,7 +30,7 @@ export const about = {
     },
     {
       title: "O que utilizo",
-      text: "Utilizo JavaScript, TypeScript, React, Node.js, Express e Next.js para desenvolver aplicações e sistemas. Também trabalho com MySQL e PostgreSQL para bancos de dados, Git e GitHub para versionamento e ferramentas como Vercel e Railway para publicação e hospedagem dos meus projetos.",
+      text: "Utilizo JavaScript, TypeScript, React, Node.js, Express e Next.js para desenvolver aplicações e sistemas. Também trabalho com MySQL e PostgreSQL para bancos de dados, Git e GitHub para versionamento e ferramentas como Vercel, VPS hostinger, Railway, etc... para publicação e hospedagem dos meus projetos.",
     },
     {
       title: "Minha evolução",

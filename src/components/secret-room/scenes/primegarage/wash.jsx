@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react'
 
 // Interação do lava-jato: a mão com esponja passa espuma na lataria e a lavadora (mangueira de
 // verdade, com comprimento limitado) joga água em gotas, no mesmo estilo do regador da planta.
@@ -15,12 +15,51 @@ const ERASE_UNITS = 26 // raio da água sobre a lataria (unidades do desenho do 
 const GUN_STANDOFF = 150 // a pistola fica um pouco antes do ponto mirado
 const GUN_LENGTH = 30
 
-/** Espuma passada pelo visitante, recortada no formato da lataria (viewBox do carro 566 x 214). */
-export const FoamLayer = forwardRef(function FoamLayer({ bodyPath }, ref) {
+// a lataria é dividida em pedacinhos: cada um tocado pela esponja ganha uma bolha. Isso dá a
+// porcentagem de cobertura e um limite natural de bolhas, sem nada sumir para dar lugar ao novo
+const FOAM_CELL = 13
+const SPONGE_UNITS = 26 // raio da esponja sobre a lataria (unidades do desenho do carro)
+
+/**
+ * Espuma passada pelo visitante, recortada no formato da lataria (viewBox do carro 566 x 214).
+ * onCoverage recebe a fração da lataria com espuma (0 a 1) sempre que ela muda.
+ */
+export const FoamLayer = forwardRef(function FoamLayer({ bodyPath, onCoverage }, ref) {
   const svgRef = useRef(null)
   const bodyRef = useRef(null)
   const nextId = useRef(0)
+  const cells = useRef([])
   const [foam, setFoam] = useState([])
+
+  useLayoutEffect(() => {
+    const body = bodyRef.current
+    const found = []
+    for (let x = FOAM_CELL / 2; x < 566; x += FOAM_CELL) {
+      for (let y = FOAM_CELL / 2; y < 214; y += FOAM_CELL) {
+        if (body.isPointInFill(new DOMPoint(x, y))) found.push({ key: `${x}:${y}`, x, y })
+      }
+    }
+    cells.current = found
+  }, [])
+
+  useEffect(() => {
+    onCoverage(cells.current.length ? foam.length / cells.current.length : 0)
+  }, [foam, onCoverage])
+
+  const foamCells = (chosen) => {
+    const bubbles = chosen.map((cell) => ({
+      id: nextId.current++,
+      key: cell.key,
+      x: cell.x + (Math.random() - 0.5) * 12,
+      y: cell.y + (Math.random() - 0.5) * 12,
+      r: 11 + Math.random() * 7,
+    }))
+    setFoam((current) => {
+      const taken = new Set(current.map((bubble) => bubble.key))
+      const fresh = bubbles.filter((bubble) => !taken.has(bubble.key))
+      return fresh.length ? [...current, ...fresh] : current
+    })
+  }
 
   useImperativeHandle(
     ref,
@@ -31,14 +70,10 @@ export const FoamLayer = forwardRef(function FoamLayer({ bodyPath }, ref) {
       },
       onBody: (point) => bodyRef.current.isPointInFill(point),
       dab(point) {
-        const bubbles = Array.from({ length: 3 }, () => ({
-          id: nextId.current++,
-          x: point.x + (Math.random() - 0.5) * 30,
-          y: point.y + (Math.random() - 0.5) * 24,
-          r: 7 + Math.random() * 9,
-        }))
-        setFoam((current) => [...current, ...bubbles].slice(-260))
+        foamCells(cells.current.filter((cell) => Math.hypot(cell.x - point.x, cell.y - point.y) <= SPONGE_UNITS))
       },
+      fill: () => foamCells(cells.current),
+      clear: () => setFoam([]),
       erase(point) {
         setFoam((current) => {
           const next = current.filter((bubble) => Math.hypot(bubble.x - point.x, bubble.y - point.y) > bubble.r + ERASE_UNITS)
@@ -66,7 +101,22 @@ export const FoamLayer = forwardRef(function FoamLayer({ bodyPath }, ref) {
   )
 })
 
-// mãozinha segurando uma esponja (o centro da esponja fica na ponta do ponteiro)
+// luva de borracha: coordenadas com a origem nos nós dos dedos e os dedos para cima; o conjunto
+// é desenhado duas vezes (contorno e cor) para virar uma silhueta só, sem linhas entre as partes
+const GLOVE_SHAPE = (
+  <>
+    <rect x="-25" y="-30" width="13" height="38" rx="6.5" />
+    <rect x="-12" y="-36" width="13" height="44" rx="6.5" />
+    <rect x="1" y="-34" width="13" height="42" rx="6.5" />
+    <rect x="14" y="-26" width="13" height="34" rx="6.5" />
+    <rect x="-46" y="8" width="32" height="15" rx="7.5" transform="rotate(25 -14 16)" />
+    <rect x="-27" y="-4" width="56" height="46" rx="18" />
+    <rect x="-17" y="36" width="36" height="16" />
+  </>
+)
+
+// mão de luva segurando a esponja (o centro da esponja fica na ponta do ponteiro; o braço entra
+// pela direita, de baixo, para não cobrir o que está sendo lavado)
 function SpongeHand() {
   const outline = { stroke: INK, strokeWidth: 4, strokeLinejoin: 'round', strokeLinecap: 'round' }
   return (
@@ -76,9 +126,6 @@ function SpongeHand() {
           <rect x="14" y="50" width="72" height="46" rx="12" />
         </clipPath>
       </defs>
-      {/* manga e punho */}
-      <rect x="40" y="-6" width="40" height="26" rx="7" fill="#ffffff" {...outline} />
-      <path d="M46 18 L46 36 L74 36 L74 18 Z" fill="#ffb38a" {...outline} />
       {/* esponja */}
       <rect x="14" y="50" width="72" height="46" rx="12" fill="#facc15" {...outline} />
       <g clipPath="url(#pg-sponge-clip)">
@@ -89,12 +136,18 @@ function SpongeHand() {
         <circle cx="60" cy="72" r="2.5" fill="#ca8a04" />
       </g>
       <rect x="14" y="50" width="72" height="46" rx="12" fill="none" {...outline} />
-      {/* mão por cima: palma e dedos apertando a esponja */}
-      <path d="M24 52 Q24 30 60 28 Q92 28 90 54 L90 58 L24 58 Z" fill="#ffb38a" {...outline} />
-      {[32, 47, 62, 77].map((cx) => (
-        <ellipse key={cx} cx={cx} cy="60" rx="8.5" ry="9" fill="#ffb38a" {...outline} />
-      ))}
-      <ellipse cx="14" cy="50" rx="8" ry="11" transform="rotate(-24 14 50)" fill="#ffb38a" {...outline} />
+      <g transform="translate(82 92) rotate(-38)">
+        {/* manga */}
+        <rect x="-18" y="62" width="38" height="90" fill="#ffffff" {...outline} />
+        <g fill={INK} stroke={INK} strokeWidth="8" strokeLinejoin="round">
+          {GLOVE_SHAPE}
+        </g>
+        <g fill="#60a5fa">{GLOVE_SHAPE}</g>
+        {/* divisão dos dedos, brilho e punho da luva */}
+        <path d="M-12 -22 V8 M1 -24 V8 M14 -20 V8" fill="none" stroke={INK} strokeWidth="3" strokeLinecap="round" />
+        <path d="M-17 12 Q-16 26 -7 30" fill="none" stroke="#bfdbfe" strokeWidth="4" strokeLinecap="round" />
+        <rect x="-24" y="46" width="50" height="20" rx="6" fill="#2563eb" {...outline} />
+      </g>
     </svg>
   )
 }
@@ -103,7 +156,7 @@ function SpongeHand() {
  * Camada que cobre a cena quando uma ferramenta está na mão: captura o ponteiro, mostra a mão com
  * esponja (sabão) ou a mangueira com a pistola e as gotas (lavadora).
  */
-export function WashOverlay({ tool, washerRef, foamRef }) {
+export function WashOverlay({ tool, washerRef, foamRef, onDrop }) {
   const rootRef = useRef(null)
   const canvasRef = useRef(null)
   const spongeRef = useRef(null)
@@ -135,6 +188,7 @@ export function WashOverlay({ tool, washerRef, foamRef }) {
   }
 
   const onPointerDown = (event) => {
+    if (event.button !== 0) return
     event.currentTarget.setPointerCapture(event.pointerId)
     onPointerMove(event)
     pointer.current.down = true
@@ -328,9 +382,15 @@ export function WashOverlay({ tool, washerRef, foamRef }) {
       data-tool={tool}
       onPointerMove={onPointerMove}
       onPointerDown={onPointerDown}
+      // a etapa pode acabar com o botão ainda pressionado: sem isto o arraste seguiria selecionando a página
+      onMouseDown={(event) => event.preventDefault()}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
       onPointerLeave={onPointerLeave}
+      onContextMenu={(event) => {
+        event.preventDefault()
+        onDrop()
+      }}
     >
       {tool === 'water' && <canvas ref={canvasRef} className="pg-spray" />}
       {tool === 'soap' && (
