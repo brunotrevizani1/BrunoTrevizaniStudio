@@ -28,8 +28,6 @@ export function useFullPageScroll() {
     let lastWheelTime = 0
     let lastWheelDelta = 0
     let frame = 0
-    // a sala já foi visitada e a câmera voltou à mesa: o próximo scroll para baixo segue para a próxima aba
-    let skipShelf = false
 
     const getPanels = () => Array.from(document.querySelectorAll('[data-panel]'))
     const maxScroll = () => root.scrollHeight - window.innerHeight
@@ -115,39 +113,25 @@ export function useFullPageScroll() {
       })
     }
 
-    // pan da estante de volta ao close-up e, só depois dele, a próxima aba (sem passar pela estante de novo)
-    function returnToDeskThenNext(camera) {
-      const pan = camera.goTo('closeup')
-      runCamera(pan, 'up')
-      pan.then(() => setTimeout(() => go(1, true), COOLDOWN + 60))
-    }
-
     function tryCameraStep(panels, direction) {
-      if (panels[currentIndex(panels)]?.id !== 'sobre' || direction < 0) skipShelf = false
       if (panels[currentIndex(panels)]?.id !== 'sobre') return false
       const camera = aboutCamera()
       if (!camera) return false
 
       if (direction > 0 && camera.stage === 'closeup') {
-        if (skipShelf) {
-          skipShelf = false
-          return false
-        }
         runCamera(camera.goTo('shelf'), 'down')
         return true
       }
       // na estante, o primeiro scroll para baixo puxa o livro "Projetos" e abre a sala secreta;
-      // depois que ela fecha, o scroll seguinte segue para a próxima aba
+      // depois que ela fecha, o scroll seguinte desce direto para a próxima aba (o caminho inverso
+      // de Contato, que sobe direto para a estante, sem passar pelo close-up)
       if (direction > 0 && camera.stage === 'shelf') {
         const lever = document.querySelector('#sobre .skshelf')?.__lever
         if (lever && !lever.used) {
           runCamera(lever.pull(), 'down')
           return true
         }
-        // a sala já foi visitada: a câmera só volta da estante para a mesa; o próximo scroll segue para a próxima aba
-        skipShelf = true
-        runCamera(camera.goTo('closeup'), 'up')
-        return true
+        return false
       }
       if (direction < 0 && camera.stage === 'shelf') {
         runCamera(camera.goTo('closeup'), 'up')
@@ -308,11 +292,9 @@ export function useFullPageScroll() {
       animateTo(top, top > window.scrollY ? 'down' : 'up')
     }
 
-    // rolou para baixo no corredor da sala secreta: ela fechou e a estante também, agora a câmera volta
+    // rolou para baixo no corredor da sala secreta: ela fechou e a estante também, segue para a próxima aba
     function onSecretRoomContinue() {
-      const camera = aboutCamera()
-      if (camera && camera.stage === 'shelf') returnToDeskThenNext(camera)
-      else go(1, true)
+      go(1, true)
     }
 
     const isTouch = window.matchMedia('(pointer: coarse)').matches
