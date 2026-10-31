@@ -1315,6 +1315,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   opacity: 0;
   transform: scale(1.06);
   pointer-events: none;
+  transition-duration: 220ms, 300ms;
 }
 
 .is-zooming {
@@ -1457,9 +1458,9 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 .setup-mug {
   position: absolute;
-  left: 1262px;
-  top: 526px;
-  width: 64px;
+  left: 1256px;
+  top: 512px;
+  width: 78px;
   padding: 0;
   border: 0;
   background: none;
@@ -1486,9 +1487,9 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 .setup-mug-name {
   font-family: var(--font-display);
-  font-size: 10.5px;
+  font-size: 11.5px;
   font-weight: 700;
-  fill: #c2410c;
+  fill: #ffffff;
 }
 
 .setup-scene[data-night="true"] .setup-mug {
@@ -2245,7 +2246,7 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 
 /* o redemoinho deixa o café mais ralo no meio, revelando a escrita do fundo */
 .mug-coffee {
-  opacity: calc(0.9 - var(--vortex) * 0.45);
+  opacity: calc(1 - var(--vortex) * 0.6);
 }
 
 .mug-swirl {
@@ -2261,7 +2262,6 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   height: 0;
   transform-origin: 0 0;
   pointer-events: none;
-  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.35));
 }
 
 .mug-spoon svg {
@@ -3673,8 +3673,10 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
 }
 
 /* início: boas-vindas */
+/* só backwards: com forwards a animação terminada seguraria opacity e transform e o
+   [data-zoom] nunca conseguiria esconder o conteúdo */
 .hero-content {
-  animation: fade-in-up 900ms ease both;
+  animation: fade-in-up 900ms ease backwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -4389,52 +4391,55 @@ img.hero-photo-img {
   to { transform: scaleY(1); }
 }
 
-/* outdoors menores dos lados: frase no lugar da foto, tamanhos e alturas diferentes */
-.hero-billboard-side {
-  width: clamp(150px, 17vw, 230px);
-  padding-top: 24px;
+/* palco do Hero: frase à esquerda e outdoor à direita, abaixo da rota do avião; a folga
+   à esquerda (só onde a tela é estreita) deixa a linha do tempo fora da frase */
+.hero-stage {
+  padding-top: clamp(96px, 14vh, 130px);
 }
 
-.hero-billboard-left {
-  margin-top: 150px;
-  animation-delay: 450ms;
+@media (min-width: 768px) and (max-width: 1320px) {
+  .hero-stage {
+    padding-left: 130px;
+  }
 }
 
-.hero-billboard-right {
-  width: clamp(170px, 20vw, 270px);
-  margin-top: 70px;
-  animation-delay: 650ms;
-}
-
-.hero-billboard-side .hero-photo {
-  padding: 7px;
-}
-
-.hero-billboard-side .hero-billboard-lamps i {
-  width: 28px;
-  height: 17px;
-}
-
-.hero-sign {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 16 / 10;
-  padding: 10px;
-  border: 4px solid #1e1b3a;
-  border-radius: 6px;
-  background: #fff7ed;
-  color: #1e1b3a;
-  font-family: var(--font-display);
-  font-size: clamp(13px, 1.45vw, 19px);
+.hero-phrase {
+  max-width: 15em;
+  margin: 0;
+  font-size: clamp(26px, 3vw, 42px);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.3;
   text-align: center;
 }
 
-.hero-billboard-side .hero-billboard-legs {
-  width: 36px;
-  margin-left: -18px;
+@media (min-width: 768px) {
+  .hero-phrase {
+    text-align: left;
+  }
+}
+
+/* outdoor um pouco além da coluna; some em telas estreitas, onde não sobra margem */
+.hero-board-slot {
+  margin-right: calc(-1 * clamp(0px, (100vw - 1024px) / 16, 28px));
+}
+
+/* redes sociais do Hero: botão redondo no traço dos .toon-btn, legível sobre céu ou prédios */
+.hero-social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 3px solid #1e1b3a;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #1e1b3a;
+  box-shadow: 3px 3px 0 #1e1b3a;
+  transition: transform 150ms ease;
+}
+
+.hero-social:hover {
+  transform: translateY(-2px);
 }
 
 /* linha do tempo fixa na esquerda (ver Timeline): uma parada por etapa do site */

@@ -6,6 +6,7 @@ const SIZE = 480
 const C = SIZE / 2
 const COFFEE_R = 148
 const SPOON_MAX_R = COFFEE_R - 26
+const INK = '#1e1b3a'
 
 const HEAT_START = 0.3
 const HEAT_GAIN = 0.045 // por radiano mexido
@@ -228,37 +229,34 @@ export default function MugViewer({ originRect, onClosed }) {
         >
           <svg viewBox={`0 0 ${SIZE} ${SIZE}`} aria-hidden="true">
             <defs>
-              <radialGradient id="mug-wall" cx="50%" cy="50%" r="50%">
-                <stop offset="80%" stopColor="#e2e8f0" />
-                <stop offset="100%" stopColor="#f8fafc" />
-              </radialGradient>
-              <radialGradient id="mug-coffee" cx="45%" cy="42%" r="60%">
-                <stop offset="0%" stopColor="#8a5530" />
-                <stop offset="70%" stopColor="#5b3519" />
-                <stop offset="100%" stopColor="#3d220f" />
-              </radialGradient>
               <clipPath id="mug-coffee-clip">
                 <circle cx={C} cy={C} r={COFFEE_R} />
               </clipPath>
             </defs>
 
             {/* pires */}
-            <circle cx={C} cy={C + 6} r={226} fill="rgba(0,0,0,0.25)" />
-            <circle cx={C} cy={C} r={224} fill="#f1f5f9" />
-            <circle cx={C} cy={C} r={196} fill="none" stroke="#e2e8f0" strokeWidth="3" />
-            <circle cx={C} cy={C} r={218} fill="none" stroke="#fb923c" strokeWidth="2" opacity="0.6" />
+            <circle cx={C + 8} cy={C + 8} r={224} fill={INK} />
+            <circle cx={C} cy={C} r={224} fill="#fff7ed" stroke={INK} strokeWidth="6" />
+            <circle cx={C} cy={C} r={198} fill="#ffedd5" />
 
             {/* alça (vista de cima, a argola fica em pé: aparece como uma barra grossa, levemente inclinada) */}
-            <g transform={`rotate(-24 ${C} ${C})`}>
-              <rect x={C + 140} y={C - 29 + 12} width="138" height="58" rx="27" fill="rgba(0,0,0,0.2)" />
-              <rect x={C + 140} y={C - 29} width="138" height="58" rx="27" fill="#ffffff" stroke="#cbd5e1" strokeWidth="2" />
-              <rect x={C + 176} y={C - 20} width="88" height="14" rx="7" fill="#f1f5f9" />
+            <g transform={`rotate(32 ${C} ${C})`}>
+              <rect x={C + 150} y={C - 20} width="128" height="58" rx="24" fill={INK} />
+              <rect x={C + 150} y={C - 29} width="128" height="58" rx="24" fill="#fb923c" stroke={INK} strokeWidth="6" />
+              <rect x={C + 180} y={C - 17} width="76" height="10" rx="5" fill="#fdba74" />
             </g>
 
             {/* caneca */}
-            <circle cx={C} cy={C + 8} r={170} fill="rgba(0,0,0,0.18)" />
-            <circle cx={C} cy={C} r={168} fill="#ffffff" stroke="#cbd5e1" strokeWidth="2" />
-            <circle cx={C} cy={C} r={156} fill="url(#mug-wall)" />
+            <circle cx={C + 7} cy={C + 7} r={171} fill={INK} />
+            <circle cx={C} cy={C} r={171} fill="#fb923c" stroke={INK} strokeWidth="6" />
+            <path
+              d={`M${C - 148} ${C - 62} A160 160 0 0 1 ${C - 62} ${C - 148}`}
+              fill="none"
+              stroke="#fdba74"
+              strokeWidth="9"
+              strokeLinecap="round"
+            />
+            <circle cx={C} cy={C} r={155} fill="#fff7ed" stroke={INK} strokeWidth="5" />
 
             {/* fundo da caneca, com a escrita */}
             <circle cx={C} cy={C} r={COFFEE_R} fill="#fdf6ec" />
@@ -273,7 +271,7 @@ export default function MugViewer({ originRect, onClosed }) {
 
             {/* café: fica mais transparente com o redemoinho, revelando o fundo */}
             <g clipPath="url(#mug-coffee-clip)">
-              <circle cx={C} cy={C} r={COFFEE_R} fill="url(#mug-coffee)" className="mug-coffee" />
+              <circle cx={C} cy={C} r={COFFEE_R} fill="#6b3f1d" className="mug-coffee" />
               <g className="mug-swirl" style={{ transformOrigin: `${C}px ${C}px` }}>
                 <path
                   d={`M${C} ${C} m0 -20 a20 20 0 1 1 -20 20 a45 45 0 0 1 45 -45 a72 72 0 0 1 72 72 a100 100 0 0 1 -100 100 a128 128 0 0 1 -128 -128`}
@@ -289,7 +287,7 @@ export default function MugViewer({ originRect, onClosed }) {
                 <circle cx={C + 40} cy={C + 110} r="3" fill="#e9c9a3" opacity="0.7" />
               </g>
             </g>
-            <circle cx={C} cy={C} r={COFFEE_R} fill="none" stroke="rgba(0,0,0,0.25)" strokeWidth="3" />
+            <circle cx={C} cy={C} r={COFFEE_R} fill="none" stroke={INK} strokeWidth="4" />
 
             {/* crema: bolhas na borda que vão surgindo com o calor */}
             <g className="mug-foam" style={{ transformOrigin: `${C}px ${C}px` }}>
@@ -313,9 +311,9 @@ export default function MugViewer({ originRect, onClosed }) {
           {/* colher (o pivô é o centro da concha; o cabo aponta para fora) */}
           <div ref={spoonRef} className="mug-spoon">
             <svg viewBox="-30 -20 260 40" width="260" height="40" aria-hidden="true">
-              <path d="M14 -4 L222 -7 a7 7 0 0 1 0 14 L14 4 Z" fill="#cbd5e1" stroke="#94a3b8" strokeWidth="1.5" />
-              <ellipse cx="0" cy="0" rx="25" ry="17" fill="#e2e8f0" stroke="#94a3b8" strokeWidth="2" />
-              <ellipse cx="-3" cy="-4" rx="12" ry="6" fill="#ffffff" opacity="0.7" />
+              <path d="M14 -5 L222 -8 a8 8 0 0 1 0 16 L14 5 Z" fill="#dfe3f5" stroke={INK} strokeWidth="4" strokeLinejoin="round" />
+              <ellipse cx="0" cy="0" rx="26" ry="18" fill="#dfe3f5" stroke={INK} strokeWidth="4" />
+              <ellipse cx="-4" cy="-5" rx="12" ry="5.5" fill="#ffffff" />
             </svg>
           </div>
 

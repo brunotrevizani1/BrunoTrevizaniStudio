@@ -617,8 +617,15 @@
   left: 50%;
   bottom: 18px;
   z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: max-content;
+  max-width: calc(100% - 24px);
   margin: 0;
-  padding: 8px 16px;
+  padding: 6px 8px 6px 16px;
   border: 3px solid #1e1b3a;
   border-radius: 9999px;
   background: #ffffff;
@@ -629,4 +636,159 @@
   font-weight: 700;
   transform: translateX(-50%);
   pointer-events: none;
+}
+
+.pg-hint p {
+  margin: 0;
+}
+
+.pg-meter {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.pg-meter strong {
+  min-width: 3.2em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-meter-track {
+  display: block;
+  width: 130px;
+  height: 16px;
+  overflow: hidden;
+  border: 3px solid #1e1b3a;
+  border-radius: 9999px;
+  background: #ffffff;
+}
+
+.pg-meter-track i {
+  display: block;
+  height: 100%;
+  background: #fb923c;
+  transition: width 150ms ease-out;
+}
+
+.pg[data-stage="rinse"] .pg-meter-track i {
+  background: #38bdf8;
+}
+
+/* próxima ferramenta da lavagem: chama o visitante */
+.pg-tool.is-next {
+  animation: pg-next 1.2s ease-in-out infinite;
+}
+
+@keyframes pg-next {
+  50% {
+    transform: scale(1.07);
+  }
+}
+
+/* carro limpo: reflexos passando de novo pela lataria, faíscas e a mensagem */
+.pg[data-stage="done"] .pg-gloss {
+  animation: pg-gloss-again 1100ms ease-in-out 3 both;
+}
+
+@keyframes pg-gloss-again {
+  from {
+    transform: translateX(0);
+  }
+}
+
+.pg-sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pg-sparkles svg {
+  position: absolute;
+  overflow: visible;
+  fill: #fde047;
+  stroke: #1e1b3a;
+  stroke-width: 1.5;
+  animation: mug-sparkle 1.8s ease-in-out infinite;
+}
+
+.pg-done {
+  position: absolute;
+  bottom: 73%;
+  left: 50%;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: min(340px, 90vw);
+  padding: 14px 18px;
+  transform: translateX(-50%);
+  border: 4px solid #1e1b3a;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 6px 6px 0 #1e1b3a;
+  color: #1e1b3a;
+  font-family: var(--font-display);
+  text-align: center;
+  animation: pg-done-in 500ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+
+.pg-done strong {
+  font-size: 24px;
+}
+
+.pg-done p {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+@keyframes pg-done-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(16px) scale(0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pg-tool.is-next,
+  .pg[data-stage="done"] .pg-gloss,
+  .pg-sparkles svg,
+  .pg-done {
+    animation: none;
+  }
+}
+
+.pg-drop {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 3px solid #1e1b3a;
+  border-radius: 9999px;
+  background: #fb923c;
+  color: #1e1b3a;
+  font: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 120ms ease;
+}
+
+.pg-drop:hover {
+  transform: translateY(-2px);
+}
+
+.pg-drop:focus-visible {
+  outline: 3px solid #fb923c;
+  outline-offset: 3px;
+}
+
+.pg-drop kbd {
+  padding: 0 5px;
+  border-radius: 5px;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 11px;
 }

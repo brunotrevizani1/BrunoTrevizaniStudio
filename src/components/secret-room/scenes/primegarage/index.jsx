@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { FoamLayer, WashOverlay } from './wash'
 import ProjectInfo from '../../ProjectInfo'
 import './primegarage.css'
@@ -8,6 +8,15 @@ const FOAM = [
   [6, 44, 11, 0], [16, 26, 13, 60], [28, 16, 12, 120], [40, 10, 14, 30], [52, 12, 13, 150], [64, 16, 12, 90],
   [76, 28, 13, 40], [88, 42, 11, 180], [10, 60, 12, 100], [22, 48, 14, 210], [36, 38, 12, 70], [48, 34, 14, 160],
   [60, 38, 13, 20], [72, 48, 12, 130], [84, 58, 12, 190], [30, 66, 11, 50], [54, 62, 12, 110], [68, 66, 11, 80],
+]
+
+// Lavagem: primeiro o sabão, depois a água. A etapa fecha em 100% com 92% da lataria feita (ninguém
+// precisa caçar o último cantinho) e o resto se completa sozinho.
+const STAGE_DONE_AT = 0.92
+const STAGE_TOOL = { soap: 'soap', rinse: 'water', done: null }
+
+const SPARKLES = [
+  [4, 30, 26, 0], [18, -6, 20, 0.3], [34, 18, 30, 0.6], [50, -14, 22, 0.15], [66, 14, 28, 0.45], [82, -4, 20, 0.75], [96, 34, 26, 0.3],
 ]
 
 const BODY =
@@ -80,10 +89,10 @@ function Car() {
   )
 }
 
-function Shelf({ active, onToggle }) {
+function Shelf({ active, next, onToggle }) {
   return (
     <svg
-      className="pg-shelf pg-tool"
+      className={`pg-shelf pg-tool${next ? ' is-next' : ''}`}
       viewBox="0 0 250 150"
       fill="none"
       role="button"
@@ -128,11 +137,11 @@ function Hose() {
 }
 
 // lavadora de alta pressão com a pistola e a mangueira enroladas
-function Washer({ active, onToggle, washerRef }) {
+function Washer({ active, next, onToggle, washerRef }) {
   return (
     <svg
       ref={washerRef}
-      className="pg-washer pg-tool"
+      className={`pg-washer pg-tool${next ? ' is-next' : ''}`}
       viewBox="0 0 130 160"
       fill="none"
       role="button"
@@ -181,11 +190,49 @@ export default function PrimeGarageScene({ project }) {
   const washerRef = useRef(null)
   const foamRef = useRef(null)
   const [tool, setTool] = useState(null) // 'soap' | 'water' | null
+  const [stage, setStage] = useState('soap') // 'soap' | 'rinse' | 'done'
+  const [coverage, setCoverage] = useState(0) // fração da lataria com espuma
 
-  const pick = (name) => setTool((current) => (current === name ? null : name))
+  const finished = stage === 'soap' ? coverage : 1 - coverage
+  const percent = Math.min(100, Math.floor((finished / STAGE_DONE_AT) * 100))
+  const nextTool = tool ? null : STAGE_TOOL[stage]
+
+  // cada etapa só aceita a sua ferramenta
+  const pick = (name) => {
+    if (name === STAGE_TOOL[stage]) setTool((current) => (current === name ? null : name))
+  }
+
+  useEffect(() => {
+    if (percent < 100 || stage === 'done') return
+    setTool(null)
+    if (stage === 'soap') {
+      foamRef.current.fill()
+      setStage('rinse')
+    } else {
+      foamRef.current.clear()
+      setStage('done')
+    }
+  }, [percent, stage])
+
+  let hint = 'Comece pelo sabão: clique na prateleira.'
+  if (tool === 'soap') hint = 'Sabão na mão! Segure e arraste sobre o carro.'
+  else if (tool === 'water') hint = 'Lavadora ligada! Segure e arraste para tirar a espuma.'
+  else if (stage === 'rinse') hint = 'Sabão completo! Agora pegue a lavadora.'
+
+  // com ferramenta na mão, Esc só larga a ferramenta: não pode chegar na sala, que sairia do cenário
+  useEffect(() => {
+    if (!tool) return undefined
+    const onKey = (event) => {
+      if (event.key !== 'Escape') return
+      event.stopImmediatePropagation()
+      setTool(null)
+    }
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
+  }, [tool])
 
   return (
-    <section className="pg" data-tool={tool ?? undefined} aria-labelledby={titleId}>
+    <section className="pg" data-tool={tool ?? undefined} data-stage={stage} aria-labelledby={titleId}>
       <div className="pg-wall" aria-hidden="true" />
       <div className="pg-tube" aria-hidden="true" />
       <div className="pg-floor" aria-hidden="true" />
@@ -215,12 +262,39 @@ export default function PrimeGarageScene({ project }) {
       <div className="pg-car">
         <Car />
         {/* espuma passada pelo visitante: recortada no formato da lataria */}
-        <FoamLayer ref={foamRef} bodyPath={BODY} />
+        <FoamLayer ref={foamRef} bodyPath={BODY} onCoverage={setCoverage} />
         <div className="pg-foam" aria-hidden="true">
           {FOAM.map(([x, y, size, delay]) => (
             <i key={`${x}-${y}`} style={{ '--x': `${x}%`, '--y': `${y}%`, '--s': `${size}%`, '--d': `${delay}ms` }} />
           ))}
         </div>
+
+        {stage === 'done' && (
+          <>
+            <div className="pg-sparkles" aria-hidden="true">
+              {SPARKLES.map(([x, y, size, delay]) => (
+                <svg
+                  key={x}
+                  viewBox="-10 -10 20 20"
+                  style={{ left: `${x}%`, top: `${y}%`, width: size, height: size, animationDelay: `${delay}s` }}
+                >
+                  <path d="M0 -10 Q1.5 -1.5 10 0 Q1.5 1.5 0 10 Q-1.5 1.5 -10 0 Q-1.5 -1.5 0 -10Z" />
+                </svg>
+              ))}
+            </div>
+            <div className="pg-done" role="status">
+              <strong>Carro brilhando!</strong>
+              <p>Lavagem completa, do sabão ao enxágue. Pode vir buscar!</p>
+              <button
+                type="button"
+                className="toon-btn"
+                onClick={() => setStage('soap')}
+              >
+                Lavar de novo
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       <article className="pg-ticket">
@@ -233,18 +307,39 @@ export default function PrimeGarageScene({ project }) {
         </ProjectInfo>
       </article>
 
-      {tool && (
-        <p className="pg-hint" role="status">
-          {tool === 'soap' ? 'Sabão na mão! Segure e arraste sobre o carro.' : 'Lavadora ligada! Segure e arraste para tirar a espuma.'}
-        </p>
+      {stage !== 'done' && (
+        <div className="pg-hint">
+          <p role="status">{hint}</p>
+          {(tool || percent > 0) && (
+            <div className="pg-meter">
+              <span
+                className="pg-meter-track"
+                role="progressbar"
+                aria-label={stage === 'soap' ? 'Carro ensaboado' : 'Carro enxaguado'}
+                aria-valuenow={percent}
+                aria-valuemin={0}
+                aria-valuemax={100}
+              >
+                <i style={{ width: `${percent}%` }} />
+              </span>
+              <strong>{percent}%</strong>
+            </div>
+          )}
+          {tool && (
+            <button type="button" className="pg-drop" onClick={() => setTool(null)}>
+              Soltar <kbd>Esc</kbd>
+            </button>
+          )}
+        </div>
       )}
 
-      {tool && <WashOverlay tool={tool} washerRef={washerRef} foamRef={foamRef} />}
+      {tool && <WashOverlay tool={tool} washerRef={washerRef} foamRef={foamRef} onDrop={() => setTool(null)} />}
 
-      {/* ferramentas: clicar escolhe; depois é segurar e arrastar sobre o carro (ficam acima da mira para poder largar) */}
+      {/* ferramentas: clicar escolhe; depois é segurar e arrastar sobre o carro. Para largar: botão
+          Soltar, Esc, botão direito do mouse ou clicar de novo na ferramenta (ficam acima da mira) */}
       <div className="pg-tools">
-        <Shelf active={tool === 'soap'} onToggle={() => pick('soap')} />
-        <Washer washerRef={washerRef} active={tool === 'water'} onToggle={() => pick('water')} />
+        <Shelf active={tool === 'soap'} next={nextTool === 'soap'} onToggle={() => pick('soap')} />
+        <Washer washerRef={washerRef} active={tool === 'water'} next={nextTool === 'water'} onToggle={() => pick('water')} />
       </div>
 
       <div className="pg-water" aria-hidden="true" />

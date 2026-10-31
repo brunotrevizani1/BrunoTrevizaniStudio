@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { ArrowRight } from 'lucide-react'
+import { GithubIcon, LinkedinIcon, YoutubeIcon } from './icons/BrandIcons'
 import SkyCord from './icons/SkyCord'
 import CityScene from './CityScene'
 import { useLamp } from '../context/LampContext'
@@ -14,26 +16,39 @@ function getInitials(name) {
     .toUpperCase()
 }
 
+// letreiro da faixa no traço dos títulos (.toon-text): o text-shadow não vale em SVG, então a
+// sombra sólida é uma cópia do texto deslocada por baixo
+function BannerLine({ y, size, children }) {
+  const line = {
+    x: 395,
+    y,
+    textAnchor: 'middle',
+    fontFamily: 'Space Grotesk, sans-serif',
+    fontWeight: 700,
+    fontSize: size,
+    letterSpacing: 0.5,
+    stroke: '#1e1b3a',
+    strokeWidth: size * 0.16,
+    strokeLinejoin: 'round',
+    paintOrder: 'stroke fill',
+  }
+  return (
+    <>
+      <text {...line} dx={3} dy={3} fill="#1e1b3a">{children}</text>
+      <text {...line} fill="#ffffff">{children}</text>
+    </>
+  )
+}
+
 // avião de desenho puxando uma faixa; o texto é um <text> do próprio SVG, então escala junto
 function PlaneBanner({ text }) {
   const ink = { stroke: '#1e1b3a', strokeWidth: 5, strokeLinejoin: 'round', strokeLinecap: 'round' }
   return (
     <svg viewBox="0 0 1180 190" className="hero-plane-svg">
       <g className="hero-plane-banner">
-        <path d="M6 40 Q70 22 130 40 T250 40 T370 40 T490 40 T610 40 T730 40 L730 150 Q670 168 610 150 T490 150 T370 150 T250 150 T130 150 T6 150 L40 95 Z" fill="#ffffff" {...ink} />
-        <text
-          x="395"
-          y="112"
-          textAnchor="middle"
-          fontFamily="Space Grotesk, sans-serif"
-          fontWeight="700"
-          fontSize="58"
-          fill="#1e1b3a"
-          textLength="620"
-          lengthAdjust="spacingAndGlyphs"
-        >
-          Bem-vindo ao <tspan fill="#ea580c">{text}</tspan>
-        </text>
+        <path d="M6 40 Q70 22 130 40 T250 40 T370 40 T490 40 T610 40 T730 40 L730 150 Q670 168 610 150 T490 150 T370 150 T250 150 T130 150 T6 150 L40 95 Z" fill="#fb923c" {...ink} />
+        <BannerLine y={84} size={32}>Bem-vindo ao</BannerLine>
+        <BannerLine y={130} size={42}>{text}</BannerLine>
       </g>
       <path d="M730 95 Q780 95 830 100" fill="none" stroke="#1e1b3a" strokeWidth="4" strokeLinecap="round" />
       <g transform="translate(830 20)">
@@ -47,32 +62,6 @@ function PlaneBanner({ text }) {
         </g>
       </g>
     </svg>
-  )
-}
-
-// outdoor menor, só com uma frase; clicar também dá a volta no lugar
-function SideBillboard({ text, className }) {
-  const [spinning, setSpinning] = useState(false)
-  return (
-    <div className={`hero-billboard hero-billboard-side shrink-0 ${className}`}>
-      <span className="hero-billboard-legs" aria-hidden="true">
-        <i />
-      </span>
-      <span className="hero-billboard-deck" aria-hidden="true" />
-      <button
-        type="button"
-        className={`hero-photo${spinning ? ' is-spinning' : ''}`}
-        onClick={() => setSpinning(true)}
-        onAnimationEnd={(event) => event.target === event.currentTarget && setSpinning(false)}
-        aria-label="Girar o outdoor"
-      >
-        <span className="hero-billboard-lamps" aria-hidden="true">
-          <i />
-          <i />
-        </span>
-        <span className="hero-sign">{text}</span>
-      </button>
-    </div>
   )
 }
 
@@ -104,9 +93,59 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="hero-content relative z-10 mx-auto flex w-full max-w-6xl items-start justify-center gap-6 px-6 pt-24 lg:gap-10">
-        <SideBillboard text="Quer conhecer minha história?" className="hero-billboard-left hidden md:block" />
-        <div className="flex justify-center">
+      <div className="hero-content hero-stage relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-10 px-6 md:flex-row md:justify-between md:gap-8">
+        <div className="flex flex-col items-center gap-5 md:items-start">
+          <p className="hero-phrase toon-text font-display">
+            Aqui apresento um pouco da minha vida, dos meus{' '}
+            aprendizados, e os{' '} <span className="text-gradient">projetos que venho construindo!</span>
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-1 md:justify-start">
+            <a
+              href="#sobre"
+              className="toon-btn"
+            >
+              Começar a viagem
+              <ArrowRight size={18} />
+            </a>
+            <a
+              href="#contato"
+              className="toon-btn"
+            >
+              Entrar em contato
+            </a>
+            <div className="flex items-center gap-3">
+              <a
+                href={profile.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="LinkedIn"
+                className="hero-social"
+              >
+                <LinkedinIcon size={20} />
+              </a>
+              <a
+                href={profile.github}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub"
+                className="hero-social"
+              >
+                <GithubIcon size={20} />
+              </a>
+              <a
+                href={profile.youtube}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="YouTube"
+                className="hero-social"
+              >
+                <YoutubeIcon size={20} />
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="hero-board-slot flex shrink-0 justify-center">
           {/* outdoor na frente dos prédios: sobe do pé da tela; as colunas descem até o fim da aba */}
           <div className="hero-billboard shrink-0">
             <span className="hero-billboard-legs" aria-hidden="true">
@@ -144,7 +183,6 @@ export default function Hero() {
             </button>
           </div>
         </div>
-        <SideBillboard text="Aqui apresento um pouco sobre minha vida e aprendizados!" className="hero-billboard-right hidden md:block" />
       </div>
     </section>
   )

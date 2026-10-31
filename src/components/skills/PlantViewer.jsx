@@ -58,8 +58,8 @@ const SPARKLES = [
 ]
 
 function waterStatus(water) {
-  if (water >= HAPPY_ON) return 'Que delícia! A planta agradece!'
-  if (water >= 0.6) return 'Tá ficando verdinha, mais um pouco...'
+  if (water >= HAPPY_ON) return 'Perfeito! A planta agradece!'
+  if (water >= 0.6) return 'Tá ficando verdinha, regue mais um pouco...'
   if (water >= 0.3) return 'Isso, continua regando!'
   return 'Segura o clique em cima do vaso para regar.'
 }

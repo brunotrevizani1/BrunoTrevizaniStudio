@@ -22,26 +22,28 @@ function DeskMug() {
         </div>
         <svg viewBox="0 0 70 62" fill="none" aria-hidden="true">
           {/* traço de desenho, como os botões: contorno escuro grosso (a sombra sólida vem do CSS) */}
-          <path d="M52 20 h6 a9 9 0 0 1 0 22 h-8" stroke="#1e1b3a" strokeWidth="11" strokeLinecap="round" />
-          <path d="M52 20 h6 a9 9 0 0 1 0 22 h-8" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" />
+          <path d="M50 22 h6 a11 11 0 0 1 11 11 v2 a11 11 0 0 1 -11 11 h-6" stroke="#1e1b3a" strokeWidth="11" strokeLinecap="round" />
+          <path d="M50 22 h6 a11 11 0 0 1 11 11 v2 a11 11 0 0 1 -11 11 h-6" stroke="#fb923c" strokeWidth="5" strokeLinecap="round" />
+          <path d="M8 12 h46 v34 a12 12 0 0 1 -12 12 h-22 a12 12 0 0 1 -12 -12 Z" fill="#fb923c" />
+          <path d="M43 12 h11 v34 a12 12 0 0 1 -12 12 h-5 a12 12 0 0 0 6 -12 Z" fill="#ea580c" />
+          <path d="M14 22 v22" stroke="#fdba74" strokeWidth="4" strokeLinecap="round" />
           <path
-            d="M8 14 h46 v28 a16 16 0 0 1 -16 16 h-14 a16 16 0 0 1 -16 -16 Z"
-            fill="#ffffff"
+            d="M8 12 h46 v34 a12 12 0 0 1 -12 12 h-22 a12 12 0 0 1 -12 -12 Z"
             stroke="#1e1b3a"
-            strokeWidth="3"
+            strokeWidth="3.5"
             strokeLinejoin="round"
           />
-          <path d="M13 20 v20" stroke="#dbeafe" strokeWidth="4" strokeLinecap="round" />
-          <ellipse cx="31" cy="15" rx="21.5" ry="4.5" fill="#7c4a24" stroke="#1e1b3a" strokeWidth="2.5" />
+          <ellipse cx="31" cy="12" rx="23" ry="6.5" fill="#fff7ed" stroke="#1e1b3a" strokeWidth="3" />
+          <ellipse cx="31" cy="12.5" rx="17" ry="3.8" fill="#6b3f1d" stroke="#1e1b3a" strokeWidth="1.5" />
           {/* ícone </> e nome */}
           <path
-            d="M25 27 l-3.5 3.5 l3.5 3.5 M37 27 l3.5 3.5 l-3.5 3.5 M33 26 l-4 9"
-            stroke="#fb923c"
-            strokeWidth="1.8"
+            d="M24 27 l-4 4 l4 4 M38 27 l4 4 l-4 4 M33.5 25.5 l-5 11"
+            stroke="#ffffff"
+            strokeWidth="2.6"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          <text x="31" y="47" textAnchor="middle" className="setup-mug-name">
+          <text x="31" y="50" textAnchor="middle" className="setup-mug-name">
             Bruno
           </text>
         </svg>
