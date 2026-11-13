@@ -236,6 +236,86 @@ function SleepingCat() {
         <path d="M35 61 l3 3 l3 -3 Z" fill="#fb7185" />
         <ellipse cx="62" cy="76" rx="16" ry="7" fill="#fbbf24" />
       </svg>
+
+      {/* gato acordado (só aparece ao clicar): de pé, com pernas; pula de susto e depois corre */}
+      <svg viewBox="0 0 170 110" className="cat-awake" fill="none" overflow="visible" aria-hidden="true">
+        {/* pernas: atrás do corpo; --a = pose do pulo (abertas), --b = passada da corrida */}
+        <g className="cat-leg" style={{ '--a': '-38deg', '--b': '32deg' }}>
+          <path d="M50 76 V102" stroke="#f59e0b" strokeWidth="11" strokeLinecap="round" />
+          <ellipse cx="46" cy="104" rx="9" ry="5" fill="#fbbf24" />
+        </g>
+        <g className="cat-leg" style={{ '--a': '-16deg', '--b': '-30deg' }}>
+          <path d="M68 78 V102" stroke="#d98a0c" strokeWidth="11" strokeLinecap="round" />
+          <ellipse cx="64" cy="104" rx="9" ry="5" fill="#fbbf24" />
+        </g>
+        <g className="cat-leg" style={{ '--a': '40deg', '--b': '-34deg' }}>
+          <path d="M112 78 V102" stroke="#d98a0c" strokeWidth="11" strokeLinecap="round" />
+          <ellipse cx="116" cy="104" rx="9" ry="5" fill="#fbbf24" />
+        </g>
+        <g className="cat-leg" style={{ '--a': '18deg', '--b': '30deg' }}>
+          <path d="M128 76 V102" stroke="#f59e0b" strokeWidth="11" strokeLinecap="round" />
+          <ellipse cx="132" cy="104" rx="9" ry="5" fill="#fbbf24" />
+        </g>
+
+        {/* rabo: eriçado para cima no susto, esticado para trás na corrida */}
+        <path className="cat-scared" d="M134 62 C158 56 160 28 146 8" stroke="#e08a12" strokeWidth="15" strokeLinecap="round" />
+        <path className="cat-run" d="M134 62 C150 58 162 62 170 54" stroke="#e08a12" strokeWidth="9" strokeLinecap="round" />
+
+        <ellipse cx="88" cy="62" rx="52" ry="22" fill="#f59e0b" />
+        <path d="M62 52 q4 10 0 20 M84 48 q4 12 0 24 M106 50 q4 11 0 22" stroke="#d97706" strokeWidth="4" strokeLinecap="round" />
+
+        {/* pelo arrepiado nas costas */}
+        <path
+          className="cat-scared"
+          d="M46 46 L50 28 L58 42 L66 22 L74 40 L84 20 L92 40 L102 22 L108 40 L118 26 L122 44 L132 32 L132 50 Z"
+          fill="#f59e0b"
+          stroke="#d97706"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+
+        {/* cabeça */}
+        <circle cx="38" cy="46" r="21" fill="#f59e0b" />
+        <path d="M20 36 L16 14 L34 28 Z" fill="#f59e0b" />
+        <path d="M56 36 L60 14 L42 28 Z" fill="#f59e0b" />
+        <path d="M22 32 L20 20 L30 28 Z" fill="#fbcfe8" />
+        <path d="M54 32 L56 20 L46 28 Z" fill="#fbcfe8" />
+        {/* topete em pé */}
+        <path
+          className="cat-scared"
+          d="M28 30 L24 6 L34 20 L38 -4 L44 20 L52 6 L50 30 Z"
+          fill="#f59e0b"
+          stroke="#d97706"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+
+        {/* cara de susto: olhos arregalados, boca aberta, gota de suor e "!" */}
+        <g className="cat-scared">
+          <circle cx="29" cy="44" r="8" fill="#fff" stroke="#78350f" strokeWidth="2.4" />
+          <circle cx="48" cy="44" r="8" fill="#fff" stroke="#78350f" strokeWidth="2.4" />
+          <circle cx="27" cy="45" r="2.6" fill="#0f172a" />
+          <circle cx="46" cy="45" r="2.6" fill="#0f172a" />
+          <ellipse cx="38" cy="60" rx="6" ry="8" fill="#7f1d1d" stroke="#78350f" strokeWidth="2" />
+          <ellipse cx="38" cy="64" rx="3.4" ry="3" fill="#fb7185" />
+          <path d="M33 53 l5 4 l5 -4 Z" fill="#fb7185" />
+          <path d="M12 52 H2 M12 58 L3 63 M64 52 H74 M64 58 L73 63" stroke="#78350f" strokeWidth="2" strokeLinecap="round" />
+          <path d="M66 26 q5 8 0 12 q-5 -4 0 -12 Z" fill="#7dd3fc" stroke="#1e1b3a" strokeWidth="1.6" />
+          <path d="M92 -6 V8" stroke="#ef4444" strokeWidth="6" strokeLinecap="round" />
+          <circle cx="92" cy="16" r="3.4" fill="#ef4444" />
+        </g>
+
+        {/* cara de corrida: olhos fixos para frente */}
+        <g className="cat-run">
+          <ellipse cx="29" cy="44" rx="5.5" ry="6.5" fill="#fff" stroke="#78350f" strokeWidth="2" />
+          <ellipse cx="46" cy="44" rx="5.5" ry="6.5" fill="#fff" stroke="#78350f" strokeWidth="2" />
+          <circle cx="26.5" cy="45" r="2.8" fill="#0f172a" />
+          <circle cx="43.5" cy="45" r="2.8" fill="#0f172a" />
+          <path d="M33 54 l5 4 l5 -4 Z" fill="#fb7185" />
+          <path d="M32 62 q6 5 12 0" stroke="#78350f" strokeWidth="2.4" strokeLinecap="round" />
+          <path d="M150 74 H176 M146 86 H170" stroke="#fff" strokeWidth="3" strokeLinecap="round" opacity="0.8" />
+        </g>
+      </svg>
     </button>
   )
 }

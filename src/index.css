@@ -3672,6 +3672,35 @@ html[data-scroll-dir="up"] .reveal-content.is-hidden {
   45% { transform: rotate(-0.8deg); }
 }
 
+/* corda do Hero: bem mais chamativa que a do abajur. Treme forte com pouca pausa, o pingente
+   pulsa em brilho e o balão "Puxe!" balança junto. Vale mesmo com "reduzir movimento" (a regra
+   acima tem menos especificidade): é o convite para a pessoa clicar. */
+.sky-cord.sky-cord-sway {
+  --glow: rgba(251, 191, 36, 0.95);
+  animation:
+    sky-cord-wiggle 2s ease-in-out infinite,
+    sky-cord-glow 1.4s ease-in-out infinite;
+}
+
+.sky-cord.sky-cord-sway[data-on="false"] {
+  --glow: rgba(165, 190, 255, 0.95);
+}
+
+@keyframes sky-cord-wiggle {
+  0%, 55%, 100% { transform: rotate(0deg) translateY(0); }
+  6% { transform: rotate(-8deg) translateY(5px); }
+  14% { transform: rotate(7deg) translateY(2px); }
+  22% { transform: rotate(-6.5deg) translateY(4px); }
+  30% { transform: rotate(5deg) translateY(1px); }
+  38% { transform: rotate(-3.5deg) translateY(3px); }
+  46% { transform: rotate(2deg); }
+}
+
+@keyframes sky-cord-glow {
+  0%, 100% { filter: drop-shadow(0 0 2px var(--glow)); }
+  50% { filter: drop-shadow(0 0 14px var(--glow)) drop-shadow(0 0 5px var(--glow)); }
+}
+
 /* início: boas-vindas */
 /* só backwards: com forwards a animação terminada seguraria opacity e transform e o
    [data-zoom] nunca conseguiria esconder o conteúdo */
@@ -4650,20 +4679,71 @@ button.room-cat {
   display: none;
 }
 
+/* ao clicar o gato dormindo some (mas segura o espaço) e entra o gato acordado, de pé, com pernas */
 .room-cat.is-fleeing .desk-cat-body {
-  animation: room-cat-gallop 0.22s ease-in-out infinite;
+  visibility: hidden;
 }
 
+.cat-awake {
+  display: none;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  transform-origin: 50% 100%;
+}
+
+.room-cat.is-fleeing .cat-awake {
+  display: block;
+  animation: room-cat-gallop 0.22s ease-in-out 0.5s infinite;
+}
+
+/* 0 a 30% (o pulo): cara de susto, pelo arrepiado e rabo eriçado; depois, cara e rabo de corrida */
+.cat-scared {
+  animation: cat-scared-out 1.7s step-end forwards;
+}
+
+.cat-run {
+  opacity: 0;
+  animation: cat-run-in 1.7s step-end forwards;
+}
+
+.cat-leg {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  transform: rotate(var(--a));
+  animation: cat-leg-run 0.22s ease-in-out 0.5s infinite alternate;
+}
+
+@keyframes cat-scared-out {
+  from { opacity: 1; }
+  30%, to { opacity: 0; }
+}
+
+@keyframes cat-run-in {
+  from { opacity: 0; }
+  30%, to { opacity: 1; }
+}
+
+@keyframes cat-leg-run {
+  from { transform: rotate(var(--a)); }
+  to { transform: rotate(var(--b)); }
+}
+
+/* pulo de susto: encolhe, estica no ar (e treme), cai e dispara */
 @keyframes room-cat-flee {
-  0% { transform: translate(0, 0); }
-  14% { transform: translate(0, -90px) scale(1.06, 1.12); }
-  28% { transform: translate(0, 0); }
-  100% { transform: translate(-1700px, 0); }
+  0% { transform: translate(0, 0) scale(1, 1); }
+  6% { transform: translate(0, 4px) scale(1.12, 0.84); }
+  16% { transform: translate(0, -96px) scale(0.92, 1.16) rotate(-3deg); }
+  22% { transform: translate(0, -100px) scale(0.94, 1.14) rotate(3deg); }
+  30% { transform: translate(0, 0) scale(1.1, 0.88); }
+  100% { transform: translate(-1700px, 0) scale(1, 1); }
 }
 
 @keyframes room-cat-gallop {
-  0%, 100% { transform: scale(1.1, 0.88) rotate(-2deg); }
-  50% { transform: scale(0.94, 1.08) rotate(2deg); }
+  0%, 100% { transform: scale(1.04, 0.94) rotate(-2deg); }
+  50% { transform: scale(0.97, 1.04) rotate(2deg); }
 }
 
 /* desempenho: o que não está na tela ou não aparece de dia/noite não anima */
@@ -4730,4 +4810,213 @@ button.room-cat {
 
 @keyframes lever-halo {
   50% { opacity: 1; }
+}
+
+/* =====================================================================
+   Botão "Clique aqui" do Hero e o bilhete que avisa que tudo é interativo
+   ===================================================================== */
+.hero-hint-btn {
+  position: relative;
+  background: #fb923c;
+}
+
+.hero-hint-btn svg {
+  animation: hero-hint-tap 1.6s ease-in-out infinite;
+}
+
+.hero-hint-btn::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border: 3px solid #fb923c;
+  border-radius: 9999px;
+  opacity: 0;
+  pointer-events: none;
+  animation: hero-hint-ring 1.8s ease-out infinite;
+}
+
+@keyframes hero-hint-tap {
+  0%, 55%, 100% { transform: translate(0, 0) scale(1); }
+  70% { transform: translate(2px, 3px) scale(0.85); }
+  85% { transform: translate(0, 0) scale(1.1); }
+}
+
+@keyframes hero-hint-ring {
+  0% { opacity: 0.9; transform: scale(0.92); }
+  100% { opacity: 0; transform: scale(1.18); }
+}
+
+.hint-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.hint-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 16, 50, 0.72);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.hint-scene[data-shown="true"] .hint-backdrop {
+  opacity: 1;
+}
+
+.hint-card {
+  position: relative;
+  width: min(640px, 100%);
+  max-height: 92dvh;
+  overflow-y: auto;
+  padding: 34px 28px 26px;
+  border: 4px solid #1e1b3a;
+  border-radius: 22px;
+  background:
+    repeating-linear-gradient(transparent 0 31px, rgba(30, 27, 58, 0.07) 31px 32px),
+    #fffaf0;
+  color: #1e1b3a;
+  box-shadow: 8px 8px 0 #1e1b3a;
+  transform: translateY(40px) rotate(2deg) scale(0.9);
+  opacity: 0;
+  transition: transform 340ms cubic-bezier(0.3, 1.5, 0.5, 1), opacity 200ms ease;
+}
+
+.hint-scene[data-shown="true"] .hint-card {
+  transform: rotate(-0.8deg);
+  opacity: 1;
+}
+
+/* fita adesiva segurando o bilhete */
+.hint-tape {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  width: 110px;
+  height: 28px;
+  transform: translateX(-50%) rotate(-3deg);
+  border: 3px solid #1e1b3a;
+  background: rgba(253, 224, 71, 0.85);
+}
+
+.hint-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.hint-eyebrow {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ea580c;
+}
+
+.hint-title {
+  margin: 4px 0 10px;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 6vw, 40px);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.hint-title span {
+  padding: 0 8px;
+  border-radius: 8px;
+  background: #fb923c;
+  color: #fff;
+  -webkit-text-stroke: 2px #1e1b3a;
+  paint-order: stroke fill;
+}
+
+.hint-lead {
+  margin: 0 0 18px;
+  font-size: 15px;
+  line-height: 1.55;
+  font-weight: 500;
+}
+
+.hint-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
+}
+
+.hint-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 3px solid #1e1b3a;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 3px 3px 0 #1e1b3a;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.hint-scene[data-shown="true"] .hint-item {
+  opacity: 1;
+  transform: none;
+  transition: opacity 300ms ease var(--d), transform 160ms ease, box-shadow 160ms ease;
+}
+
+.hint-item:hover {
+  transform: translate(-2px, -2px) rotate(-1deg);
+  box-shadow: 5px 5px 0 #1e1b3a;
+}
+
+.hint-icon {
+  flex: none;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.hint-item strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.hint-item small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+.hint-go {
+  display: flex;
+  margin: 0 auto;
+  background: #fb923c;
+}
+
+@media (max-width: 520px) {
+  .hint-card {
+    padding: 30px 18px 22px;
+  }
+
+  .hint-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-hint-btn svg,
+  .hero-hint-btn::after {
+    animation: none;
+  }
 }

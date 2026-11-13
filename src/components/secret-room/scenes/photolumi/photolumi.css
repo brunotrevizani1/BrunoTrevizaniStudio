@@ -632,15 +632,13 @@
   .pl-shot,
   .pl-easel,
   .pl-flash,
-  .pl-flash.is-shot,
-  .pl-shutter::before,
-  .pl-shutter::after,
-  .pl-tripod.is-kick,
   .pl-camera-hint,
-  .pl-photo-shot .pl-img,
   .pl-led {
     animation: none;
   }
+
+  /* o que acontece ao clicar na câmera (.is-shot, obturador, chute, foto revelando) segue animado:
+     é uma resposta direta ao clique, e sem animação as cortinas do obturador ficariam fechadas */
 }
 
 /* =====================================================================

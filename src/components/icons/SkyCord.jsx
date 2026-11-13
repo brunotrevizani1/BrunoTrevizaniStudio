@@ -65,6 +65,7 @@ export default function SkyCord({ className = '', style }) {
       width="36"
       height={VIEW_H}
       fill="none"
+      data-on={isOn}
       className={`sky-cord ${dragging ? '' : 'sky-cord-sway'} ${className}`}
       style={{ position: 'absolute', zIndex: 20, overflow: 'visible', ...style }}
     >

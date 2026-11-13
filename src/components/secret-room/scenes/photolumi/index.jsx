@@ -1,5 +1,4 @@
 import { useId, useLayoutEffect, useRef, useState } from 'react'
-import { usePrefersReducedMotion } from '../../../../hooks/usePrefersReducedMotion'
 import ProjectInfo from '../../ProjectInfo'
 import './photolumi.css'
 
@@ -39,12 +38,13 @@ function Tripod({ kick }) {
 }
 
 // foto recém-tirada: nasce na lente da câmera e voa até o lugar dela no varal
-function ShotPhoto({ slot, kind, cameraRef, reduced }) {
+// (anima mesmo com "reduzir movimento": só roda a pedido, quando a pessoa clica na câmera)
+function ShotPhoto({ slot, kind, cameraRef }) {
   const ref = useRef(null)
 
   useLayoutEffect(() => {
     const camera = cameraRef.current?.getBoundingClientRect()
-    if (reduced || !camera) return undefined
+    if (!camera) return undefined
     const target = ref.current.getBoundingClientRect()
     const dx = camera.left + camera.width / 2 - (target.left + target.width / 2)
     const dy = camera.top + camera.height * LENS_Y - target.top
@@ -59,7 +59,7 @@ function ShotPhoto({ slot, kind, cameraRef, reduced }) {
       { duration: FLIGHT_MS, delay: FLIGHT_DELAY_MS, easing: 'ease-in-out', fill: 'backwards' },
     )
     return () => flight.cancel()
-  }, [cameraRef, reduced])
+  }, [cameraRef])
 
   return (
     <figure ref={ref} className="pl-photo pl-photo-shot" style={slotStyle(slot)}>
@@ -78,7 +78,6 @@ function ShotPhoto({ slot, kind, cameraRef, reduced }) {
  */
 export default function PhotoLumiScene({ project }) {
   const titleId = useId()
-  const reduced = usePrefersReducedMotion()
   const [shots, setShots] = useState([])
   const cameraRef = useRef(null)
   const nextShot = useRef(0)
@@ -118,7 +117,6 @@ export default function PhotoLumiScene({ project }) {
               slot={shot % PHOTOS.length}
               kind={PHOTOS[(shot + 1) % PHOTOS.length]}
               cameraRef={cameraRef}
-              reduced={reduced}
             />
           ))}
         </div>

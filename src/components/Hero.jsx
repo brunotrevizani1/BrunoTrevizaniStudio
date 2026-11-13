@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import { GithubIcon, LinkedinIcon, YoutubeIcon } from './icons/BrandIcons'
 import SkyCord from './icons/SkyCord'
 import CityScene from './CityScene'
+import HeroHint from './HeroHint'
 import { useLamp } from '../context/LampContext'
 import { profile } from '../data/placeholders'
 
@@ -101,6 +102,7 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-1 md:justify-start">
+            <HeroHint />
             <a
               href="#sobre"
               className="toon-btn"

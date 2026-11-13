@@ -134,8 +134,8 @@ export default function Contact() {
       }
 
       // a carta é selada e volta para a caixa enquanto a câmera se afasta; o pássaro leva (LetterFlight)
-      if (reduced) handleDelivered()
-      else setPhase('sending')
+      // o pássaro sempre voa (mesmo com "reduzir movimento"): é o feedback de que a carta foi enviada
+      setPhase('sending')
     } catch {
       setErrorMessage('Não foi possível enviar sua mensagem agora. Tente novamente em instantes.')
     } finally {
